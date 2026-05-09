@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KlassenTest – Lehrkraft</title>
+<link rel="stylesheet" href="kt.css">
+<style>
+.toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px;background:var(--paper2);border-bottom:1px solid var(--border);border-radius:var(--r) var(--r) 0 0}
+.tb-btn{padding:6px 12px;border-radius:7px;border:1.5px solid var(--border);background:#fff;color:var(--ink2);font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.tb-sep{width:1px;height:24px;background:var(--border);margin:0 2px}
+.canvas-area{padding:1rem;min-height:500px}
+.page-block{margin-bottom:12px;position:relative}
+.page-block:hover>.block-ctrl{display:flex}
+.block-ctrl{position:absolute;top:4px;right:4px;display:none;gap:4px;z-index:5;background:rgba(255,255,255,.9);border-radius:8px;padding:3px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.bc-btn{width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;background:transparent;transition:background .15s}
+.bc-btn:hover{background:var(--paper2)}
+.bc-del{color:var(--red)}.bc-del:hover{background:var(--red-l)!important}
+
+.text-block{width:100%;padding:8px;border:none;background:transparent;font-family:var(--font);font-size:14px;color:var(--ink);resize:none;min-height:40px;line-height:1.6}
+.text-block:focus{outline:none}
+.img-block{width:100%;border-radius:var(--r);display:block;max-height:400px;object-fit:contain}
+.img-placeholder{border:2px dashed var(--border2);border-radius:var(--r);padding:2rem;text-align:center;color:var(--ink3);font-size:13px;cursor:pointer}
+.img-placeholder:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+
+.qblock{background:rgba(41,64,232,.04);border:1.5px solid var(--accent-m);border-radius:var(--r);padding:1rem}
+.qblock input[type=text]{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;background:#fff;color:var(--ink);margin-bottom:8px}
+.qblock input[type=text]:focus{outline:none;border-color:var(--accent)}
+.pts-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--ink3)}
+.pts-row input{width:60px;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;text-align:center}
+
+.pts-table-block table{width:100%;border-collapse:collapse;font-size:13px}
+.pts-table-block th,.pts-table-block td{border:1.5px solid var(--border2);padding:8px 10px;text-align:left}
+.pts-table-block th{background:var(--paper2);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.pts-table-block td input{width:100%;border:none;background:transparent;font-size:13px;font-family:var(--font);color:var(--ink);padding:0}
+.pts-table-block td input:focus{outline:none}
+
+.live-header{background:var(--ink);color:#fff;padding:1rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.live-badge{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#4ade80}
+.live-title{font-family:var(--display);font-size:18px;font-weight:800;color:#fff}
+.timer-live{font-family:monospace;font-size:36px;font-weight:700;letter-spacing:3px;color:#fff}
+.timer-live.warn{color:#fbbf24}.timer-live.danger{color:#f87171;animation:blink .8s infinite}
+
+.stu-row{display:flex;align-items:center;padding:10px 13px;border-radius:var(--r);background:#fff;border:1px solid var(--border);margin-bottom:7px;gap:10px;cursor:default}
+.stu-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-l);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
+.stu-name{flex:1;font-size:13px;font-weight:600}
+.stu-sub{font-size:11px;color:var(--ink3)}
+
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:1.1rem 1.25rem;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tc-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tc-info{flex:1;min-width:0}
+.tc-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.tc-meta{font-size:12px;color:var(--ink3)}
+.tc-btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+.corr-item{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:1.1rem 1.25rem;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;transition:border .15s}
+.corr-item:hover{border-color:var(--accent)}
+
+.grade-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:15px;font-weight:700;background:var(--accent-l);color:var(--accent);border:2px solid var(--accent-m)}
+
+.corr-q-row{background:var(--paper2);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.corr-q-label{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.corr-ans-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;margin-bottom:4px;font-size:13px}
+.corr-ok{background:var(--green-l);color:var(--green)}.corr-wrong{background:var(--red-l);color:var(--red)}.corr-neutral{background:var(--paper3);color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-mark">K</div><div class="logo-name">KlassenTest</div></div>
+  <div class="sidebar-role-label">Lehrkraft</div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="nav('tests')" id="nb-tests">📝 Meine Tests</button>
+    <button class="nav-btn" onclick="nav('create')" id="nb-create">➕ Test erstellen</button>
+    <div class="nav-sep"></div>
+    <button class="nav-btn" onclick="nav('live')" id="nb-live">🟢 Live-Modus</button>
+    <button class="nav-btn" onclick="nav('subs')" id="nb-subs">📨 Abgaben</button>
+    <button class="nav-btn" onclick="nav('correct')" id="nb-correct">✏️ Korrigieren</button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user-name" id="sb-name">–</div>
+    <div class="sidebar-user-role">Lehrkraft</div>
+    <button class="btn-logout" onclick="logout()">← Abmelden</button>
+  </div>
+</aside>
+
+<div class="main">
+  <!-- ── TESTS ── -->
+  <div class="section active" id="s-tests">
+    <div class="topbar"><div class="topbar-title">Meine Tests</div><div class="topbar-actions"><button class="btn btn-primary" onclick="nav('create')">➕ Neuer Test</button></div></div>
+    <div class="page"><div id="tests-list"></div></div>
+  </div>
+
+  <!-- ── CREATE ── -->
+  <div class="section" id="s-create">
+    <div class="topbar">
+      <div class="topbar-title" id="create-heading">Test erstellen</div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="saveDraft()">💾 Entwurf</button>
+        <button class="btn btn-dark btn-sm" onclick="goToStartSetup()">▶ Test starten</button>
+      </div>
+    </div>
+    <div class="page">
+      <div class="g2">
+        <div>
+          <!-- Settings -->
+          <div class="panel">
+            <div class="panel-title">Grundeinstellungen</div>
+            <div class="field"><label>Titel</label><input type="text" id="c-title" placeholder="z. B. Mathematik – Gleichungen 9b"></div>
+            <div class="g2">
+              <div class="field"><label>Fach</label><input type="text" id="c-subj" placeholder="Mathematik"></div>
+              <div class="field"><label>Klasse</label><input type="text" id="c-class" placeholder="9b"></div>
+            </div>
+            <div class="field">
+              <label>Hintergrundvorlage</label>
+              <select id="c-bg" onchange="updateCanvasBg()">
+                <option value="lined">📄 Liniert</option>
+                <option value="grid">⬛ Kariert</option>
+                <option value="blank">◻ Blank</option>
+                <option value="custom">📷 Eigene Vorlage (Bild/PDF)</option>
+              </select>
+            </div>
+            <div id="custom-upload-area" style="display:none">
+              <div class="field"><label>Eigene Vorlage hochladen</label>
+              <input type="file" id="c-custom-file" accept="image/*,.pdf" style="padding:6px">
+              <div id="custom-preview" style="margin-top:8px"></div></div>
+            </div>
+          </div>
+          <!-- Canvas toolbar -->
+          <div class="panel" style="padding:0;overflow:hidden">
+            <div class="toolbar">
+              <span style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px">Einfügen:</span>
+              <button class="tb-btn" onclick="addBlock('text')">📝 Text</button>
+              <button class="tb-btn" onclick="addBlock('image')">🖼 Foto</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="addBlock('mc')">☑ Einfachauswahl (MC)</button>
+              <button class="tb-btn" onclick="addBlock('multi')">☑☑ Mehrfachauswahl</button>
+              <button class="tb-btn" onclick="addBlock('free')">✍ Freie Antwort</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="addBlock('table')">📊 Punktetabelle</button>
+            </div>
+            <div class="canvas-area canvas-bg-lined" id="canvas" style="position:relative"></div>
+          </div>
+        </div>
+        <div>
+          <div class="alert alert-blue" style="margin-bottom:1.25rem">
+            🔒 <strong>Musterlösungen sind geschützt.</strong><br>
+            Richtige Antworten bei MC/Mehrfachauswahl werden automatisch verglichen.<br>
+            Freie Antworten korrigierst du manuell.<br>
+            Schüler sehen niemals die Musterlösung.
+          </div>
+          <div class="panel">
+            <div class="panel-title">Gespeicherte Entwürfe</div>
+            <div id="drafts-panel"></div>
+          </div>
+          <div id="create-err" class="alert alert-red" style="display:none"></div>
+          <button class="btn btn-ghost btn-full" style="margin-bottom:8px" onclick="saveDraft()">💾 Entwurf speichern</button>
+          <button class="btn btn-primary btn-full btn-lg" onclick="goToStartSetup()">▶ Test starten →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LIVE ── -->
+  <div class="section" id="s-live">
+    <div id="live-container"></div>
+  </div>
+
+  <!-- ── SUBMISSIONS ── -->
+  <div class="section" id="s-subs">
+    <div class="topbar"><div class="topbar-title">Abgaben</div></div>
+    <div class="page"><div id="subs-list"></div></div>
+  </div>
+
+  <!-- ── CORRECT ── -->
+  <div class="section" id="s-correct">
+    <div class="topbar"><div class="topbar-title">Korrigieren</div></div>
+    <div class="page"><div id="correct-list"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- modal -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this&&!modalLocked)closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="kt.js"></script>
+<script>
+let teacher=null, blocks=[], editId=null, timerInt=null, timerSecs=0, paused=false, modalLocked=false;
+
+function init(){
+  const s=sessionStorage.getItem('kt_teacher');
+  if(s){teacher=s;document.getElementById('sb-name').textContent=s;nav('tests');}
+  else showLoginModal();
+}
+function showLoginModal(){
+  modalLocked=true;
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-head">👩‍🏫 Anmelden als Lehrkraft</div>
+    <p style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">Gib einfach deinen echten Namen ein – kein Passwort nötig.</p>
+    <div class="field"><label>Vollständiger Name</label><input type="text" id="ln" placeholder="z. B. Frau Müller" autofocus></div>
+    <div class="alert alert-blue" style="margin-bottom:1rem">Verwende deinen echten Namen, damit Ergebnisse korrekt zugeordnet werden können.</div>
+    <div id="lerr" class="alert alert-red" style="display:none">Bitte gib deinen Namen ein.</div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Weiter →</button>`;
+  document.getElementById('modal-bg').classList.add('open');
+  setTimeout(()=>document.getElementById('ln')?.focus(),100);
+}
+function doLogin(){
+  const n=document.getElementById('ln').value.trim();
+  if(!n){document.getElementById('lerr').style.display='block';return;}
+  teacher=n; sessionStorage.setItem('kt_teacher',n);
+  document.getElementById('sb-name').textContent=n;
+  const db=KT.get(); let t=db.teachers.find(x=>x.name===n);
+  if(!t)db.teachers.push({name:n,lastSeen:Date.now()});
+  else t.lastSeen=Date.now();
+  KT.set(db); modalLocked=false; closeModal(); nav('tests');
+}
+function logout(){sessionStorage.removeItem('kt_teacher');window.location.reload();}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function openModal(html,locked=false){
+  modalLocked=locked;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function nav(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  document.getElementById('nb-'+id).classList.add('active');
+  render(id);
+}
+
+function render(id){
+  if(!teacher) return;
+  const db=KT.get();
+  const mine=db.tests.filter(t=>t.teacherName===teacher);
+  if(id==='tests') renderTests(mine,db);
+  if(id==='create') renderCreate(db);
+  if(id==='live') renderLive(mine,db);
+  if(id==='subs') renderSubs(mine,db);
+  if(id==='correct') renderCorrect(mine,db);
+}
+
+// ── TESTS ──
+function renderTests(mine,db){
+  const el=document.getElementById('tests-list');
+  if(!mine.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Tests erstellt.</div></div>';return;}
+  el.innerHTML=mine.slice().reverse().map(t=>{
+    const subs=db.submissions.filter(s=>s.testId===t.id).length;
+    return`<div class="test-card">
+      <div class="tc-icon">📝</div>
+      <div class="tc-info">
+        <div class="tc-name">${KT.esc(t.title)}</div>
+        <div class="tc-meta">${t.subject||''} · Klasse ${t.cls||''} · ${(t.blocks||[]).filter(b=>b.type==='mc'||b.type==='multi'||b.type==='free').length} Fragen · ${subs} Abgaben · ${new Date(t.createdAt).toLocaleDateString('de-DE')}</div>
+        ${t.active?`<code style="margin-top:4px;display:inline-block">Code: ${t.joinCode}</code>`:''}
+      </div>
+      <div class="tc-btns">
+        <span class="badge ${t.active?'badge-green':t.ended?'badge-red':'badge-gray'}">${t.active?'🟢 Aktiv':t.ended?'🔴 Beendet':'⚪ Entwurf'}</span>
+        ${!t.active&&!t.ended?`<button class="btn btn-ghost btn-sm" onclick="loadEdit('${t.id}')">✏️</button>`:''}
+        ${!t.active&&!t.ended?`<button class="btn btn-green btn-sm" onclick="startTestById('${t.id}')">▶ Starten</button>`:''}
+        ${t.active?`<button class="btn btn-primary btn-sm" onclick="nav('live')">🟢 Live</button>`:''}
+        ${t.active?`<button class="btn btn-red btn-sm" onclick="endTest('${t.id}')">⏹</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="dlTest('${t.id}')">💾</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── CREATE ──
+function renderCreate(db){
+  const mine=db.tests.filter(t=>t.teacherName===teacher&&!t.active&&!t.ended);
+  const dp=document.getElementById('drafts-panel');
+  dp.innerHTML=mine.length?mine.map(t=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--paper3)">
+    <span style="font-size:13px">${KT.esc(t.title)}</span>
+    <button class="btn btn-ghost btn-sm" onclick="loadEdit('${t.id}')">Öffnen</button>
+  </div>`).join(''):'<div style="font-size:13px;color:var(--ink3)">Keine Entwürfe.</div>';
+  updateCanvasBg();
+  document.getElementById('c-custom-file').onchange=handleCustomFile;
+  document.getElementById('c-bg').onchange=updateCanvasBg;
+}
+
+function updateCanvasBg(){
+  const v=document.getElementById('c-bg')?.value||'lined';
+  const c=document.getElementById('canvas');
+  if(!c) return;
+  c.className='canvas-area canvas-bg-'+v;
+  document.getElementById('custom-upload-area').style.display=v==='custom'?'block':'none';
+}
+
+function handleCustomFile(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>{
+    window._customBg=ev.target.result;
+    const p=document.getElementById('custom-preview');
+    if(f.type.startsWith('image/')){
+      p.innerHTML=`<img src="${ev.target.result}" style="max-width:100%;border-radius:8px;margin-top:6px;max-height:200px;object-fit:contain">`;
+      document.getElementById('canvas').style.backgroundImage=`url(${ev.target.result})`;
+      document.getElementById('canvas').style.backgroundSize='cover';
+    } else { p.innerHTML=`<div class="alert alert-green">✅ ${f.name} hochgeladen</div>`; }
+  };
+  r.readAsDataURL(f);
+}
+
+// ── BLOCK SYSTEM ──
+let blockCounter=0;
+function addBlock(type){
+  const id='b'+(++blockCounter);
+  blocks.push({id,type,data:defaultData(type)});
+  renderBlocks();
+}
+function defaultData(type){
+  if(type==='text') return{content:''};
+  if(type==='image') return{src:null};
+  if(type==='mc') return{question:'',options:['','','',''],correctIndex:0,points:1};
+  if(type==='multi') return{question:'',options:['','','',''],correctIndexes:[],points:1};
+  if(type==='free') return{question:'',lines:5,points:1};
+  if(type==='table') return{rows:3,cols:3,headers:['Aufgabe','Punkte','Erhalten'],cells:[]};
+  return{};
+}
+
+function renderBlocks(){
+  const c=document.getElementById('canvas'); if(!c) return;
+  c.innerHTML='';
+  blocks.forEach((b,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='page-block'; wrap.id='pb-'+b.id;
+    wrap.innerHTML=blockHTML(b,i);
+    c.appendChild(wrap);
+    attachBlockEvents(b,i,wrap);
+  });
+}
+
+function blockHTML(b,i){
+  const ctrl=`<div class="block-ctrl">
+    ${i>0?`<button class="bc-btn" onclick="moveBlock(${i},-1)" title="Nach oben">↑</button>`:''}
+    ${i<blocks.length-1?`<button class="bc-btn" onclick="moveBlock(${i},1)" title="Nach unten">↓</button>`:''}
+    <button class="bc-btn bc-del" onclick="delBlock(${i})" title="Löschen">✕</button>
+  </div>`;
+
+  if(b.type==='text') return ctrl+`<textarea class="text-block" placeholder="Text eingeben…" oninput="blocks[${i}].data.content=this.value" rows="3">${KT.esc(b.data.content)}</textarea>`;
+
+  if(b.type==='image') return ctrl+(b.data.src
+    ?`<img src="${b.data.src}" class="img-block" onclick="pickImage(${i})">`
+    :`<div class="img-placeholder" onclick="pickImage(${i})">🖼 Klicken um Bild hochzuladen</div>`);
+
+  if(b.type==='mc') return ctrl+`<div class="qblock">
+    <div class="qb-head"><span class="qb-num">MC ${i+1}</span><span class="qb-tag tag-mc">Einfachauswahl</span><span class="pts-badge">⭐ <input type="number" min="1" max="99" value="${b.data.points||1}" style="width:36px;background:transparent;border:none;font-size:11px;font-weight:700;color:var(--ink3)" oninput="blocks[${i}].data.points=+this.value"> Pt.</span></div>
+    <input type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value">
+    <div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">Antworten — ○ klicken = richtige Antwort (für Schüler unsichtbar)</div>
+    ${b.data.options.map((o,oi)=>`<div class="opt-row">
+      <div class="opt-circle ${oi===b.data.correctIndex?'correct':''}" onclick="setMCCorrect(${i},${oi})"></div>
+      <input class="opt-inp" type="text" value="${KT.esc(o)}" placeholder="Antwort ${oi+1}…" oninput="blocks[${i}].data.options[${oi}]=this.value">
+      ${b.data.options.length>2?`<button class="opt-del" onclick="delOpt(${i},${oi})">✕</button>`:''}
+    </div>`).join('')}
+    <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-l);border:1.5px solid var(--accent-m);border-radius:8px;padding:5px 12px;cursor:pointer;margin-top:4px" onclick="addOpt(${i})">+ Option</button>
+  </div>`;
+
+  if(b.type==='multi') return ctrl+`<div class="qblock">
+    <div class="qb-head"><span class="qb-num">MU ${i+1}</span><span class="qb-tag tag-multi">Mehrfachauswahl</span><span class="pts-badge">⭐ <input type="number" min="1" max="99" value="${b.data.points||1}" style="width:36px;background:transparent;border:none;font-size:11px;font-weight:700;color:var(--ink3)" oninput="blocks[${i}].data.points=+this.value"> Pt.</span></div>
+    <input type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value">
+    <div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">Antworten — mehrere richtige möglich (☐ klicken)</div>
+    ${b.data.options.map((o,oi)=>`<div class="opt-row">
+      <div class="opt-circle ${(b.data.correctIndexes||[]).includes(oi)?'multi-correct':''}" style="border-radius:4px" onclick="toggleMultiCorrect(${i},${oi})"></div>
+      <input class="opt-inp" type="text" value="${KT.esc(o)}" placeholder="Antwort ${oi+1}…" oninput="blocks[${i}].data.options[${oi}]=this.value">
+      ${b.data.options.length>2?`<button class="opt-del" onclick="delOpt(${i},${oi})">✕</button>`:''}
+    </div>`).join('')}
+    <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-l);border:1.5px solid #f0d080;border-radius:8px;padding:5px 12px;cursor:pointer;margin-top:4px" onclick="addOpt(${i})">+ Option</button>
+  </div>`;
+
+  if(b.type==='free') return ctrl+`<div class="qblock" style="border-color:var(--green-m);background:rgba(15,110,62,.04)">
+    <div class="qb-head"><span class="qb-num">FR ${i+1}</span><span class="qb-tag tag-free">Freie Antwort</span><span class="pts-badge">⭐ <input type="number" min="1" max="99" value="${b.data.points||1}" style="width:36px;background:transparent;border:none;font-size:11px;font-weight:700;color:var(--ink3)" oninput="blocks[${i}].data.points=+this.value"> Pt.</span></div>
+    <input type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value">
+    <div style="font-size:12px;color:var(--green);background:var(--green-l);border-radius:8px;padding:8px 10px;margin-top:4px;border:1px solid var(--green-m)">📝 Schüler schreiben frei. Zeilen: <input type="number" min="1" max="20" value="${b.data.lines||5}" style="width:40px;border:1px solid var(--green-m);border-radius:5px;padding:2px 5px;font-size:12px;color:var(--green)" oninput="blocks[${i}].data.lines=+this.value"></div>
+  </div>`;
+
+  if(b.type==='table'){
+    const hd=b.data.headers||['Aufgabe','Punkte','Erhalten'];
+    const rows=b.data.rows||3; const cols=b.data.cols||3;
+    if(!b.data.cells||b.data.cells.length!==rows) b.data.cells=Array.from({length:rows},()=>Array(cols).fill(''));
+    return ctrl+`<div class="pts-table-block"><table>
+      <thead><tr>${hd.map((h,hi)=>`<th><input value="${KT.esc(h)}" oninput="blocks[${i}].data.headers[${hi}]=this.value" style="width:100%;border:none;background:transparent;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3)"></th>`).join('')}</tr></thead>
+      <tbody>${b.data.cells.map((row,ri)=>`<tr>${row.map((cell,ci)=>`<td><input value="${KT.esc(cell)}" oninput="blocks[${i}].data.cells[${ri}][${ci}]=this.value" placeholder="…"></td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+    <div style="margin-top:6px;display:flex;gap:6px;align-items:center">
+      <span style="font-size:11px;color:var(--ink3)">Zeilen:</span>
+      <button style="padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:12px" onclick="addTableRow(${i})">+ Zeile</button>
+    </div></div>`;
+  }
+  return ctrl+'<div style="padding:10px;color:var(--ink3)">Unbekannter Block</div>';
+}
+
+function attachBlockEvents(b,i,wrap){}
+function moveBlock(i,dir){const t=blocks.splice(i,1)[0];blocks.splice(i+dir,0,t);renderBlocks();}
+function delBlock(i){blocks.splice(i,1);renderBlocks();}
+function setMCCorrect(bi,oi){blocks[bi].data.correctIndex=oi;renderBlocks();}
+function toggleMultiCorrect(bi,oi){const ci=blocks[bi].data.correctIndexes||[];const idx=ci.indexOf(oi);if(idx>=0)ci.splice(idx,1);else ci.push(oi);blocks[bi].data.correctIndexes=ci;renderBlocks();}
+function addOpt(bi){blocks[bi].data.options.push('');renderBlocks();}
+function delOpt(bi,oi){blocks[bi].data.options.splice(oi,1);if(blocks[bi].data.correctIndex>=blocks[bi].data.options.length)blocks[bi].data.correctIndex=0;renderBlocks();}
+function addTableRow(bi){blocks[bi].data.rows++;blocks[bi].data.cells.push(Array(blocks[bi].data.cols).fill(''));renderBlocks();}
+
+function pickImage(bi){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{blocks[bi].data.src=ev.target.result;renderBlocks();};r.readAsDataURL(f);};
+  inp.click();
+}
+
+function buildTest(){
+  const title=document.getElementById('c-title')?.value.trim();
+  if(!title){showCreateErr('Bitte gib einen Titel ein.');return null;}
+  const qBlocks=blocks.filter(b=>['mc','multi','free'].includes(b.type));
+  if(!qBlocks.length){showCreateErr('Füge mindestens eine Frage ein (MC, Mehrfachauswahl oder Freie Antwort).');return null;}
+  hideCreateErr();
+  return{
+    id:editId||KT.gid(),
+    title,
+    subject:document.getElementById('c-subj')?.value.trim()||'',
+    cls:document.getElementById('c-class')?.value.trim()||'',
+    bg:document.getElementById('c-bg')?.value||'lined',
+    customBg:window._customBg||null,
+    teacherName:teacher,
+    blocks:JSON.parse(JSON.stringify(blocks)),
+    joinCode:KT.genCode(),
+    active:false,ended:false,
+    createdAt:Date.now(),timerSeconds:1800,
+  };
+}
+
+function showCreateErr(m){const e=document.getElementById('create-err');if(e){e.textContent='❌ '+m;e.style.display='block';}}
+function hideCreateErr(){const e=document.getElementById('create-err');if(e)e.style.display='none';}
+
+function saveDraft(){
+  const t=buildTest();if(!t)return;
+  const db=KT.get();const idx=db.tests.findIndex(x=>x.id===t.id);
+  if(idx>=0)db.tests[idx]=t;else db.tests.push(t);
+  KT.set(db); editId=t.id; KT.toast('💾 Entwurf gespeichert!'); render('create');
+}
+
+function loadEdit(id){
+  const db=KT.get(); const t=db.tests.find(x=>x.id===id); if(!t) return;
+  editId=id; blocks=JSON.parse(JSON.stringify(t.blocks||[]));
+  nav('create');
+  setTimeout(()=>{
+    const f=document.getElementById('c-title');if(f)f.value=t.title;
+    const s=document.getElementById('c-subj');if(s)s.value=t.subject||'';
+    const c=document.getElementById('c-class');if(c)c.value=t.cls||'';
+    const bg=document.getElementById('c-bg');if(bg)bg.value=t.bg||'lined';
+    if(t.customBg){window._customBg=t.customBg;}
+    document.getElementById('create-heading').textContent='Test bearbeiten';
+    updateCanvasBg(); renderBlocks();
+  },60);
+}
+
+function goToStartSetup(){
+  const t=buildTest(); if(!t) return;
+  const db=KT.get(); const idx=db.tests.findIndex(x=>x.id===t.id);
+  if(idx>=0)db.tests[idx]=t; else db.tests.push(t);
+  KT.set(db); editId=t.id;
+  // Confirm dialog
+  openModal(`
+    <div class="modal-head">Test starten?</div>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:1.25rem">Bist du mit dem Test fertig und möchtest ihn starten?</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal()">← Nein, weiter bearbeiten</button>
+      <button class="btn btn-primary" onclick="closeModal();showCodeSetup('${t.id}')">Ja, weiter →</button>
+    </div>`);
+}
+
+function showCodeSetup(testId){
+  const db=KT.get(); const t=db.tests.find(x=>x.id===testId); if(!t) return;
+  if(!t.joinCode) t.joinCode=KT.genCode();
+  KT.set(db);
+  openModal(`
+    <div class="modal-head">Code & Minuten</div>
+    <p style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">Wähle wie viele Minuten der Test dauert und prüfe den Code.</p>
+    <div class="field"><label>Testdauer (Minuten)</label><input type="number" id="setup-mins" value="30" min="1" max="300" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:16px;font-weight:700;text-align:center"></div>
+    <div style="text-align:center;margin:1.25rem 0">
+      <div style="font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Schüler-Code</div>
+      <div class="code-pill" id="code-display">${t.joinCode}</div>
+      <div style="margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="regenCode('${testId}')">🔄 Neu generieren</button></div>
+    </div>
+    <div style="background:var(--paper2);border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--ink3);margin-bottom:1.25rem">
+      ⚡ Schüler gehen auf <strong>schueler.html</strong> und geben diesen Code ein.
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn btn-green btn-lg" onclick="activateTest('${testId}')">🟢 Test starten für alle</button>
+    </div>`,true);
+}
+
+function regenCode(testId){
+  const db=KT.get(); const t=db.tests.find(x=>x.id===testId); if(!t) return;
+  t.joinCode=KT.genCode(); KT.set(db);
+  const el=document.getElementById('code-display'); if(el) el.textContent=t.joinCode;
+}
+
+function activateTest(testId){
+  const mins=parseInt(document.getElementById('setup-mins')?.value)||30;
+  const db=KT.get(); const t=db.tests.find(x=>x.id===testId); if(!t) return;
+  t.active=true; t.ended=false; t.timerSeconds=mins*60; t.startedAt=Date.now();
+  KT.set(db); timerSecs=mins*60; modalLocked=false; closeModal();
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    timerSecs=Math.max(0,timerSecs-1);
+    const el=document.getElementById('timer-live');
+    if(el){el.textContent=KT.fmt(timerSecs);el.className='timer-live'+(timerSecs<300?' warn':'')+(timerSecs<60?' danger':'');}
+    if(timerSecs===0){clearInterval(timerInt);endTest(testId);}
+  },1000);
+  nav('live');
+}
+
+function startTestById(testId){
+  const db=KT.get(); const t=db.tests.find(x=>x.id===testId); if(!t) return;
+  showCodeSetup(testId);
+}
+
+function endTest(testId){
+  if(!confirm('Test beenden? Alle noch nicht abgegebenen Antworten werden automatisch eingereicht.'))return;
+  clearInterval(timerInt);
+  const db=KT.get(); const t=db.tests.find(x=>x.id===testId);
+  if(t){t.active=false;t.ended=true;}
+  db.students.filter(s=>s.currentTestId===testId).forEach(s=>{
+    if(!db.submissions.find(x=>x.studentName===s.name&&x.testId===testId)){
+      db.submissions.push({id:KT.gid(),testId,studentName:s.name,answers:{}  ,submittedAt:Date.now(),submitted:true,corrected:false,autoCollected:true});
+    }
+    s.currentTestId=null;
+  });
+  KT.set(db); nav('subs');
+}
+
+// ── LIVE ──
+function renderLive(mine,db){
+  const active=mine.find(t=>t.active);
+  const el=document.getElementById('live-container');
+  if(!active){
+    el.innerHTML=`<div class="topbar"><div class="topbar-title">Live-Modus</div></div><div class="page"><div class="empty"><div class="empty-icon">💤</div><div class="empty-text">Kein Test aktiv.<br>${mine.filter(t=>!t.active&&!t.ended).map(t=>`<button class="btn btn-green" style="margin-top:12px" onclick="startTestById('${t.id}')">▶ "${KT.esc(t.title)}" starten</button>`).join('')}</div></div></div>`;
+    return;
+  }
+  const subs=db.submissions.filter(s=>s.testId===active.id);
+  const joined=db.students.filter(s=>s.currentTestId===active.id);
+  el.innerHTML=`
+    <div style="position:sticky;top:0;z-index:10">
+      <div class="topbar"><div class="topbar-title" style="display:flex;align-items:center;gap:10px"><div class="live-dot"></div> ${KT.esc(active.title)}</div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost btn-sm" onclick="addTimeLive(5)">+5 Min</button>
+          <button class="btn btn-ghost btn-sm" onclick="addTimeLive(-5)">-5 Min</button>
+          <button class="btn btn-ghost btn-sm" id="pause-btn" onclick="togglePause('${active.id}')">⏸ Pause</button>
+          <button class="btn btn-ghost btn-sm" onclick="collectAll('${active.id}')">📥 Alle einsammeln</button>
+          <button class="btn btn-red btn-sm" onclick="endTest('${active.id}')">⏹ Beenden</button>
+        </div>
+      </div>
+      <div style="background:var(--ink);color:#fff;padding:10px 1.75rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px">Zeit</span><div class="timer-live" id="timer-live">${KT.fmt(timerSecs)}</div></div>
+        <div style="height:30px;width:1px;background:rgba(255,255,255,.1)"></div>
+        <div><span style="font-size:12px;color:rgba(255,255,255,.5)">Verbunden</span><div style="font-size:20px;font-weight:700">${joined.length}</div></div>
+        <div><span style="font-size:12px;color:rgba(255,255,255,.5)">Abgaben</span><div style="font-size:20px;font-weight:700">${subs.length}</div></div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="g2">
+        <div class="panel">
+          <div class="panel-title">Schüler im Raum</div>
+          <div id="live-students">
+            ${!joined.length?'<div style="color:var(--ink3);font-size:13px">Noch niemand beigetreten.</div>':
+            joined.map(s=>{const sub=subs.find(x=>x.studentName===s.name);return`<div class="stu-row">
+              <div class="stu-avatar">${s.name.charAt(0).toUpperCase()}</div>
+              <div class="tc-info"><div class="stu-name">${KT.esc(s.name)}</div></div>
+              <span class="badge ${sub?'badge-green':'badge-blue'}">${sub?'✓ Abgegeben':'⌛ Läuft'}</span>
+            </div>`;}).join('')}
+          </div>
+        </div>
+        <div class="panel" style="text-align:center">
+          <div class="panel-title">QR-Code & Zugangscode</div>
+          <div class="qr-outer" style="margin:0 auto 14px">
+            <div id="qr-canvas"></div>
+            <div class="code-pill">${active.joinCode}</div>
+          </div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Schüler öffnen <strong>schueler.html</strong> und geben den Code ein</div>
+          <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('${active.joinCode}').then(()=>KT.toast('📋 Code kopiert!'))">📋 Code kopieren</button>
+        </div>
+      </div>
+    </div>`;
+  setTimeout(()=>{
+    if(typeof QRCode!=='undefined'&&document.getElementById('qr-canvas')){
+      const url=window.location.href.replace('lehrer.html','schueler.html')+'?code='+active.joinCode;
+      new QRCode(document.getElementById('qr-canvas'),{text:url,width:160,height:160,colorDark:'#000',colorLight:'#fff'});
+    }
+    startPoll(active.id);
+  },100);
+}
+
+let pollInt=null;
+function startPoll(testId){
+  clearInterval(pollInt);
+  pollInt=setInterval(()=>{
+    if(!document.getElementById('live-students'))return clearInterval(pollInt);
+    const db=KT.get();
+    const subs=db.submissions.filter(s=>s.testId===testId);
+    const joined=db.students.filter(s=>s.currentTestId===testId);
+    const el=document.getElementById('live-students');
+    if(el) el.innerHTML=!joined.length?'<div style="color:var(--ink3);font-size:13px">Noch niemand beigetreten.</div>':
+      joined.map(s=>{const sub=subs.find(x=>x.studentName===s.name);return`<div class="stu-row">
+        <div class="stu-avatar">${s.name.charAt(0).toUpperCase()}</div>
+        <div class="tc-info"><div class="stu-name">${KT.esc(s.name)}</div></div>
+        <span class="badge ${sub?'badge-green':'badge-blue'}">${sub?'✓ Abgegeben':'⌛ Läuft'}</span>
+      </div>`;}).join('');
+  },3000);
+}
+function addTimeLive(m){timerSecs=Math.max(0,timerSecs+m*60);const el=document.getElementById('timer-live');if(el)el.textContent=KT.fmt(timerSecs);}
+function togglePause(testId){
+  paused=!paused;
+  const btn=document.getElementById('pause-btn');
+  if(paused){clearInterval(timerInt);if(btn)btn.textContent='▶ Weiter';}
+  else{if(btn)btn.textContent='⏸ Pause';
+    timerInt=setInterval(()=>{timerSecs=Math.max(0,timerSecs-1);const el=document.getElementById('timer-live');if(el)el.textContent=KT.fmt(timerSecs);if(timerSecs===0){clearInterval(timerInt);endTest(testId);}},1000);
+  }
+}
+function collectAll(testId){
+  if(!confirm('Alle laufenden Tests jetzt einsammeln?'))return;
+  const db=KT.get();const t=db.tests.find(x=>x.id===testId);
+  db.students.filter(s=>s.currentTestId===testId).forEach(s=>{
+    if(!db.submissions.find(x=>x.studentName===s.name&&x.testId===testId)){
+      db.submissions.push({id:KT.gid(),testId,studentName:s.name,answers:{},submittedAt:Date.now(),submitted:true,corrected:false,autoCollected:true});
+    }
+  });
+  KT.set(db);KT.toast('📥 Eingesammelt!');render('live');
+}
+
+// ── SUBMISSIONS ──
+function renderSubs(mine,db){
+  const mySubs=db.submissions.filter(s=>mine.find(t=>t.id===s.testId));
+  const el=document.getElementById('subs-list');
+  if(!mySubs.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Abgaben.</div></div>';return;}
+  el.innerHTML=mySubs.slice().reverse().map(s=>{
+    const t=mine.find(x=>x.id===s.testId);
+    const sc=KT.calcScore(s,t);
+    return`<div class="test-card">
+      <div class="stu-avatar" style="width:40px;height:40px;font-size:15px">${s.studentName.charAt(0).toUpperCase()}</div>
+      <div class="tc-info">
+        <div class="tc-name">${KT.esc(s.studentName)}</div>
+        <div class="tc-meta">${t?KT.esc(t.title):'–'} · ${new Date(s.submittedAt).toLocaleString('de-DE')} · Auto: ${sc.scored}/${sc.total} Pt.</div>
+        ${s.grade?`<span style="margin-top:4px;display:inline-block;font-size:13px;font-weight:700;color:var(--accent)">Note: ${KT.esc(s.grade)}</span>`:''}
+      </div>
+      <div class="tc-btns">
+        <span class="badge ${s.corrected?'badge-green':'badge-amber'}">${s.corrected?'✓ Fertig':'⏳ Offen'}</span>
+        <button class="btn btn-ghost btn-sm" onclick="openSub('${s.id}')">👁 Anzeigen</button>
+        <button class="btn btn-ghost btn-sm" onclick="openCorr('${s.id}')">✏️ Korrigieren</button>
+        <button class="btn btn-ghost btn-sm" onclick="sendBack('${s.id}')">✉️ Senden</button>
+        <button class="btn btn-ghost btn-sm" onclick="dlSub('${s.id}')">💾</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSub(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  openModal(`<div class="modal-head">${KT.esc(sub.studentName)} <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">${KT.esc(t.title)} · Auto-Score: ${sc.scored}/${sc.total} Pt.${sub.grade?' · Note: '+KT.esc(sub.grade):''}</div>
+    ${qBlocks.map((b,qi)=>{
+      const ans=sub.answers?.[b.id];
+      return`<div class="corr-q-row">
+        <div class="corr-q-label">${b.type==='mc'?'MC':'b.type==='multi'?'Mehrfach':'Frei'} · ${KT.esc(b.data.question)}</div>
+        ${b.type==='mc'?b.data.options.map((o,oi)=>`<div class="corr-ans-row ${ans===oi?oi===b.data.correctIndex?'corr-ok':'corr-wrong':oi===b.data.correctIndex?'corr-ok':'corr-neutral'}">
+          ${oi===b.data.correctIndex?'✅':ans===oi?'❌':'○'} ${KT.esc(o)}
+          ${oi===b.data.correctIndex?' <em style="margin-left:auto;font-size:11px">Richtig</em>':''}
+          ${ans===oi&&oi!==b.data.correctIndex?' <em style="margin-left:auto;font-size:11px">Schülerantwort</em>':''}
+        </div>`).join('')
+        :b.type==='multi'?b.data.options.map((o,oi)=>{const sel=(ans||[]).includes(oi);const correct=(b.data.correctIndexes||[]).includes(oi);return`<div class="corr-ans-row ${sel&&correct?'corr-ok':sel&&!correct?'corr-wrong':correct?'corr-ok':'corr-neutral'}">
+          ${correct?'✅':sel?'❌':'☐'} ${KT.esc(o)}</div>`;}).join('')
+        :`<div style="background:var(--paper2);border-radius:8px;padding:10px;font-size:13px;white-space:pre-wrap;min-height:60px">${KT.esc(ans)||'<em style="color:var(--ink3)">Keine Antwort</em>'}</div>`}
+      </div>`;
+    }).join('')}
+    <div style="text-align:right;margin-top:1rem"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Schließen</button></div>`);
+}
+
+function renderCorrect(mine,db){
+  const open=db.submissions.filter(s=>mine.find(t=>t.id===s.testId)&&!s.corrected);
+  const el=document.getElementById('correct-list');
+  if(!open.length){el.innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">Alles korrigiert!</div></div>';return;}
+  el.innerHTML=open.map(s=>{const t=mine.find(x=>x.id===s.testId);return`<div class="corr-item" onclick="openCorr('${s.id}')">
+    <div class="stu-avatar" style="width:40px;height:40px">${s.studentName.charAt(0).toUpperCase()}</div>
+    <div class="tc-info"><div class="tc-name">${KT.esc(s.studentName)}</div><div class="tc-meta">${t?KT.esc(t.title):'–'}</div></div>
+    <button class="btn btn-primary btn-sm">Korrigieren →</button>
+  </div>`;}).join('');
+}
+
+function openCorr(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  openModal(`<div class="modal-head">✏️ ${KT.esc(sub.studentName)} <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">${KT.esc(t.title)} · Auto (MC/Mehrfach): ${sc.scored}/${sc.total} Pt.</div>
+    ${qBlocks.map((b,qi)=>{
+      const ans=sub.answers?.[b.id];
+      const isCorrect=b.type==='mc'&&ans===b.data.correctIndex;
+      const multiOk=b.type==='multi'&&JSON.stringify([...(ans||[])].sort())===JSON.stringify([...(b.data.correctIndexes||[])].sort());
+      return`<div class="corr-q-row">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div class="corr-q-label">${b.type==='mc'?'MC':b.type==='multi'?'Mehrfach':'Frei'} · ${KT.esc(b.data.question)} (${b.data.points||1} Pt.)</div>
+          ${b.type==='mc'?`<span class="badge ${isCorrect?'badge-green':'badge-red'}">${isCorrect?'✓ Richtig':'✗ Falsch'}</span>`:''}
+          ${b.type==='multi'?`<span class="badge ${multiOk?'badge-green':'badge-red'}">${multiOk?'✓ Richtig':'✗ Falsch'}</span>`:''}
+        </div>
+        ${b.type==='mc'?b.data.options.map((o,oi)=>`<div class="corr-ans-row ${ans===oi?oi===b.data.correctIndex?'corr-ok':'corr-wrong':oi===b.data.correctIndex?'corr-ok':'corr-neutral'}">
+          ${oi===b.data.correctIndex?'✅':ans===oi?'❌':'○'} ${KT.esc(o)}</div>`).join('')
+        :b.type==='multi'?b.data.options.map((o,oi)=>{const sel=(ans||[]).includes(oi);const correct=(b.data.correctIndexes||[]).includes(oi);return`<div class="corr-ans-row ${sel&&correct?'corr-ok':sel&&!correct?'corr-wrong':correct?'corr-ok':'corr-neutral'}">${correct?'✅':sel?'❌':'☐'} ${KT.esc(o)}</div>`;}).join('')
+        :`<div style="background:var(--paper2);border-radius:8px;padding:10px;font-size:13px;white-space:pre-wrap;min-height:50px;margin-bottom:6px">${KT.esc(ans)||'<em style="color:var(--ink3)">Keine Antwort</em>'}</div>
+        <div style="display:grid;grid-template-columns:90px 1fr;gap:8px">
+          <div><div class="f-label">Punkte</div><input type="number" min="0" max="99" id="pts-${b.id}" placeholder="0" style="width:100%;padding:7px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;text-align:center"></div>
+          <div><div class="f-label">Kommentar</div><input type="text" id="cmt-${b.id}" placeholder="Anmerkung…" style="width:100%;padding:7px;border:1.5px solid var(--border);border-radius:8px;font-size:13px"></div>
+        </div>`}
+      </div>`;
+    }).join('')}
+    <div class="field" style="margin-top:1rem"><label>Gesamtfeedback</label><textarea id="overall-fb" rows="3" placeholder="Gesamtkommentar…" style="width:100%;padding:9px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px"></textarea></div>
+    <div class="field"><label>Note vergeben</label>
+      <select id="grade-sel" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;font-weight:700">
+        <option value="">– Keine Note –</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+        <option>1+</option><option>1-</option><option>2+</option><option>2-</option><option>3+</option><option>3-</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveCorr('${subId}',false)">💾 Speichern</button>
+      <button class="btn btn-green btn-lg" onclick="saveCorr('${subId}',true)">✉️ An Schüler senden</button>
+    </div>`);
+}
+
+function saveCorr(subId,send){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  const grade=document.getElementById('grade-sel')?.value||'';
+  const overall=document.getElementById('overall-fb')?.value||'';
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  let fbHtml=`<div style="background:var(--accent-l);border-radius:8px;padding:10px 13px;margin-bottom:10px"><strong>Automatischer Score:</strong> ${sc.scored}/${sc.total} Punkte</div>`;
+  if(grade)fbHtml+=`<div style="margin-bottom:10px;font-size:16px;font-weight:700">Note: ${KT.esc(grade)}</div>`;
+  if(overall)fbHtml+=`<div style="margin-bottom:10px;padding:10px;background:var(--paper2);border-radius:8px"><strong>Kommentar:</strong> ${KT.esc(overall)}</div>`;
+  qBlocks.forEach(b=>{
+    if(b.type==='free'){
+      const p=document.getElementById('pts-'+b.id)?.value;
+      const c=document.getElementById('cmt-'+b.id)?.value;
+      if(p||c)fbHtml+=`<div style="padding:8px;background:var(--paper2);border-radius:8px;margin-bottom:6px"><strong>${KT.esc(b.data.question)}:</strong> ${p?p+' Pt.':''} ${c?'— '+KT.esc(c):''}</div>`;
+    }
+  });
+  if(grade)sub.grade=grade;
+  sub.corrected=true; sub.returnedFeedback=fbHtml; sub.correctedAt=Date.now();
+  if(send)sub.sentBack=true;
+  KT.set(db); closeModal(); KT.toast(send?'✉️ An Schüler gesendet!':'💾 Gespeichert!'); render('subs');
+}
+
+function sendBack(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);if(!sub)return;
+  if(!sub.corrected){alert('Bitte zuerst korrigieren!');return;}
+  sub.sentBack=true; KT.set(db); KT.toast('✉️ An Schüler gesendet!'); render('subs');
+}
+
+function dlTest(id){const db=KT.get();const t=db.tests.find(x=>x.id===id);if(!t)return;KT.dl('test-'+t.title.replace(/\W/g,'_')+'.json',JSON.stringify(t,null,2),'application/json');}
+function dlSub(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  let txt=`KlassenTest – Abgabe\n${'─'.repeat(40)}\nSchüler: ${sub.studentName}\nTest: ${t.title}\nAbgegeben: ${new Date(sub.submittedAt).toLocaleString('de-DE')}\nAuto-Score: ${sc.scored}/${sc.total}\n${sub.grade?'Note: '+sub.grade:''}\n\n`;
+  (t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type)).forEach((b,i)=>{
+    const ans=sub.answers?.[b.id];
+    txt+=`Frage ${i+1}: ${b.data.question}\n`;
+    if(b.type==='mc') txt+=`Antwort: ${ans!=null?b.data.options[ans]:'–'} (${ans===b.data.correctIndex?'Richtig':'Falsch'})\n\n`;
+    else if(b.type==='multi') txt+=`Antwort: ${(ans||[]).map(i=>b.data.options[i]).join(', ')||'–'}\n\n`;
+    else txt+=`Antwort: ${ans||'–'}\n\n`;
+  });
+  KT.dl('abgabe-'+sub.studentName.replace(/\W/g,'_')+'.txt',txt);
+}
+
+init();
+</script>
+</body>
+</html>

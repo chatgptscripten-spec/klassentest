@@ -3,670 +3,602 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KlassenTest – Lehrkraft</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="kt.css">
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --font: 'DM Sans', system-ui, sans-serif;
-  --display: 'Fraunces', Georgia, serif;
-  --mono: 'DM Mono', monospace;
+  --font: 'Cabinet Grotesk', system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
 
-  /* Refined color palette */
-  --ink:  #111827;
-  --ink2: #374151;
-  --ink3: #6b7280;
-  --ink4: #9ca3af;
-  --paper: #ffffff;
-  --paper2: #f9fafb;
-  --paper3: #f3f4f6;
+  --bg: #0a0b0f;
+  --bg2: #111218;
+  --bg3: #1a1b23;
+  --bg4: #22232e;
+  --bg5: #2a2b38;
 
-  --accent: #4f46e5;
-  --accent-l: #eef2ff;
-  --accent-m: #c7d2fe;
-  --accent-d: #3730a3;
+  --border: rgba(255,255,255,.08);
+  --border2: rgba(255,255,255,.14);
+  --border3: rgba(255,255,255,.22);
 
-  --green: #059669;
-  --green-l: #ecfdf5;
-  --green-m: #a7f3d0;
-  --green-d: #065f46;
+  --ink: #f0f0f5;
+  --ink2: #b8b9cc;
+  --ink3: #7a7b8e;
+  --ink4: #4a4b5a;
 
-  --amber: #d97706;
-  --amber-l: #fffbeb;
-  --amber-m: #fde68a;
+  --accent: #6c63ff;
+  --accent2: #8b83ff;
+  --accent-l: rgba(108,99,255,.15);
+  --accent-m: rgba(108,99,255,.35);
 
-  --red: #dc2626;
-  --red-l: #fef2f2;
-  --red-m: #fecaca;
+  --green: #22c55e;
+  --green-l: rgba(34,197,94,.12);
+  --green-m: rgba(34,197,94,.3);
 
-  --border: #e5e7eb;
-  --border2: #d1d5db;
-  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow2: 0 4px 16px rgba(0,0,0,.08);
-  --shadow3: 0 8px 32px rgba(0,0,0,.1);
+  --amber: #f59e0b;
+  --amber-l: rgba(245,158,11,.12);
+  --amber-m: rgba(245,158,11,.3);
+
+  --red: #ef4444;
+  --red-l: rgba(239,68,68,.12);
+  --red-m: rgba(239,68,68,.3);
+
+  --cyan: #06b6d4;
+  --cyan-l: rgba(6,182,212,.12);
 
   --r: 10px;
-  --r2: 12px;
-  --r3: 16px;
-  --r4: 20px;
+  --r2: 14px;
+  --r3: 18px;
+  --r4: 24px;
 
-  /* Sidebar */
-  --sb-w: 220px;
+  --shadow: 0 2px 8px rgba(0,0,0,.4);
+  --shadow2: 0 8px 32px rgba(0,0,0,.5);
+  --shadow3: 0 20px 60px rgba(0,0,0,.6);
+
+  --sb-w: 230px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font); background: var(--paper2); color: var(--ink); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 
-/* ───── LAYOUT ───── */
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* ═══ LAYOUT ═══ */
 .app { display: flex; height: 100vh; overflow: hidden; }
 
-/* ───── SIDEBAR ───── */
+/* ═══ SIDEBAR ═══ */
 .sidebar {
   width: var(--sb-w);
-  background: #0f1117;
-  display: flex;
-  flex-direction: column;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
   flex-shrink: 0;
-  border-right: 1px solid rgba(255,255,255,.06);
   position: relative;
   overflow: hidden;
 }
 .sidebar::before {
   content: '';
-  position: absolute;
-  top: -80px;
-  left: -60px;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(79,70,229,.18) 0%, transparent 70%);
+  position: absolute; top: 0; left: 0; right: 0; height: 200px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(108,99,255,.2) 0%, transparent 70%);
   pointer-events: none;
 }
 
-.sidebar-logo {
-  padding: 22px 18px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  margin-bottom: 8px;
+.sb-logo {
+  padding: 20px 18px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border);
 }
-.logo-mark {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  border-radius: 9px;
+.sb-logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--display);
-  font-size: 16px; font-weight: 900;
-  color: #fff;
-  box-shadow: 0 2px 10px rgba(79,70,229,.4);
+  font-family: var(--serif); font-style: italic;
+  font-size: 18px; font-weight: 400; color: #fff;
+  box-shadow: 0 4px 16px rgba(108,99,255,.4);
   flex-shrink: 0;
 }
-.logo-name {
-  font-family: var(--display);
-  font-size: 15px; font-weight: 800;
-  color: #fff; letter-spacing: -.3px;
+.sb-logo-text { font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -.3px; }
+.sb-logo-sub { font-size: 10px; color: var(--ink3); margin-top: 1px; }
+
+.sb-section { padding: 10px 10px 4px; }
+.sb-section-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+  color: var(--ink4); text-transform: uppercase;
+  padding: 0 8px; margin-bottom: 4px;
 }
 
-.sidebar-role-label {
-  font-size: 9px; font-weight: 700; letter-spacing: 1.2px;
-  color: rgba(255,255,255,.3);
-  text-transform: uppercase;
-  padding: 4px 18px 8px;
+.nav { flex: 1; overflow-y: auto; padding: 8px 10px; }
+.nb {
+  width: 100%; padding: 9px 12px;
+  border-radius: var(--r); border: none;
+  background: transparent; color: var(--ink3);
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; gap: 9px;
+  transition: all .15s; text-align: left; white-space: nowrap;
+  position: relative;
 }
+.nb:hover { background: var(--bg3); color: var(--ink2); }
+.nb.active {
+  background: var(--accent-l);
+  color: var(--accent2);
+  border: 1px solid var(--accent-m);
+}
+.nb .ni { font-size: 15px; flex-shrink: 0; }
+.nb .badge-dot {
+  margin-left: auto;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff; font-size: 9px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.nb-sep { height: 1px; background: var(--border); margin: 6px 0; }
 
-.nav { flex: 1; padding: 4px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
-.nav-btn {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: rgba(255,255,255,.45);
-  font-family: var(--font);
-  font-size: 13px; font-weight: 500;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 9px;
-  transition: all .15s;
-  text-align: left;
-  white-space: nowrap;
-}
-.nav-btn:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.8); }
-.nav-btn.active {
-  background: rgba(99,102,241,.2);
-  color: #a5b4fc;
-  font-weight: 600;
-}
-.nav-btn .nav-icon { font-size: 14px; }
-.nav-sep { height: 1px; background: rgba(255,255,255,.06); margin: 6px 0; }
-
-.sidebar-footer {
+.sb-footer {
   padding: 14px 16px;
-  border-top: 1px solid rgba(255,255,255,.06);
+  border-top: 1px solid var(--border);
 }
-.sidebar-user-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7); truncate: ellipsis; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-user-role { font-size: 10px; color: rgba(255,255,255,.3); margin-bottom: 10px; margin-top: 1px; }
+.sb-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #9b83ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+.sb-user-name { font-size: 13px; font-weight: 700; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-user-role { font-size: 10px; color: var(--ink4); }
 .btn-logout {
-  width: 100%;
-  padding: 8px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,255,255,.1);
-  background: transparent;
-  color: rgba(255,255,255,.35);
-  font-family: var(--font);
-  font-size: 11px; font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
+  width: 100%; padding: 8px; border-radius: 8px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--ink3); font-family: var(--font); font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: all .15s;
 }
-.btn-logout:hover { background: rgba(220,38,38,.15); border-color: rgba(220,38,38,.3); color: #fca5a5; }
+.btn-logout:hover { background: var(--red-l); border-color: var(--red-m); color: var(--red); }
 
-/* ───── MAIN ───── */
+/* ═══ MAIN ═══ */
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
 .section { display: none; flex: 1; flex-direction: column; overflow: hidden; }
 .section.active { display: flex; }
 
-/* ───── TOPBAR ───── */
+/* ═══ TOPBAR ═══ */
 .topbar {
-  padding: 0 24px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 0 24px; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  background: var(--paper);
-  flex-shrink: 0;
-  gap: 12px;
+  background: var(--bg2); flex-shrink: 0; gap: 12px;
 }
 .topbar-title {
-  font-family: var(--display);
-  font-size: 17px; font-weight: 800;
-  letter-spacing: -.4px;
-  color: var(--ink);
-  display: flex; align-items: center; gap: 9px;
+  font-family: var(--serif); font-style: italic;
+  font-size: 20px; color: var(--ink);
+  display: flex; align-items: center; gap: 10px;
 }
-.topbar-actions { display: flex; gap: 7px; align-items: center; }
-.live-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34,197,94,.2);
-  animation: pulse 2s infinite;
-  flex-shrink: 0;
-}
-@keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.2)} 50%{box-shadow:0 0 0 6px rgba(34,197,94,.08)} }
+.topbar-actions { display: flex; gap: 6px; align-items: center; }
 
-/* ───── PAGE ───── */
-.page { flex: 1; overflow-y: auto; padding: 22px 24px; }
-
-/* ───── BUTTONS ───── */
+/* ═══ BUTTONS ═══ */
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 9px 16px;
-  border-radius: 9px;
-  border: 1.5px solid transparent;
-  font-family: var(--font);
-  font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-  white-space: nowrap;
-  text-decoration: none;
+  padding: 8px 16px; border-radius: var(--r);
+  border: 1px solid transparent;
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
 }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-.btn-primary:hover { background: var(--accent-d); border-color: var(--accent-d); box-shadow: 0 2px 10px rgba(79,70,229,.3); }
+.btn-primary {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(108,99,255,.3);
+}
+.btn-primary:hover { background: var(--accent2); box-shadow: 0 6px 20px rgba(108,99,255,.45); transform: translateY(-1px); }
+.btn-ghost { background: var(--bg3); color: var(--ink2); border-color: var(--border2); }
+.btn-ghost:hover { background: var(--bg4); border-color: var(--border3); color: var(--ink); }
 .btn-green { background: var(--green); color: #fff; border-color: var(--green); }
-.btn-green:hover { background: var(--green-d); border-color: var(--green-d); }
+.btn-green:hover { filter: brightness(1.1); }
 .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
-.btn-red:hover { background: #b91c1c; }
-.btn-ghost { background: var(--paper); color: var(--ink2); border-color: var(--border2); }
-.btn-ghost:hover { border-color: var(--accent-m); color: var(--accent); background: var(--accent-l); }
-.btn-dark { background: var(--ink); color: #fff; border-color: var(--ink); }
-.btn-dark:hover { background: var(--ink2); }
 .btn-amber { background: var(--amber); color: #fff; border-color: var(--amber); }
 .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-.btn-lg { padding: 11px 20px; font-size: 14px; }
+.btn-lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r2); }
 .btn-full { width: 100%; justify-content: center; }
 
-/* ───── PANELS / CARDS ───── */
+/* ═══ PAGE ═══ */
+.page { flex: 1; overflow-y: auto; padding: 22px 24px; }
+
+/* ═══ PANELS ═══ */
 .panel {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: var(--r3);
-  padding: 18px 20px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow);
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r3); padding: 18px 20px; margin-bottom: 14px;
 }
 .panel-title {
-  font-size: 12px; font-weight: 700;
-  color: var(--ink3);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 14px;
-  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700; color: var(--ink3);
+  text-transform: uppercase; letter-spacing: .8px;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 7px;
 }
 
+/* ═══ TEST CARD ═══ */
 .test-card {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-  box-shadow: var(--shadow);
-  transition: all .15s;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px; transition: all .15s; cursor: default;
 }
-.test-card:hover { border-color: var(--accent-m); box-shadow: var(--shadow2); }
-.tc-icon { font-size: 20px; flex-shrink: 0; }
+.test-card:hover { border-color: var(--border2); background: var(--bg4); }
+.tc-icon { font-size: 22px; flex-shrink: 0; }
 .tc-info { flex: 1; min-width: 0; }
-.tc-name { font-size: 14px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tc-name { font-size: 14px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tc-meta { font-size: 11px; color: var(--ink3); margin-top: 2px; }
 .tc-btns { display: flex; gap: 5px; flex-wrap: wrap; flex-shrink: 0; }
 
-/* ───── BADGES ───── */
+/* ═══ BADGES ═══ */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 9px;
-  border-radius: 20px;
+  padding: 3px 9px; border-radius: 20px;
   font-size: 11px; font-weight: 700;
 }
 .badge-green { background: var(--green-l); color: var(--green); border: 1px solid var(--green-m); }
 .badge-amber { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-m); }
 .badge-red { background: var(--red-l); color: var(--red); border: 1px solid var(--red-m); }
-.badge-blue { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
-.badge-gray { background: var(--paper3); color: var(--ink3); border: 1px solid var(--border); }
-.badge-purple { background: #f5f3ff; color: var(--accent); border: 1px solid var(--accent-m); }
+.badge-accent { background: var(--accent-l); color: var(--accent2); border: 1px solid var(--accent-m); }
+.badge-gray { background: var(--bg4); color: var(--ink3); border: 1px solid var(--border2); }
+.badge-cyan { background: var(--cyan-l); color: var(--cyan); border: 1px solid rgba(6,182,212,.3); }
 
-/* ───── FIELD ───── */
+/* ═══ FIELDS ═══ */
 .field { margin-bottom: 14px; }
 .field label, .f-label {
-  display: block;
-  font-size: 11px; font-weight: 700;
-  color: var(--ink3);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 5px;
+  display: block; font-size: 10px; font-weight: 700;
+  color: var(--ink3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px;
 }
 .field input, .field select, .field textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  font-family: var(--font);
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--paper);
-  transition: border .15s, box-shadow .15s;
+  width: 100%; padding: 10px 13px;
+  border: 1px solid var(--border2); border-radius: var(--r);
+  font-family: var(--font); font-size: 13px; color: var(--ink);
+  background: var(--bg3); transition: border .15s, box-shadow .15s;
 }
 .field input:focus, .field select:focus, .field textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,99,255,.2);
 }
+.field select option { background: var(--bg3); }
 
-/* ───── ALERT ───── */
+/* ═══ ALERTS ═══ */
 .alert { padding: 11px 14px; border-radius: var(--r); font-size: 13px; line-height: 1.6; }
-.alert-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.alert-blue { background: rgba(59,130,246,.12); color: #93c5fd; border: 1px solid rgba(59,130,246,.25); }
+.alert-green { background: var(--green-l); color: var(--green); border: 1px solid var(--green-m); }
+.alert-amber { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-m); }
 .alert-red { background: var(--red-l); color: var(--red); border: 1px solid var(--red-m); }
-.alert-green { background: var(--green-l); color: var(--green-d); border: 1px solid var(--green-m); }
-.alert-amber { background: var(--amber-l); color: #92400e; border: 1px solid var(--amber-m); }
 
-/* ───── GRID ───── */
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-@media(max-width:900px) { .g2 { grid-template-columns: 1fr; } }
-
-/* ───── EMPTY STATE ───── */
-.empty { text-align: center; padding: 60px 20px; color: var(--ink3); }
-.empty-icon { font-size: 48px; margin-bottom: 14px; opacity: .5; }
-.empty-text { font-size: 14px; line-height: 1.7; }
-
-/* ───── MODAL ───── */
+/* ═══ MODAL ═══ */
 .modal-bg {
-  display: none;
-  position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,.4);
-  backdrop-filter: blur(4px);
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 1rem;
 }
 .modal-bg.open { display: flex; }
 .modal {
-  background: var(--paper);
-  border-radius: var(--r3);
-  max-width: 600px;
-  width: 100%;
-  max-height: 88vh;
-  overflow-y: auto;
-  padding: 24px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--r4); max-width: 620px; width: 100%;
+  max-height: 90vh; overflow-y: auto; padding: 26px;
   box-shadow: var(--shadow3);
   animation: scaleIn .2s cubic-bezier(.16,1,.3,1);
 }
 .modal-head {
-  font-family: var(--display);
-  font-size: 18px; font-weight: 800;
-  color: var(--ink);
+  font-family: var(--serif); font-style: italic;
+  font-size: 20px; color: var(--ink);
   margin-bottom: 18px;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
 .modal-close {
-  background: var(--paper3);
-  border: none;
-  border-radius: 6px;
-  width: 28px; height: 28px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 7px; width: 28px; height: 28px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  cursor: pointer;
-  color: var(--ink3);
-  transition: all .15s;
-  flex-shrink: 0;
+  font-size: 12px; cursor: pointer; color: var(--ink3); transition: all .15s; flex-shrink: 0;
 }
-.modal-close:hover { background: var(--red-l); color: var(--red); }
+.modal-close:hover { background: var(--red-l); border-color: var(--red-m); color: var(--red); }
 
-/* ───── CORR ───── */
-.corr-q-row {
-  background: var(--paper2);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  padding: 14px 16px;
-  margin-bottom: 10px;
-}
-.corr-q-label {
-  font-size: 11px; font-weight: 700;
-  color: var(--ink3);
-  text-transform: uppercase;
-  letter-spacing: .4px;
-  margin-bottom: 8px;
-}
-.corr-ans-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-bottom: 4px;
-  border: 1px solid transparent;
-}
-.corr-ok { background: var(--green-l); color: var(--green-d); border-color: var(--green-m); }
-.corr-wrong { background: var(--red-l); color: var(--red); border-color: var(--red-m); }
-.corr-neutral { background: var(--paper3); color: var(--ink2); border-color: var(--border); }
+/* ═══ EMPTY ═══ */
+.empty { text-align: center; padding: 60px 20px; color: var(--ink3); }
+.empty-icon { font-size: 52px; margin-bottom: 14px; opacity: .4; }
+.empty-text { font-size: 14px; line-height: 1.8; }
 
-/* ───── CODE PILL ───── */
-.code-pill {
-  display: inline-block;
-  background: var(--ink);
-  color: #fff;
-  font-family: var(--mono);
-  font-size: 26px; font-weight: 700;
-  letter-spacing: 6px;
-  padding: 12px 24px;
-  border-radius: var(--r2);
-  box-shadow: var(--shadow2);
-}
-
-/* ───── STUDENT ROW ───── */
+/* ═══ STU ROW ═══ */
 .stu-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 9px 0; border-bottom: 1px solid var(--border);
 }
 .stu-row:last-child { border-bottom: none; }
-.stu-avatar {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: var(--accent-l);
-  color: var(--accent);
+.stu-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent-l); color: var(--accent2);
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 13px;
-  flex-shrink: 0;
+  font-weight: 800; font-size: 13px; flex-shrink: 0;
+  border: 1px solid var(--accent-m);
 }
-.stu-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--ink); }
+.stu-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--ink2); }
 
-/* ───── LIVE STATS ───── */
-.live-stat { display: flex; flex-direction: column; gap: 3px; }
-.live-stat-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; color: rgba(255,255,255,.3); text-transform: uppercase; }
-.live-stat-val { font-family: var(--display); font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
-
-/* ───── PROGRESS BAR ───── */
-.progress-bar { height: 6px; background: rgba(255,255,255,.1); border-radius: 99px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 99px; transition: width .4s; }
-
-/* ───── QR ───── */
-.qr-outer {
-  display: inline-flex;
-  padding: 12px;
-  background: #fff;
-  border-radius: var(--r2);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+/* ═══ LIVE ═══ */
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 0 3px var(--green-m); animation: pulse 2s infinite; flex-shrink: 0;
 }
-
-/* ───── TOOLBAR (test builder) ───── */
-.toolbar {
-  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
-  padding: 10px 14px;
-  background: var(--paper2);
+.live-bar {
+  background: var(--bg);
+  padding: 16px 24px;
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
   border-bottom: 1px solid var(--border);
-  border-radius: var(--r2) var(--r2) 0 0;
 }
-.tb-label { font-size: 10px; font-weight: 800; color: var(--ink3); text-transform: uppercase; letter-spacing: .7px; flex-shrink: 0; }
+.live-stat { display: flex; flex-direction: column; gap: 2px; }
+.live-stat-label { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; color: var(--ink4); text-transform: uppercase; }
+.live-stat-val { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1; }
+
+.timer-live {
+  font-family: var(--mono); font-size: 38px; font-weight: 700;
+  letter-spacing: 3px; color: var(--ink); line-height: 1;
+}
+.timer-live.warn { color: var(--amber); }
+.timer-live.danger { color: var(--red); animation: blink .8s infinite; }
+
+.progress-bar { height: 5px; background: var(--bg4); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width .4s; }
+
+.code-pill {
+  display: inline-block; background: var(--bg);
+  color: var(--ink); font-family: var(--mono);
+  font-size: 28px; font-weight: 700; letter-spacing: 8px;
+  padding: 14px 28px; border-radius: var(--r2);
+  border: 1px solid var(--border2); box-shadow: var(--shadow);
+}
+
+/* ═══ CANVAS / BUILDER ═══ */
+.canvas-wrap { border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); }
+.toolbar {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding: 10px 12px; background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.tb-label { font-size: 9px; font-weight: 800; color: var(--ink4); text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0; margin-right: 4px; }
 .tb-btn {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1.5px solid var(--border);
-  background: var(--paper);
-  color: var(--ink2);
-  font-family: var(--font);
-  font-size: 12px; font-weight: 600;
-  cursor: pointer;
-  display: inline-flex; align-items: center; gap: 5px;
-  transition: all .14s;
+  padding: 6px 12px; border-radius: 8px;
+  border: 1px solid var(--border2); background: var(--bg4); color: var(--ink2);
+  font-family: var(--font); font-size: 12px; font-weight: 700;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all .13s;
 }
-.tb-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-l); }
-.tb-sep { width: 1px; height: 22px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
+.tb-btn:hover { border-color: var(--accent-m); color: var(--accent2); background: var(--accent-l); }
+.tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+.canvas-area {
+  padding: 16px; min-height: 480px; background: #1c1d26;
+  background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
 
-/* ───── CANVAS ───── */
-.canvas-wrap { border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); }
-.canvas-area { padding: 1rem; min-height: 480px; position: relative; background: #fff; }
-.canvas-bg-lined { background-color:#fff; background-image:repeating-linear-gradient(transparent,transparent 27px,#c8d6e8 27px,#c8d6e8 28px); background-size:100% 28px; }
-.canvas-bg-grid { background-color:#fff; background-image:linear-gradient(#dde6f4 1px,transparent 1px),linear-gradient(90deg,#dde6f4 1px,transparent 1px); background-size:24px 24px; }
-.canvas-bg-dotted { background-color:#fff; background-image:radial-gradient(circle,#c0cfe4 1px,transparent 1px); background-size:20px 20px; }
-.canvas-bg-blank { background:#fff; }
-.canvas-area-paper { box-shadow: inset 0 0 0 1px rgba(0,0,0,.04), 2px 2px 8px rgba(0,0,0,.06); }
-.canvas-area-paper::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(to right,rgba(0,0,0,.02) 0%,transparent 4%,transparent 96%,rgba(0,0,0,.02) 100%); }
+/* ═══ QUESTION BLOCKS ═══ */
+.page-block { margin-bottom: 10px; position: relative; }
+.block-ctrl {
+  display: flex; gap: 3px; position: absolute; right: 8px; top: 8px; z-index: 2;
+}
+.bc-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--bg3);
+  color: var(--ink3); cursor: pointer; font-size: 11px;
+  display: flex; align-items: center; justify-content: center; transition: all .13s;
+}
+.bc-btn:hover { background: var(--bg4); border-color: var(--border2); }
+.bc-del:hover { background: var(--red-l); border-color: var(--red-m); color: var(--red); }
 
-/* ───── QUESTION BLOCKS ───── */
-.qblock { border-radius: var(--r2); padding: 1rem; border: 1.5px solid var(--accent-m); background: rgba(79,70,229,.02); }
+.qblock {
+  border-radius: var(--r2); padding: 14px 16px;
+  border: 1.5px solid var(--accent-m); background: rgba(108,99,255,.05);
+  resize: vertical; overflow: auto; min-height: 120px;
+}
+.qblock-amber { border-color: var(--amber-m) !important; background: rgba(245,158,11,.05) !important; }
+.qblock-green { border-color: var(--green-m) !important; background: rgba(34,197,94,.05) !important; }
+
 .qb-head { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
-.qb-num { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--ink3); background: var(--paper3); padding: 2px 7px; border-radius: 5px; }
-.qb-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
-.tag-mc { background: var(--accent-l); color: var(--accent); }
-.tag-multi { background: var(--amber-l); color: var(--amber); }
-.tag-free { background: var(--green-l); color: var(--green-d); }
-.pts-badge { margin-left: auto; display: flex; align-items: center; font-size: 11px; font-weight: 700; color: var(--ink3); gap: 3px; }
+.qb-num { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--ink3); background: var(--bg4); padding: 2px 8px; border-radius: 5px; }
+.qb-tag { font-size: 10px; padding: 2px 9px; border-radius: 20px; font-weight: 700; }
+.tag-mc { background: var(--accent-l); color: var(--accent2); border: 1px solid var(--accent-m); }
+.tag-multi { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-m); }
+.tag-free { background: var(--green-l); color: var(--green); border: 1px solid var(--green-m); }
 
-.opt-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.pts-badge { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.pts-inp {
+  width: 42px; background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 3px 6px; text-align: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--amber);
+}
+.pts-inp:focus { outline: none; border-color: var(--amber); }
+
+.q-inp {
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border2); border-radius: var(--r); background: var(--bg3);
+  font-family: var(--font); font-size: 14px; color: var(--ink); margin-bottom: 10px;
+  transition: border .15s;
+}
+.q-inp:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,99,255,.15); }
+
+.opt-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .opt-circle {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--border2);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all .14s;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border3); cursor: pointer; flex-shrink: 0; transition: all .13s;
 }
 .opt-circle.correct { background: var(--green); border-color: var(--green); box-shadow: 0 0 0 3px var(--green-m); }
-.opt-circle.multi-correct { background: var(--amber); border-color: var(--amber); border-radius: 5px; }
+.opt-circle.multi-correct { background: var(--amber); border-color: var(--amber); border-radius: 6px; }
 .opt-inp {
-  flex: 1;
-  padding: 7px 10px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 13px;
-  color: var(--ink);
-  transition: border .15s;
+  flex: 1; padding: 8px 11px;
+  border: 1px solid var(--border2); border-radius: 8px; background: var(--bg3);
+  font-family: var(--font); font-size: 13px; color: var(--ink); transition: border .14s;
 }
 .opt-inp:focus { outline: none; border-color: var(--accent); }
 .opt-del {
-  width: 26px; height: 26px;
-  border-radius: 6px;
-  border: 1px solid var(--red-m);
-  background: var(--red-l);
-  color: var(--red);
-  cursor: pointer;
-  font-size: 12px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all .14s;
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 1px solid var(--red-m); background: var(--red-l); color: var(--red);
+  cursor: pointer; font-size: 12px;
+  display: flex; align-items: center; justify-content: center; transition: all .13s; flex-shrink: 0;
 }
 .opt-del:hover { background: var(--red); color: #fff; }
 
-/* ───── PAGE BLOCKS ───── */
-.page-block { margin-bottom: 10px; position: relative; }
-.block-ctrl {
-  display: flex; gap: 3px;
-  position: absolute; right: 8px; top: 8px; z-index: 2;
-}
-.bc-btn {
-  width: 24px; height: 24px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--paper);
-  color: var(--ink3);
-  cursor: pointer; font-size: 11px;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .14s;
-}
-.bc-btn:hover { background: var(--paper3); border-color: var(--border2); }
-.bc-del:hover { background: var(--red-l); border-color: var(--red-m); color: var(--red); }
 .text-block {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  font-family: var(--font);
-  font-size: 14px; line-height: 1.6;
-  resize: vertical;
-  background: transparent;
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--border2); border-radius: var(--r); background: var(--bg3);
+  font-family: var(--font); font-size: 14px; color: var(--ink); line-height: 1.6; resize: vertical;
 }
 .text-block:focus { outline: none; border-color: var(--accent); }
-.img-block { max-width: 100%; border-radius: var(--r); cursor: pointer; display: block; }
-.img-placeholder {
-  min-height: 100px;
-  border: 2px dashed var(--border2);
-  border-radius: var(--r);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--ink3);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all .14s;
-}
-.img-placeholder:hover { border-color: var(--accent-m); background: var(--accent-l); color: var(--accent); }
 
-/* ───── TABLE BLOCK ───── */
+.img-placeholder {
+  min-height: 100px; border: 2px dashed var(--border2);
+  border-radius: var(--r); display: flex; align-items: center; justify-content: center;
+  color: var(--ink3); font-size: 13px; cursor: pointer; transition: all .13s;
+}
+.img-placeholder:hover { border-color: var(--accent-m); background: var(--accent-l); color: var(--accent2); }
+.img-block { max-width: 100%; border-radius: var(--r); cursor: pointer; display: block; }
+
 .pts-table-block { overflow-x: auto; }
 .pts-table-block table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.pts-table-block th, .pts-table-block td { padding: 8px 10px; border: 1px solid var(--border); }
-.pts-table-block th { background: var(--paper2); }
-.pts-table-block td input { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 13px; color: var(--ink); }
+.pts-table-block th, .pts-table-block td { padding: 8px 10px; border: 1px solid var(--border2); }
+.pts-table-block th { background: var(--bg4); }
+.pts-table-block td input {
+  width: 100%; border: none; background: transparent;
+  font-family: var(--font); font-size: 13px; color: var(--ink);
+}
 .pts-table-block td input:focus { outline: none; }
 
-/* ───── LIVE TIMER ───── */
-.timer-live { font-family: var(--mono); font-size: 44px; font-weight: 700; letter-spacing: 4px; color: #fff; line-height: 1; }
-.timer-live.warn { color: #fbbf24; }
-.timer-live.danger { color: #f87171; animation: blink .8s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+/* ═══ CORR ═══ */
+.corr-q-row {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 14px 16px; margin-bottom: 10px;
+}
+.corr-q-label {
+  font-size: 10px; font-weight: 700; color: var(--ink3);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px;
+}
+.corr-ans-row {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  border-radius: 8px; font-size: 13px; margin-bottom: 4px; border: 1px solid transparent;
+}
+.corr-ok { background: var(--green-l); color: var(--green); border-color: var(--green-m); }
+.corr-wrong { background: var(--red-l); color: var(--red); border-color: var(--red-m); }
+.corr-neutral { background: var(--bg4); color: var(--ink2); border-color: var(--border); }
 
-/* ───── CORR ITEM ───── */
 .corr-item {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  padding: 14px 18px;
-  margin-bottom: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 14px 18px; margin-bottom: 8px;
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  cursor: pointer;
-  transition: all .15s;
-  box-shadow: var(--shadow);
+  cursor: pointer; transition: all .15s;
 }
-.corr-item:hover { border-color: var(--accent); box-shadow: var(--shadow2); }
+.corr-item:hover { border-color: var(--accent-m); background: var(--bg4); }
 
-/* ───── TUTORIAL ───── */
-.tut-skip {
-  position: fixed; top: 20px; right: 20px; z-index: 600;
-  background: var(--paper);
-  border: 1.5px solid var(--border);
-  border-radius: 9px;
-  padding: 7px 14px;
-  font-size: 12px; font-weight: 700;
-  cursor: pointer;
-  box-shadow: var(--shadow2);
+/* ═══ SIGNATURE PAD ═══ */
+.sig-wrap {
+  border: 1.5px solid var(--border2); border-radius: var(--r2); overflow: hidden;
+  background: #fff; position: relative; touch-action: none;
 }
-.tut-skip:hover { background: var(--red-l); border-color: var(--red-m); color: var(--red); }
-.tutorial-spotlight {
-  position: fixed;
-  border-radius: 10px;
-  box-shadow: 0 0 0 9999px rgba(0,0,0,.55);
-  pointer-events: none;
-  z-index: 500;
-  transition: all .3s cubic-bezier(.16,1,.3,1);
+.sig-canvas { display: block; width: 100%; cursor: crosshair; touch-action: none; }
+.sig-toolbar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  background: var(--bg3); border-top: 1px solid var(--border);
 }
-.tutorial-bubble {
-  position: fixed;
-  z-index: 510;
-  background: var(--paper);
-  border-radius: var(--r3);
-  padding: 18px 20px;
-  max-width: 300px;
-  box-shadow: var(--shadow3);
-  border: 1px solid var(--border);
+.sig-color-btn {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer;
+  transition: border-color .13s;
+}
+.sig-color-btn.active { border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(108,99,255,.3); }
+.sig-size-btn {
+  padding: 4px 9px; border-radius: 6px; border: 1px solid var(--border2);
+  background: var(--bg4); color: var(--ink3); font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); transition: all .13s;
+}
+.sig-size-btn.active { background: var(--accent-l); border-color: var(--accent-m); color: var(--accent2); }
+
+/* ═══ TUTORIAL ═══ */
+.tut-overlay {
+  position: fixed; inset: 0; z-index: 500; pointer-events: none;
+}
+.tut-overlay.active { pointer-events: all; }
+.tut-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(2px);
+  pointer-events: all;
+}
+.tut-spotlight {
+  position: fixed; border-radius: var(--r2);
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.65), 0 0 0 2px var(--accent2), 0 0 20px rgba(108,99,255,.4);
+  pointer-events: none; z-index: 502; transition: all .35s cubic-bezier(.16,1,.3,1);
+}
+.tut-bubble {
+  position: fixed; z-index: 503;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--r3); padding: 20px 22px; max-width: 320px;
+  box-shadow: var(--shadow3); pointer-events: all;
   animation: scaleIn .2s cubic-bezier(.16,1,.3,1);
 }
-.tutorial-step { font-size: 10px; font-weight: 700; color: var(--ink3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
-.tutorial-title { font-family: var(--display); font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
-.tutorial-desc { font-size: 13px; color: var(--ink2); line-height: 1.6; margin-bottom: 14px; }
-.tutorial-nav { display: flex; align-items: center; gap: 8px; }
-.tutorial-dots { display: flex; gap: 4px; flex: 1; }
-.tutorial-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: all .2s; }
-.tutorial-dot.active { background: var(--accent); width: 16px; border-radius: 3px; }
-.tut-arrow { position: fixed; z-index: 510; font-size: 22px; animation: bounce .8s infinite; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.tut-step-label { font-size: 9px; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+.tut-title { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink); margin-bottom: 8px; }
+.tut-desc { font-size: 13px; color: var(--ink2); line-height: 1.7; margin-bottom: 16px; }
+.tut-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+.tut-nav { display: flex; align-items: center; gap: 8px; }
+.tut-dots { display: flex; gap: 4px; flex: 1; }
+.tut-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bg5); transition: all .2s; }
+.tut-dot.active { background: var(--accent2); width: 18px; border-radius: 3px; }
+.tut-skip {
+  position: fixed; top: 16px; right: 16px; z-index: 504;
+  background: var(--bg3); border: 1px solid var(--border2); border-radius: 9px;
+  padding: 7px 14px; font-size: 11px; font-weight: 700; cursor: pointer;
+  color: var(--ink3); font-family: var(--font); transition: all .13s;
+  pointer-events: all;
+}
+.tut-skip:hover { background: var(--red-l); border-color: var(--red-m); color: var(--red); }
 
-@keyframes scaleIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+/* ═══ G2 ═══ */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media(max-width:900px){.g2{grid-template-columns:1fr;}}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes scaleIn { from{opacity:0;transform:scale(.94) translateY(6px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 3px var(--green-m)} 50%{box-shadow:0 0 0 6px rgba(34,197,94,.1)} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 </style>
 </head>
 <body>
 <div class="app">
+<!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">K</div>
-    <div class="logo-name">KlassenTest</div>
+  <div class="sb-logo">
+    <div class="sb-logo-mark">K</div>
+    <div><div class="sb-logo-text">KlassenTest</div><div class="sb-logo-sub">Lehrkraft-Portal</div></div>
   </div>
-  <div class="sidebar-role-label">Lehrkraft</div>
   <nav class="nav">
-    <button class="nav-btn active" onclick="nav('tests')" id="nb-tests"><span class="nav-icon">📝</span> Meine Tests</button>
-    <button class="nav-btn" onclick="nav('create')" id="nb-create"><span class="nav-icon">➕</span> Test erstellen</button>
-    <div class="nav-sep"></div>
-    <button class="nav-btn" onclick="nav('live')" id="nb-live"><span class="nav-icon">🟢</span> Live-Modus</button>
-    <button class="nav-btn" onclick="nav('subs')" id="nb-subs"><span class="nav-icon">📨</span> Abgaben</button>
-    <button class="nav-btn" onclick="nav('correct')" id="nb-correct"><span class="nav-icon">✏️</span> Korrigieren</button>
-    <div class="nav-sep"></div>
-    <button class="nav-btn" onclick="startTutorial()" id="nb-tut"><span class="nav-icon">🎓</span> Tutorial</button>
+    <div class="sb-section-label" style="padding:8px 8px 4px;font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--ink4);text-transform:uppercase">Hauptmenü</div>
+    <button class="nb active" onclick="nav('tests')" id="nb-tests"><span class="ni">📋</span> Meine Tests</button>
+    <button class="nb" onclick="nav('create')" id="nb-create"><span class="ni">✦</span> Test erstellen</button>
+    <div class="nb-sep"></div>
+    <div class="sb-section-label" style="padding:4px 8px;font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--ink4);text-transform:uppercase">Verwaltung</div>
+    <button class="nb" onclick="nav('live')" id="nb-live"><span class="ni">🟢</span> Live-Modus</button>
+    <button class="nb" onclick="nav('subs')" id="nb-subs" id="nb-subs"><span class="ni">📨</span> Abgaben</button>
+    <button class="nb" onclick="nav('correct')" id="nb-correct"><span class="ni">✏️</span> Korrigieren</button>
   </nav>
-  <div class="sidebar-footer">
-    <div class="sidebar-user-name" id="sb-name">–</div>
-    <div class="sidebar-user-role">Lehrkraft</div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-av">?</div>
+      <div><div class="sb-user-name" id="sb-name">–</div><div class="sb-user-role">Lehrkraft</div></div>
+    </div>
     <button class="btn-logout" onclick="logout()">← Abmelden</button>
   </div>
 </aside>
 
+<!-- MAIN -->
 <div class="main">
   <!-- TESTS -->
   <div class="section active" id="s-tests">
     <div class="topbar">
-      <div class="topbar-title">Meine Tests</div>
+      <div class="topbar-title">📋 Meine Tests</div>
       <div class="topbar-actions">
-        <button class="btn btn-primary" id="tut-new-btn" onclick="nav('create')">➕ Neuer Test</button>
+        <button class="btn btn-primary" onclick="nav('create')">✦ Neuer Test</button>
       </div>
     </div>
     <div class="page"><div id="tests-list"></div></div>
@@ -675,68 +607,60 @@ body { font-family: var(--font); background: var(--paper2); color: var(--ink); m
   <!-- CREATE -->
   <div class="section" id="s-create">
     <div class="topbar">
-      <div class="topbar-title" id="create-heading">Test erstellen</div>
+      <div class="topbar-title" id="create-heading">✦ Test erstellen</div>
       <div class="topbar-actions">
-        <button class="btn btn-ghost btn-sm" id="tut-draft-btn" onclick="saveDraft()">💾 Entwurf</button>
-        <button class="btn btn-dark btn-sm" id="tut-start-btn" onclick="goToStartSetup()">▶ Starten</button>
+        <button class="btn btn-ghost btn-sm" onclick="saveDraft()">💾 Entwurf</button>
+        <button class="btn btn-primary btn-sm" onclick="goToStartSetup()">▶ Starten</button>
       </div>
     </div>
     <div class="page">
       <div class="g2">
         <div>
           <div class="panel">
-            <div class="panel-title">📋 Grundeinstellungen</div>
-            <div class="field"><label>Titel des Tests</label><input type="text" id="c-title" placeholder="z. B. Mathematik – Gleichungen 9b"></div>
+            <div class="panel-title">⚙️ Grundeinstellungen</div>
+            <div class="field"><label>Titel</label><input type="text" id="c-title" placeholder="z. B. Mathe – Gleichungen 9b"></div>
             <div class="g2" style="gap:.75rem">
               <div class="field"><label>Fach</label><input type="text" id="c-subj" placeholder="Mathematik"></div>
               <div class="field"><label>Klasse</label><input type="text" id="c-class" placeholder="9b"></div>
             </div>
             <div class="field">
-              <label>Hintergrundvorlage</label>
+              <label>Hintergrund</label>
               <select id="c-bg" onchange="updateCanvasBg()">
-                <option value="lined">📄 Liniert (klassisch)</option>
+                <option value="dot">· Gepunktet (Standard)</option>
+                <option value="lined">📄 Liniert</option>
                 <option value="grid">⬛ Kariert</option>
-                <option value="dotted">· Gepunktet</option>
                 <option value="blank">◻ Blank</option>
-                <option value="custom">📷 Eigene Vorlage</option>
               </select>
-            </div>
-            <div id="custom-upload-area" style="display:none">
-              <div class="field">
-                <label>Vorlage hochladen (Bild / PDF)</label>
-                <input type="file" id="c-custom-file" accept="image/*,.pdf" style="padding:6px">
-                <div id="custom-preview" style="margin-top:8px"></div>
-              </div>
             </div>
           </div>
 
-          <div class="canvas-wrap">
+          <div class="canvas-wrap" id="tut-canvas-wrap">
             <div class="toolbar" id="tut-toolbar">
               <span class="tb-label">Einfügen:</span>
-              <button class="tb-btn" id="tut-text-btn" onclick="addBlock('text')">📝 Text</button>
-              <button class="tb-btn" onclick="addBlock('image')">🖼 Foto</button>
+              <button class="tb-btn" onclick="addBlock('text')">📝 Text</button>
+              <button class="tb-btn" onclick="addBlock('image')">🖼 Bild</button>
               <div class="tb-sep"></div>
               <button class="tb-btn" id="tut-mc-btn" onclick="addBlock('mc')">☑ Einfachauswahl</button>
               <button class="tb-btn" onclick="addBlock('multi')">☑☑ Mehrfachauswahl</button>
               <button class="tb-btn" onclick="addBlock('free')">✍ Freie Antwort</button>
               <div class="tb-sep"></div>
-              <button class="tb-btn" onclick="addBlock('table')">📊 Punktetabelle</button>
+              <button class="tb-btn" onclick="addBlock('table')">📊 Tabelle</button>
             </div>
-            <div class="canvas-area canvas-bg-lined canvas-area-paper" id="canvas">
-              <div style="padding:30px 20px;text-align:center;color:var(--ink4);font-size:13px;pointer-events:none;user-select:none;line-height:2">
-                ← Blöcke aus der Toolbar einfügen
+            <div class="canvas-area" id="canvas">
+              <div style="padding:40px 20px;text-align:center;color:var(--ink4);font-size:13px;pointer-events:none;user-select:none;line-height:2.2">
+                <div style="font-size:32px;margin-bottom:12px;opacity:.3">✦</div>
+                Füge Blöcke aus der Toolbar oben ein
               </div>
             </div>
           </div>
         </div>
 
         <div>
-          <div class="alert alert-blue" style="margin-bottom:1.25rem">
-            🔒 <strong>Musterlösungen sind geschützt.</strong><br>
-            Richtige Antworten bei MC/Mehrfachauswahl werden automatisch verglichen. Freie Antworten korrigierst du manuell. Schüler sehen niemals die Musterlösung.
+          <div class="alert alert-blue" style="margin-bottom:14px">
+            🔒 <strong>Musterlösungen sind geschützt.</strong> Schüler sehen niemals die richtigen Antworten. Freie Antworten korrigierst du manuell.
           </div>
           <div class="panel">
-            <div class="panel-title">📂 Gespeicherte Entwürfe</div>
+            <div class="panel-title">📂 Entwürfe</div>
             <div id="drafts-panel"></div>
           </div>
           <div id="create-err" class="alert alert-red" style="display:none;margin-bottom:1rem"></div>
@@ -771,730 +695,927 @@ body { font-family: var(--font); background: var(--paper2); color: var(--ink); m
   <div class="modal" id="modal-body"></div>
 </div>
 
-<!-- TUTORIAL -->
-<div id="tut-overlay" style="display:none">
-  <div class="tutorial-spotlight" id="tut-spot"></div>
-  <div class="tutorial-bubble" id="tut-bubble"></div>
-  <div class="tut-arrow" id="tut-arrow">👆</div>
-  <button class="tut-skip" onclick="endTutorial()">Tutorial überspringen ✕</button>
+<!-- TUTORIAL OVERLAY -->
+<div id="tut-overlay" class="tut-overlay">
+  <div class="tut-spotlight" id="tut-spot" style="display:none"></div>
+  <div class="tut-bubble" id="tut-bubble" style="display:none"></div>
+  <button class="tut-skip" id="tut-skip-btn" onclick="endTutorial()" style="display:none">Tutorial überspringen ✕</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="kt.js"></script>
 <script>
+// ─── STATE ───
 let teacher=null, blocks=[], editId=null, timerInt=null, timerSecs=0, paused=false, modalLocked=false;
-let blockCounter = 0;
+let blockCounter=0;
+const seenTuts = new Set(JSON.parse(sessionStorage.getItem('kt_seen_tuts')||'[]'));
 
+// ─── INIT ───
 function init() {
   const s = sessionStorage.getItem('kt_teacher');
-  if (s) { teacher = s; document.getElementById('sb-name').textContent = s; nav('tests'); }
+  if (s) { teacher=s; setSBName(s); nav('tests'); }
   else showLoginModal();
+}
+
+function setSBName(n) {
+  document.getElementById('sb-name').textContent = n;
+  document.getElementById('sb-av').textContent = n.charAt(0).toUpperCase();
 }
 
 function showLoginModal() {
   modalLocked = true;
-  document.getElementById('modal-body').innerHTML = `
-    <div class="modal-head">👩‍🏫 Als Lehrkraft anmelden</div>
-    <p style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem;line-height:1.6">Gib einfach deinen echten Namen ein – kein Passwort nötig.</p>
+  openModal(`
+    <div class="modal-head">👩‍🏫 Anmelden</div>
+    <p style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem;line-height:1.6">Gib deinen echten Namen ein – kein Passwort nötig.</p>
     <div class="field"><label>Vollständiger Name</label><input type="text" id="ln" placeholder="z. B. Frau Müller" autofocus onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="alert alert-blue" style="margin-bottom:1rem">Verwende deinen echten Namen, damit Ergebnisse korrekt zugeordnet werden können.</div>
-    <div id="lerr" class="alert alert-red" style="display:none">Bitte gib deinen Namen ein.</div>
-    <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Weiter →</button>`;
-  document.getElementById('modal-bg').classList.add('open');
-  setTimeout(() => document.getElementById('ln')?.focus(), 100);
+    <div id="lerr" class="alert alert-red" style="display:none;margin-bottom:1rem">Bitte gib deinen Namen ein.</div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Weiter →</button>
+  `);
+  setTimeout(()=>document.getElementById('ln')?.focus(),100);
 }
 
 function doLogin() {
   const n = document.getElementById('ln').value.trim();
-  if (!n) { document.getElementById('lerr').style.display = 'block'; return; }
-  teacher = n; sessionStorage.setItem('kt_teacher', n);
-  document.getElementById('sb-name').textContent = n;
-  const db = KT.get();
-  let t = db.teachers.find(x => x.name === n);
-  if (!t) db.teachers.push({ name: n, lastSeen: Date.now() });
-  else t.lastSeen = Date.now();
+  if (!n) { document.getElementById('lerr').style.display='block'; return; }
+  teacher=n; sessionStorage.setItem('kt_teacher',n); setSBName(n);
+  const db=KT.get();
+  let t=db.teachers.find(x=>x.name===n);
+  if(!t) db.teachers.push({name:n,lastSeen:Date.now()});
+  else t.lastSeen=Date.now();
   KT.set(db);
-  modalLocked = false; closeModal(); nav('tests');
-  if (!sessionStorage.getItem('kt_tut_done')) setTimeout(() => startTutorial(), 800);
+  modalLocked=false; closeModal(); nav('tests');
+  if(!seenTuts.has('welcome')) setTimeout(()=>showTutorial('welcome'),600);
 }
 
-function logout() { sessionStorage.removeItem('kt_teacher'); window.location.reload(); }
-function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
-function openModal(html, locked = false) {
-  modalLocked = locked;
-  document.getElementById('modal-body').innerHTML = html;
+function logout(){ sessionStorage.removeItem('kt_teacher'); window.location.reload(); }
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+function openModal(html,locked=false){
+  modalLocked=locked;
+  document.getElementById('modal-body').innerHTML=html;
   document.getElementById('modal-bg').classList.add('open');
 }
 
-function nav(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('s-' + id).classList.add('active');
-  document.getElementById('nb-' + id).classList.add('active');
+// ─── NAV ───
+function nav(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  const nb=document.getElementById('nb-'+id);
+  if(nb) nb.classList.add('active');
   render(id);
 }
 
-function render(id) {
-  if (!teacher) return;
-  const db = KT.get();
-  const mine = db.tests.filter(t => t.teacherName === teacher);
-  if (id === 'tests') renderTests(mine, db);
-  if (id === 'create') renderCreate(db);
-  if (id === 'live') renderLive(mine, db);
-  if (id === 'subs') renderSubs(mine, db);
-  if (id === 'correct') renderCorrect(mine, db);
+function render(id){
+  if(!teacher) return;
+  const db=KT.get();
+  const mine=db.tests.filter(t=>t.teacherName===teacher);
+  if(id==='tests') renderTests(mine,db);
+  if(id==='create') renderCreate(db);
+  if(id==='live') renderLive(mine,db);
+  if(id==='subs') renderSubs(mine,db);
+  if(id==='correct') renderCorrect(mine,db);
 }
 
-function renderTests(mine, db) {
-  const el = document.getElementById('tests-list');
-  if (!mine.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Tests erstellt.<br><button class="btn btn-primary" style="margin-top:14px" onclick="nav('create')">➕ Ersten Test erstellen</button></div></div>`;
+// ─── TESTS LIST ───
+function renderTests(mine,db){
+  const el=document.getElementById('tests-list');
+  if(!mine.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Tests.<br><button class="btn btn-primary" style="margin-top:14px" onclick="nav('create')">✦ Ersten Test erstellen</button></div></div>`;
     return;
   }
-  el.innerHTML = mine.slice().reverse().map(t => {
-    const subs = db.submissions.filter(s => s.testId === t.id).length;
-    const qCount = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type)).length;
+  el.innerHTML=mine.slice().reverse().map(t=>{
+    const subs=db.submissions.filter(s=>s.testId===t.id).length;
+    const qCount=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type)).length;
     return `<div class="test-card">
       <div class="tc-icon">📝</div>
       <div class="tc-info">
         <div class="tc-name">${KT.esc(t.title)}</div>
-        <div class="tc-meta">${t.subject || ''} ${t.cls ? '· Klasse '+t.cls : ''} · ${qCount} Frage${qCount!==1?'n':''} · ${subs} Abgabe${subs!==1?'n':''} · ${new Date(t.createdAt).toLocaleDateString('de-DE')}</div>
-        ${t.active ? `<code style="margin-top:5px;display:inline-block;font-family:var(--mono);font-size:12px;background:var(--paper2);padding:2px 9px;border-radius:6px;color:var(--ink3)">Code: ${t.joinCode}</code>` : ''}
+        <div class="tc-meta">${t.subject||''} ${t.cls?'· Klasse '+t.cls:''} · ${qCount} Frage${qCount!==1?'n':''} · ${subs} Abgabe${subs!==1?'n':''}</div>
+        ${t.active?`<div style="margin-top:5px"><code style="font-family:var(--mono);font-size:12px;background:var(--bg4);padding:2px 9px;border-radius:6px;color:var(--ink3)">Code: ${t.joinCode}</code></div>`:''}
       </div>
       <div class="tc-btns">
         <span class="badge ${t.active?'badge-green':t.ended?'badge-red':'badge-gray'}">${t.active?'🟢 Aktiv':t.ended?'🔴 Beendet':'⚪ Entwurf'}</span>
-        ${!t.active&&!t.ended ? `<button class="btn btn-ghost btn-sm" onclick="loadEdit('${t.id}')">✏️ Bearbeiten</button>` : ''}
-        ${!t.active&&!t.ended ? `<button class="btn btn-green btn-sm" onclick="startTestById('${t.id}')">▶ Starten</button>` : ''}
-        ${t.active ? `<button class="btn btn-primary btn-sm" onclick="nav('live')">🟢 Live</button>` : ''}
-        ${t.active ? `<button class="btn btn-red btn-sm" onclick="endTest('${t.id}')">⏹ Beenden</button>` : ''}
-        <button class="btn btn-ghost btn-sm" onclick="dlTest('${t.id}')" title="Download">💾</button>
+        ${!t.active&&!t.ended?`<button class="btn btn-ghost btn-sm" onclick="loadEdit('${t.id}')">✏️</button>`:''}
+        ${!t.active&&!t.ended?`<button class="btn btn-green btn-sm" onclick="startTestById('${t.id}')">▶ Starten</button>`:''}
+        ${t.active?`<button class="btn btn-primary btn-sm" onclick="nav('live')">🟢 Live</button>`:''}
+        ${t.active?`<button class="btn btn-red btn-sm" onclick="endTest('${t.id}')">⏹</button>`:''}
       </div>
     </div>`;
   }).join('');
 }
 
-function renderCreate(db) {
-  const mine = db.tests.filter(t => t.teacherName === teacher && !t.active && !t.ended);
-  const dp = document.getElementById('drafts-panel');
-  if (dp) {
-    dp.innerHTML = mine.length
-      ? mine.map(t => `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--paper3)">
-          <span style="font-size:13px;color:var(--ink2);font-weight:500">${KT.esc(t.title)}</span>
-          <button class="btn btn-ghost btn-sm" onclick="loadEdit('${t.id}')">Öffnen</button>
-        </div>`).join('')
-      : '<div style="font-size:13px;color:var(--ink3)">Keine Entwürfe.</div>';
-  }
+// ─── CREATE ───
+function renderCreate(db){
+  const mine=db.tests.filter(t=>t.teacherName===teacher&&!t.active&&!t.ended);
+  const dp=document.getElementById('drafts-panel');
+  if(dp) dp.innerHTML=mine.length
+    ?mine.map(t=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;color:var(--ink2);font-weight:600">${KT.esc(t.title)}</span>
+        <button class="btn btn-ghost btn-sm" onclick="loadEdit('${t.id}')">Öffnen</button>
+      </div>`).join('')
+    :'<div style="font-size:13px;color:var(--ink3)">Keine Entwürfe.</div>';
   updateCanvasBg();
-  const cf = document.getElementById('c-custom-file');
-  if (cf) cf.onchange = handleCustomFile;
 }
 
-function updateCanvasBg() {
-  const v = document.getElementById('c-bg')?.value || 'lined';
-  const c = document.getElementById('canvas');
-  if (!c) return;
-  c.className = 'canvas-area canvas-bg-' + v + ' canvas-area-paper';
-  const ua = document.getElementById('custom-upload-area');
-  if (ua) ua.style.display = v === 'custom' ? 'block' : 'none';
-}
-
-function handleCustomFile(e) {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    window._customBg = ev.target.result;
-    const p = document.getElementById('custom-preview');
-    if (f.type.startsWith('image/')) {
-      p.innerHTML = `<img src="${ev.target.result}" style="max-width:100%;border-radius:8px;margin-top:6px;max-height:200px;object-fit:contain">`;
-      const c = document.getElementById('canvas');
-      if (c) { c.style.backgroundImage = `url(${ev.target.result})`; c.style.backgroundSize = 'cover'; }
-    } else { p.innerHTML = `<div class="alert alert-green" style="margin-top:6px">✅ ${f.name} hochgeladen</div>`; }
+function updateCanvasBg(){
+  const v=document.getElementById('c-bg')?.value||'dot';
+  const c=document.getElementById('canvas');
+  if(!c) return;
+  const bgs={
+    dot:'background:#1c1d26;background-image:radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);background-size:20px 20px;',
+    lined:'background:#1c1d26;background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(255,255,255,.06) 27px,rgba(255,255,255,.06) 28px);background-size:100% 28px;',
+    grid:'background:#1c1d26;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px;',
+    blank:'background:#1c1d26;'
   };
-  r.readAsDataURL(f);
+  c.style.cssText=(bgs[v]||bgs.dot)+'padding:16px;min-height:480px;';
 }
 
-function addBlock(type) {
-  const id = 'b' + (++blockCounter);
-  blocks.push({ id, type, data: defaultData(type) });
+// ─── BLOCKS ───
+function addBlock(type){
+  const id='b'+(++blockCounter);
+  blocks.push({id,type,data:defaultData(type)});
   renderBlocks();
-  const c = document.getElementById('canvas');
-  if (c) c.scrollTop = c.scrollHeight;
+  const c=document.getElementById('canvas');
+  if(c) c.scrollTop=c.scrollHeight;
+  // Auto-tutorial
+  const tutMap={mc:'tut_mc',multi:'tut_multi',free:'tut_free',table:'tut_table',text:'tut_text',image:'tut_image'};
+  if(tutMap[type]&&!seenTuts.has(tutMap[type])) setTimeout(()=>showTutorial(tutMap[type]),300);
 }
 
-function defaultData(type) {
-  if (type === 'text') return { content: '' };
-  if (type === 'image') return { src: null };
-  if (type === 'mc') return { question: '', options: ['', '', '', ''], correctIndex: 0, points: 1 };
-  if (type === 'multi') return { question: '', options: ['', '', '', ''], correctIndexes: [], points: 1 };
-  if (type === 'free') return { question: '', lines: 5, points: 1 };
-  if (type === 'table') return { rows: 3, cols: 3, headers: ['Aufgabe', 'Punkte', 'Erhalten'], cells: [] };
-  return {};
+function defaultData(type){
+  if(type==='text') return{content:''};
+  if(type==='image') return{src:null};
+  if(type==='mc') return{question:'',options:['','','',''],correctIndex:0,points:1};
+  if(type==='multi') return{question:'',options:['','','',''],correctIndexes:[],points:1};
+  if(type==='free') return{question:'',lines:5,points:1};
+  if(type==='table') return{rows:3,cols:3,headers:['Aufgabe','Punkte','Erhalten'],cells:[]};
+  return{};
 }
 
-function renderBlocks() {
-  const c = document.getElementById('canvas');
-  if (!c) return;
-  if (!blocks.length) {
-    c.innerHTML = '<div style="padding:30px 20px;text-align:center;color:var(--ink4);font-size:13px;pointer-events:none;user-select:none;line-height:2">← Blöcke aus der Toolbar einfügen</div>';
+function renderBlocks(){
+  const c=document.getElementById('canvas');
+  if(!c) return;
+  if(!blocks.length){
+    updateCanvasBg();
+    c.innerHTML='<div style="padding:40px 20px;text-align:center;color:var(--ink4);font-size:13px;pointer-events:none;user-select:none;line-height:2.2"><div style="font-size:32px;margin-bottom:12px;opacity:.3">✦</div>Füge Blöcke aus der Toolbar oben ein</div>';
     return;
   }
-  c.innerHTML = blocks.map((b, i) => `<div class="page-block" id="pb-${b.id}">${blockHTML(b, i)}</div>`).join('');
+  c.innerHTML=blocks.map((b,i)=>`<div class="page-block" id="pb-${b.id}">${blockHTML(b,i)}</div>`).join('');
 }
 
-function blockHTML(b, i) {
-  const ctrl = `<div class="block-ctrl">
-    ${i > 0 ? `<button class="bc-btn" onclick="moveBlock(${i},-1)" title="Nach oben">↑</button>` : ''}
-    ${i < blocks.length-1 ? `<button class="bc-btn" onclick="moveBlock(${i},1)" title="Nach unten">↓</button>` : ''}
-    <button class="bc-btn bc-del" onclick="delBlock(${i})" title="Löschen">✕</button>
+function blockHTML(b,i){
+  const ctrl=`<div class="block-ctrl">
+    ${i>0?`<button class="bc-btn" onclick="moveBlock(${i},-1)">↑</button>`:''}
+    ${i<blocks.length-1?`<button class="bc-btn" onclick="moveBlock(${i},1)">↓</button>`:''}
+    <button class="bc-btn bc-del" onclick="delBlock(${i})">✕</button>
   </div>`;
 
-  if (b.type === 'text') return ctrl + `<textarea class="text-block" placeholder="Text eingeben…" oninput="blocks[${i}].data.content=this.value" rows="3">${KT.esc(b.data.content)}</textarea>`;
-  if (b.type === 'image') return ctrl + (b.data.src
-    ? `<img src="${b.data.src}" class="img-block" onclick="pickImage(${i})">`
-    : `<div class="img-placeholder" onclick="pickImage(${i})">🖼 Klicken um Bild hochzuladen</div>`);
+  if(b.type==='text') return ctrl+`<textarea class="text-block" placeholder="Text eingeben…" oninput="blocks[${i}].data.content=this.value" rows="3">${KT.esc(b.data.content)}</textarea>`;
 
-  if (b.type === 'mc') return ctrl + `<div class="qblock">
+  if(b.type==='image') return ctrl+(b.data.src
+    ?`<img src="${b.data.src}" class="img-block" onclick="pickImage(${i})">`
+    :`<div class="img-placeholder" onclick="pickImage(${i})">🖼 Klicken um Bild hochzuladen</div>`);
+
+  if(b.type==='mc') return ctrl+`<div class="qblock" style="resize:vertical;overflow:auto">
     <div class="qb-head">
       <span class="qb-num">MC ${i+1}</span>
       <span class="qb-tag tag-mc">Einfachauswahl</span>
-      <span class="pts-badge">⭐ <input type="number" min="1" max="99" value="${b.data.points||1}" style="width:36px;background:transparent;border:none;font-size:11px;font-weight:700;color:var(--ink3)" oninput="blocks[${i}].data.points=+this.value"> Pt.</span>
+      <div class="pts-badge">⭐<input class="pts-inp" type="number" min="1" max="99" value="${b.data.points||1}" oninput="blocks[${i}].data.points=+this.value" title="Punkte für diese Frage"><span style="font-size:11px;color:var(--ink3)">Pt.</span></div>
     </div>
-    <input type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value" style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);margin-bottom:8px">
-    <div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.4px">Antworten — ○ klicken = richtig (für Schüler unsichtbar)</div>
-    ${b.data.options.map((o, oi) => `<div class="opt-row">
-      <div class="opt-circle ${oi === b.data.correctIndex ? 'correct' : ''}" onclick="setMCCorrect(${i},${oi})" title="Als richtig markieren"></div>
+    <input class="q-inp" type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value">
+    <div style="font-size:10px;font-weight:700;color:var(--ink4);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">○ = Richtige Antwort klicken (für Schüler unsichtbar)</div>
+    ${b.data.options.map((o,oi)=>`<div class="opt-row">
+      <div class="opt-circle ${oi===b.data.correctIndex?'correct':''}" onclick="setMCCorrect(${i},${oi})" title="Als richtig markieren"></div>
       <input class="opt-inp" type="text" value="${KT.esc(o)}" placeholder="Antwort ${oi+1}…" oninput="blocks[${i}].data.options[${oi}]=this.value">
-      ${b.data.options.length > 2 ? `<button class="opt-del" onclick="delOpt(${i},${oi})">✕</button>` : ''}
+      ${b.data.options.length>2?`<button class="opt-del" onclick="delOpt(${i},${oi})">✕</button>`:''}
     </div>`).join('')}
-    <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-l);border:1.5px solid var(--accent-m);border-radius:8px;padding:5px 12px;cursor:pointer;margin-top:4px;font-family:var(--font)" onclick="addOpt(${i})">+ Option hinzufügen</button>
+    <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent2);background:var(--accent-l);border:1px solid var(--accent-m);border-radius:8px;padding:5px 12px;cursor:pointer;margin-top:6px;font-family:var(--font)" onclick="addOpt(${i})">+ Option</button>
   </div>`;
 
-  if (b.type === 'multi') return ctrl + `<div class="qblock" style="border-color:var(--amber-m);background:rgba(245,158,11,.02)">
+  if(b.type==='multi') return ctrl+`<div class="qblock qblock-amber" style="resize:vertical;overflow:auto">
     <div class="qb-head">
       <span class="qb-num">MU ${i+1}</span>
       <span class="qb-tag tag-multi">Mehrfachauswahl</span>
-      <span class="pts-badge">⭐ <input type="number" min="1" max="99" value="${b.data.points||1}" style="width:36px;background:transparent;border:none;font-size:11px;font-weight:700;color:var(--ink3)" oninput="blocks[${i}].data.points=+this.value"> Pt.</span>
+      <div class="pts-badge">⭐<input class="pts-inp" type="number" min="1" max="99" value="${b.data.points||1}" oninput="blocks[${i}].data.points=+this.value" style="color:var(--amber)" title="Punkte für diese Frage"><span style="font-size:11px;color:var(--ink3)">Pt.</span></div>
     </div>
-    <input type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value" style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);margin-bottom:8px">
-    <div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.4px">☐ klicken = richtig (Mehrere möglich)</div>
-    ${b.data.options.map((o, oi) => `<div class="opt-row">
-      <div class="opt-circle ${(b.data.correctIndexes||[]).includes(oi) ? 'multi-correct' : ''}" style="border-radius:5px" onclick="toggleMultiCorrect(${i},${oi})"></div>
+    <input class="q-inp" type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value">
+    <div style="font-size:10px;font-weight:700;color:var(--ink4);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">☐ = Mehrere richtige Antworten möglich</div>
+    ${b.data.options.map((o,oi)=>`<div class="opt-row">
+      <div class="opt-circle ${(b.data.correctIndexes||[]).includes(oi)?'multi-correct':''}" style="border-radius:6px" onclick="toggleMultiCorrect(${i},${oi})"></div>
       <input class="opt-inp" type="text" value="${KT.esc(o)}" placeholder="Antwort ${oi+1}…" oninput="blocks[${i}].data.options[${oi}]=this.value">
-      ${b.data.options.length > 2 ? `<button class="opt-del" onclick="delOpt(${i},${oi})">✕</button>` : ''}
+      ${b.data.options.length>2?`<button class="opt-del" onclick="delOpt(${i},${oi})">✕</button>`:''}
     </div>`).join('')}
-    <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-l);border:1.5px solid var(--amber-m);border-radius:8px;padding:5px 12px;cursor:pointer;margin-top:4px;font-family:var(--font)" onclick="addOpt(${i})">+ Option hinzufügen</button>
+    <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--amber);background:var(--amber-l);border:1px solid var(--amber-m);border-radius:8px;padding:5px 12px;cursor:pointer;margin-top:6px;font-family:var(--font)" onclick="addOpt(${i})">+ Option</button>
   </div>`;
 
-  if (b.type === 'free') return ctrl + `<div class="qblock" style="border-color:var(--green-m);background:rgba(16,185,129,.02)">
+  if(b.type==='free') return ctrl+`<div class="qblock qblock-green" style="resize:vertical;overflow:auto">
     <div class="qb-head">
       <span class="qb-num">FR ${i+1}</span>
       <span class="qb-tag tag-free">Freie Antwort</span>
-      <span class="pts-badge">⭐ <input type="number" min="1" max="99" value="${b.data.points||1}" style="width:36px;background:transparent;border:none;font-size:11px;font-weight:700;color:var(--ink3)" oninput="blocks[${i}].data.points=+this.value"> Pt.</span>
+      <div class="pts-badge">⭐<input class="pts-inp" type="number" min="1" max="99" value="${b.data.points||1}" oninput="blocks[${i}].data.points=+this.value" style="color:var(--green)" title="Punkte für diese Frage"><span style="font-size:11px;color:var(--ink3)">Pt.</span></div>
     </div>
-    <input type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value" style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font);margin-bottom:8px">
-    <div style="font-size:12px;color:var(--green-d);background:var(--green-l);border-radius:8px;padding:9px 12px;margin-top:4px;border:1px solid var(--green-m)">
-      📝 Schüler schreiben frei. Zeilen: <input type="number" min="1" max="20" value="${b.data.lines||5}" style="width:40px;border:1px solid var(--green-m);border-radius:5px;padding:2px 5px;font-size:12px;color:var(--green-d)" oninput="blocks[${i}].data.lines=+this.value">
+    <input class="q-inp" type="text" placeholder="Frage eingeben…" value="${KT.esc(b.data.question)}" oninput="blocks[${i}].data.question=this.value">
+    <div style="font-size:12px;color:var(--green);background:var(--green-l);border-radius:8px;padding:9px 12px;border:1px solid var(--green-m);display:flex;align-items:center;gap:10px">
+      📝 Schüler schreiben frei. Zeilen: <input type="number" min="1" max="20" value="${b.data.lines||5}" style="width:44px;border:1px solid var(--green-m);border-radius:5px;padding:2px 6px;font-size:12px;color:var(--green);background:transparent" oninput="blocks[${i}].data.lines=+this.value">
     </div>
   </div>`;
 
-  if (b.type === 'table') {
-    const hd = b.data.headers || ['Aufgabe', 'Punkte', 'Erhalten'];
-    const rows = b.data.rows || 3; const cols = b.data.cols || 3;
-    if (!b.data.cells || b.data.cells.length !== rows) b.data.cells = Array.from({ length: rows }, () => Array(cols).fill(''));
-    return ctrl + `<div class="pts-table-block"><table>
-      <thead><tr>${hd.map((h, hi) => `<th><input value="${KT.esc(h)}" oninput="blocks[${i}].data.headers[${hi}]=this.value" style="width:100%;border:none;background:transparent;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);font-family:var(--font)"></th>`).join('')}</tr></thead>
-      <tbody>${b.data.cells.map((row, ri) => `<tr>${row.map((cell, ci) => `<td><input value="${KT.esc(cell)}" oninput="blocks[${i}].data.cells[${ri}][${ci}]=this.value" placeholder="…"></td>`).join('')}</tr>`).join('')}</tbody>
-    </table>
-    <div style="margin-top:7px;display:flex;gap:6px;align-items:center">
-      <button style="padding:4px 10px;border:1px solid var(--border);border-radius:7px;background:#fff;cursor:pointer;font-size:12px;font-family:var(--font)" onclick="addTableRow(${i})">+ Zeile</button>
-    </div></div>`;
+  if(b.type==='table'){
+    const hd=b.data.headers||['Aufgabe','Punkte','Erhalten'];
+    const rows=b.data.rows||3; const cols=b.data.cols||3;
+    if(!b.data.cells||b.data.cells.length!==rows) b.data.cells=Array.from({length:rows},()=>Array(cols).fill(''));
+    return ctrl+`<div class="pts-table-block" style="background:var(--bg3);border-radius:var(--r2);padding:12px;border:1px solid var(--border2)">
+      <div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">📊 Tabelle – Spalten- und Zellentexte bearbeitbar</div>
+      <table>
+        <thead><tr>${hd.map((h,hi)=>`<th><input value="${KT.esc(h)}" oninput="blocks[${i}].data.headers[${hi}]=this.value" style="width:100%;border:none;background:transparent;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);font-family:var(--font)"></th>`).join('')}</tr></thead>
+        <tbody>${b.data.cells.map((row,ri)=>`<tr>${row.map((cell,ci)=>`<td><input value="${KT.esc(cell)}" oninput="blocks[${i}].data.cells[${ri}][${ci}]=this.value" placeholder="…"></td>`).join('')}</tr>`).join('')}</tbody>
+      </table>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button style="padding:4px 10px;border:1px solid var(--border2);border-radius:7px;background:var(--bg4);cursor:pointer;font-size:12px;font-family:var(--font);color:var(--ink2)" onclick="addTableRow(${i})">+ Zeile</button>
+        <button style="padding:4px 10px;border:1px solid var(--border2);border-radius:7px;background:var(--bg4);cursor:pointer;font-size:12px;font-family:var(--font);color:var(--ink2)" onclick="addTableCol(${i})">+ Spalte</button>
+        ${b.data.rows>1?`<button style="padding:4px 10px;border:1px solid var(--red-m);border-radius:7px;background:var(--red-l);cursor:pointer;font-size:12px;font-family:var(--font);color:var(--red)" onclick="delTableRow(${i})">− Zeile</button>`:''}
+      </div>
+    </div>`;
   }
-  return ctrl + '<div style="padding:10px;color:var(--ink3)">Unbekannter Block</div>';
+  return ctrl+'<div style="padding:10px;color:var(--ink3)">Unbekannter Block</div>';
 }
 
-function moveBlock(i, dir) { const t = blocks.splice(i, 1)[0]; blocks.splice(i + dir, 0, t); renderBlocks(); }
-function delBlock(i) { blocks.splice(i, 1); renderBlocks(); }
-function setMCCorrect(bi, oi) { blocks[bi].data.correctIndex = oi; renderBlocks(); }
-function toggleMultiCorrect(bi, oi) {
-  const ci = blocks[bi].data.correctIndexes || [];
-  const idx = ci.indexOf(oi);
-  if (idx >= 0) ci.splice(idx, 1); else ci.push(oi);
-  blocks[bi].data.correctIndexes = ci; renderBlocks();
+function moveBlock(i,dir){const t=blocks.splice(i,1)[0];blocks.splice(i+dir,0,t);renderBlocks();}
+function delBlock(i){blocks.splice(i,1);renderBlocks();}
+function setMCCorrect(bi,oi){blocks[bi].data.correctIndex=oi;renderBlocks();}
+function toggleMultiCorrect(bi,oi){
+  const ci=blocks[bi].data.correctIndexes||[];
+  const idx=ci.indexOf(oi);
+  if(idx>=0)ci.splice(idx,1);else ci.push(oi);
+  blocks[bi].data.correctIndexes=ci;renderBlocks();
 }
-function addOpt(bi) { blocks[bi].data.options.push(''); renderBlocks(); }
-function delOpt(bi, oi) {
-  blocks[bi].data.options.splice(oi, 1);
-  if (blocks[bi].data.correctIndex >= blocks[bi].data.options.length) blocks[bi].data.correctIndex = 0;
+function addOpt(bi){blocks[bi].data.options.push('');renderBlocks();}
+function delOpt(bi,oi){
+  blocks[bi].data.options.splice(oi,1);
+  if(blocks[bi].data.correctIndex>=blocks[bi].data.options.length)blocks[bi].data.correctIndex=0;
   renderBlocks();
 }
-function addTableRow(bi) { blocks[bi].data.rows++; blocks[bi].data.cells.push(Array(blocks[bi].data.cols).fill('')); renderBlocks(); }
-
-function pickImage(bi) {
-  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
-  inp.onchange = e => {
-    const f = e.target.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = ev => { blocks[bi].data.src = ev.target.result; renderBlocks(); };
+function addTableRow(bi){
+  blocks[bi].data.rows++;
+  blocks[bi].data.cells.push(Array(blocks[bi].data.cols).fill(''));
+  renderBlocks();
+}
+function addTableCol(bi){
+  blocks[bi].data.cols++;
+  blocks[bi].data.headers.push('Spalte '+(blocks[bi].data.cols));
+  blocks[bi].data.cells.forEach(r=>r.push(''));
+  renderBlocks();
+}
+function delTableRow(bi){
+  if(blocks[bi].data.rows<=1)return;
+  blocks[bi].data.rows--;
+  blocks[bi].data.cells.pop();
+  renderBlocks();
+}
+function pickImage(bi){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{blocks[bi].data.src=ev.target.result;renderBlocks();};
     r.readAsDataURL(f);
   };
   inp.click();
 }
 
-function buildTest() {
-  const title = document.getElementById('c-title')?.value.trim();
-  if (!title) { showCreateErr('Bitte gib einen Titel ein.'); return null; }
-  const qBlocks = blocks.filter(b => ['mc','multi','free'].includes(b.type));
-  if (!qBlocks.length) { showCreateErr('Füge mindestens eine Frage ein (MC, Mehrfachauswahl oder Freie Antwort).'); return null; }
+function buildTest(){
+  const title=document.getElementById('c-title')?.value.trim();
+  if(!title){showCreateErr('Bitte gib einen Titel ein.');return null;}
+  const qBlocks=blocks.filter(b=>['mc','multi','free'].includes(b.type));
+  if(!qBlocks.length){showCreateErr('Füge mindestens eine Frage hinzu.');return null;}
   hideCreateErr();
-  return {
-    id: editId || KT.gid(), title,
-    subject: document.getElementById('c-subj')?.value.trim() || '',
-    cls: document.getElementById('c-class')?.value.trim() || '',
-    bg: document.getElementById('c-bg')?.value || 'lined',
-    customBg: window._customBg || null,
-    teacherName: teacher,
-    blocks: JSON.parse(JSON.stringify(blocks)),
-    joinCode: KT.genCode(),
-    active: false, ended: false,
-    createdAt: Date.now(), timerSeconds: 1800,
+  return{
+    id:editId||KT.gid(),title,
+    subject:document.getElementById('c-subj')?.value.trim()||'',
+    cls:document.getElementById('c-class')?.value.trim()||'',
+    bg:document.getElementById('c-bg')?.value||'dot',
+    teacherName:teacher,
+    blocks:JSON.parse(JSON.stringify(blocks)),
+    joinCode:KT.genCode(),
+    active:false,ended:false,
+    createdAt:Date.now(),timerSeconds:1800,
   };
 }
+function showCreateErr(m){const e=document.getElementById('create-err');if(e){e.textContent='❌ '+m;e.style.display='block';}}
+function hideCreateErr(){const e=document.getElementById('create-err');if(e)e.style.display='none';}
 
-function showCreateErr(m) { const e = document.getElementById('create-err'); if (e) { e.textContent = '❌ ' + m; e.style.display = 'block'; } }
-function hideCreateErr() { const e = document.getElementById('create-err'); if (e) e.style.display = 'none'; }
-
-function saveDraft() {
-  const t = buildTest(); if (!t) return;
-  const db = KT.get();
-  const idx = db.tests.findIndex(x => x.id === t.id);
-  if (idx >= 0) db.tests[idx] = t; else db.tests.push(t);
-  KT.set(db); editId = t.id; KT.toast('💾 Entwurf gespeichert!'); render('create');
+function saveDraft(){
+  const t=buildTest();if(!t)return;
+  const db=KT.get();
+  const idx=db.tests.findIndex(x=>x.id===t.id);
+  if(idx>=0)db.tests[idx]=t;else db.tests.push(t);
+  KT.set(db);editId=t.id;KT.toast('💾 Entwurf gespeichert!');render('create');
 }
 
-function loadEdit(id) {
-  const db = KT.get(); const t = db.tests.find(x => x.id === id); if (!t) return;
-  editId = id; blocks = JSON.parse(JSON.stringify(t.blocks || []));
+function loadEdit(id){
+  const db=KT.get();const t=db.tests.find(x=>x.id===id);if(!t)return;
+  editId=id;blocks=JSON.parse(JSON.stringify(t.blocks||[]));
   nav('create');
-  setTimeout(() => {
-    const f = document.getElementById('c-title'); if (f) f.value = t.title;
-    const s = document.getElementById('c-subj'); if (s) s.value = t.subject || '';
-    const c = document.getElementById('c-class'); if (c) c.value = t.cls || '';
-    const bg = document.getElementById('c-bg'); if (bg) bg.value = t.bg || 'lined';
-    if (t.customBg) window._customBg = t.customBg;
-    document.getElementById('create-heading').textContent = 'Test bearbeiten';
-    updateCanvasBg(); renderBlocks();
-  }, 60);
+  setTimeout(()=>{
+    const f=document.getElementById('c-title');if(f)f.value=t.title;
+    const s=document.getElementById('c-subj');if(s)s.value=t.subject||'';
+    const c=document.getElementById('c-class');if(c)c.value=t.cls||'';
+    const bg=document.getElementById('c-bg');if(bg)bg.value=t.bg||'dot';
+    document.getElementById('create-heading').textContent='✏️ Test bearbeiten';
+    updateCanvasBg();renderBlocks();
+  },60);
 }
 
-function goToStartSetup() {
-  const t = buildTest(); if (!t) return;
-  const db = KT.get(); const idx = db.tests.findIndex(x => x.id === t.id);
-  if (idx >= 0) db.tests[idx] = t; else db.tests.push(t);
-  KT.set(db); editId = t.id;
+function goToStartSetup(){
+  const t=buildTest();if(!t)return;
+  const db=KT.get();const idx=db.tests.findIndex(x=>x.id===t.id);
+  if(idx>=0)db.tests[idx]=t;else db.tests.push(t);
+  KT.set(db);editId=t.id;
   openModal(`<div class="modal-head">Test starten?</div>
-    <p style="font-size:14px;color:var(--ink2);margin-bottom:1.25rem;line-height:1.6">Bist du mit dem Test fertig und möchtest ihn starten?</p>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:1.25rem;line-height:1.6">Möchtest du den Test jetzt für Schüler freischalten?</p>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeModal()">← Weiter bearbeiten</button>
       <button class="btn btn-primary" onclick="closeModal();showCodeSetup('${t.id}')">Ja, weiter →</button>
     </div>`);
 }
 
-function showCodeSetup(testId) {
-  const db = KT.get(); const t = db.tests.find(x => x.id === testId); if (!t) return;
-  if (!t.joinCode) t.joinCode = KT.genCode();
-  KT.set(db);
-  openModal(`<div class="modal-head">⚙️ Code &amp; Dauer</div>
+function showCodeSetup(testId){
+  const db=KT.get();const t=db.tests.find(x=>x.id===testId);if(!t)return;
+  if(!t.joinCode)t.joinCode=KT.genCode();KT.set(db);
+  openModal(`<div class="modal-head">⚙️ Code & Dauer</div>
     <div class="field"><label>Testdauer (Minuten)</label>
-      <input type="number" id="setup-mins" value="30" min="1" max="300" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:28px;font-weight:700;text-align:center;font-family:var(--mono)">
+      <input type="number" id="setup-mins" value="30" min="1" max="300" style="font-size:28px;font-weight:700;text-align:center;font-family:var(--mono);padding:14px">
     </div>
     <div style="text-align:center;margin:1.5rem 0">
-      <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">Schüler-Zugangscode</div>
+      <div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">Schüler-Zugangscode</div>
       <div class="code-pill" id="code-display">${t.joinCode}</div>
-      <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="regenCode('${testId}')">🔄 Neu generieren</button></div>
+      <div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="regenCode('${testId}')">🔄 Neu generieren</button></div>
     </div>
     <div class="alert alert-blue" style="margin-bottom:1.25rem">⚡ Schüler öffnen <strong>schueler.html</strong> und geben diesen Code ein.</div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
-      <button class="btn btn-green btn-lg" onclick="activateTest('${testId}')">🟢 Test für alle starten</button>
-    </div>`, true);
+      <button class="btn btn-green btn-lg" onclick="activateTest('${testId}')">🟢 Test starten</button>
+    </div>`,true);
 }
 
-function regenCode(testId) {
-  const db = KT.get(); const t = db.tests.find(x => x.id === testId); if (!t) return;
-  t.joinCode = KT.genCode(); KT.set(db);
-  const el = document.getElementById('code-display'); if (el) el.textContent = t.joinCode;
+function regenCode(testId){
+  const db=KT.get();const t=db.tests.find(x=>x.id===testId);if(!t)return;
+  t.joinCode=KT.genCode();KT.set(db);
+  const el=document.getElementById('code-display');if(el)el.textContent=t.joinCode;
 }
 
-function activateTest(testId) {
-  const mins = parseInt(document.getElementById('setup-mins')?.value) || 30;
-  const db = KT.get(); const t = db.tests.find(x => x.id === testId); if (!t) return;
-  t.active = true; t.ended = false; t.timerSeconds = mins * 60; t.startedAt = Date.now();
-  KT.set(db); timerSecs = mins * 60; modalLocked = false; closeModal();
+function activateTest(testId){
+  const mins=parseInt(document.getElementById('setup-mins')?.value)||30;
+  const db=KT.get();const t=db.tests.find(x=>x.id===testId);if(!t)return;
+  t.active=true;t.ended=false;t.timerSeconds=mins*60;t.startedAt=Date.now();
+  KT.set(db);timerSecs=mins*60;modalLocked=false;closeModal();
   clearInterval(timerInt);
-  timerInt = setInterval(() => {
-    timerSecs = Math.max(0, timerSecs - 1);
-    const el = document.getElementById('timer-live');
-    if (el) {
-      el.textContent = KT.fmt(timerSecs);
-      el.className = 'timer-live' + (timerSecs < 300 ? ' warn' : '') + (timerSecs < 60 ? ' danger' : '');
-    }
-    if (timerSecs === 0) { clearInterval(timerInt); endTestAuto(testId); }
-  }, 1000);
-  nav('live');
-  KT.toast('🟢 Test gestartet!');
+  timerInt=setInterval(()=>{
+    timerSecs=Math.max(0,timerSecs-1);
+    const el=document.getElementById('timer-live');
+    if(el){el.textContent=KT.fmt(timerSecs);el.className='timer-live'+(timerSecs<300?' warn':'')+(timerSecs<60?' danger':'');}
+    if(timerSecs===0){clearInterval(timerInt);endTestAuto(testId);}
+  },1000);
+  nav('live');KT.toast('🟢 Test gestartet!');
+  if(!seenTuts.has('tut_live')) setTimeout(()=>showTutorial('tut_live'),600);
 }
 
-function startTestById(testId) { showCodeSetup(testId); }
+function startTestById(testId){showCodeSetup(testId);}
 
-function endTestAuto(testId) {
+function endTestAuto(testId){
   clearInterval(timerInt);
-  const db = KT.get(); const t = db.tests.find(x => x.id === testId);
-  if (t) { t.active = false; t.ended = true; }
-  db.students.filter(s => s.currentTestId === testId).forEach(s => {
-    if (!db.submissions.find(x => x.studentName === s.name && x.testId === testId))
-      db.submissions.push({ id: KT.gid(), testId, studentName: s.name, answers: {}, submittedAt: Date.now(), submitted: true, corrected: false, autoCollected: true });
-    s.currentTestId = null;
+  const db=KT.get();const t=db.tests.find(x=>x.id===testId);
+  if(t){t.active=false;t.ended=true;}
+  db.students.filter(s=>s.currentTestId===testId).forEach(s=>{
+    if(!db.submissions.find(x=>x.studentName===s.name&&x.testId===testId))
+      db.submissions.push({id:KT.gid(),testId,studentName:s.name,answers:{},submittedAt:Date.now(),submitted:true,corrected:false,autoCollected:true});
+    s.currentTestId=null;
   });
-  KT.set(db); KT.toast('⏹ Zeit abgelaufen – Test beendet.'); nav('subs');
+  KT.set(db);KT.toast('⏹ Zeit abgelaufen!');nav('subs');
 }
 
-function endTest(testId) {
-  if (!confirm('Test beenden? Alle noch nicht abgegebenen Antworten werden automatisch eingereicht.')) return;
+function endTest(testId){
+  if(!confirm('Test beenden? Alle nicht abgegebenen Antworten werden automatisch eingereicht.'))return;
   clearInterval(timerInt);
-  const db = KT.get(); const t = db.tests.find(x => x.id === testId);
-  if (t) { t.active = false; t.ended = true; }
-  db.students.filter(s => s.currentTestId === testId).forEach(s => {
-    if (!db.submissions.find(x => x.studentName === s.name && x.testId === testId))
-      db.submissions.push({ id: KT.gid(), testId, studentName: s.name, answers: {}, submittedAt: Date.now(), submitted: true, corrected: false, autoCollected: true });
-    s.currentTestId = null;
+  const db=KT.get();const t=db.tests.find(x=>x.id===testId);
+  if(t){t.active=false;t.ended=true;}
+  db.students.filter(s=>s.currentTestId===testId).forEach(s=>{
+    if(!db.submissions.find(x=>x.studentName===s.name&&x.testId===testId))
+      db.submissions.push({id:KT.gid(),testId,studentName:s.name,answers:{},submittedAt:Date.now(),submitted:true,corrected:false,autoCollected:true});
+    s.currentTestId=null;
   });
-  KT.set(db); nav('subs');
+  KT.set(db);nav('subs');
 }
 
-function renderLive(mine, db) {
-  const active = mine.find(t => t.active);
-  const el = document.getElementById('live-container');
-  if (!active) {
-    el.innerHTML = `<div class="topbar"><div class="topbar-title"><div class="live-dot" style="opacity:.3;background:#9ca3af;box-shadow:none"></div> Live-Modus</div></div>
-    <div class="page"><div class="empty"><div class="empty-icon">💤</div><div class="empty-text">Kein Test aktiv.<br>${mine.filter(t => !t.active && !t.ended).map(t => `<button class="btn btn-green" style="margin-top:14px" onclick="startTestById('${t.id}')">▶ "${KT.esc(t.title)}" starten</button>`).join('')}</div></div></div>`;
+// ─── LIVE ───
+let pollInt=null;
+function renderLive(mine,db){
+  const active=mine.find(t=>t.active);
+  const el=document.getElementById('live-container');
+  if(!active){
+    el.innerHTML=`<div class="topbar"><div class="topbar-title">💤 Live-Modus</div></div>
+    <div class="page"><div class="empty"><div class="empty-icon">💤</div><div class="empty-text">Kein Test aktiv.<br>${mine.filter(t=>!t.active&&!t.ended).map(t=>`<button class="btn btn-green" style="margin-top:14px" onclick="startTestById('${t.id}')">▶ "${KT.esc(t.title)}" starten</button>`).join('')}</div></div></div>`;
     return;
   }
-  const subs = db.submissions.filter(s => s.testId === active.id);
-  const joined = db.students.filter(s => s.currentTestId === active.id);
-  el.innerHTML = `
-    <div style="position:sticky;top:0;z-index:10">
-      <div class="topbar">
-        <div class="topbar-title"><div class="live-dot"></div> ${KT.esc(active.title)}</div>
-        <div class="topbar-actions">
-          <button class="btn btn-ghost btn-sm" onclick="addTimeLive(5)">+5 Min</button>
-          <button class="btn btn-ghost btn-sm" onclick="addTimeLive(-5)">−5 Min</button>
-          <button class="btn btn-ghost btn-sm" id="pause-btn" onclick="togglePause('${active.id}')">⏸ Pause</button>
-          <button class="btn btn-ghost btn-sm" onclick="collectAll('${active.id}')">📥 Alle einsammeln</button>
-          <button class="btn btn-red btn-sm" onclick="endTest('${active.id}')">⏹ Beenden</button>
-        </div>
+  const subs=db.submissions.filter(s=>s.testId===active.id);
+  const joined=db.students.filter(s=>s.currentTestId===active.id);
+  el.innerHTML=`
+    <div class="topbar">
+      <div class="topbar-title"><div class="live-dot"></div>${KT.esc(active.title)}</div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="addTimeLive(5)">+5 Min</button>
+        <button class="btn btn-ghost btn-sm" onclick="addTimeLive(-5)">−5 Min</button>
+        <button class="btn btn-ghost btn-sm" id="pause-btn" onclick="togglePause('${active.id}')">⏸ Pause</button>
+        <button class="btn btn-amber btn-sm" onclick="collectAll('${active.id}')">📥 Alle einsammeln</button>
+        <button class="btn btn-red btn-sm" onclick="endTest('${active.id}')">⏹ Beenden</button>
       </div>
-      <div style="background:#0f1117;padding:16px 24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap">
-        <div class="live-stat"><span class="live-stat-label">Zeit</span><div class="timer-live" id="timer-live">${KT.fmt(timerSecs)}</div></div>
-        <div style="width:1px;height:48px;background:rgba(255,255,255,.08);flex-shrink:0"></div>
-        <div class="live-stat"><span class="live-stat-label">Verbunden</span><div class="live-stat-val">${joined.length}</div></div>
-        <div class="live-stat"><span class="live-stat-label">Abgaben</span><div class="live-stat-val">${subs.length}</div></div>
-        <div class="live-stat"><span class="live-stat-label">Offen</span><div class="live-stat-val">${Math.max(0, joined.length - subs.length)}</div></div>
-        <div class="live-stat" style="margin-left:auto">
-          <span class="live-stat-label">Fortschritt</span>
-          <div style="width:180px;margin-top:8px"><div class="progress-bar"><div class="progress-fill" style="width:${joined.length ? Math.round(subs.length/joined.length*100) : 0}%"></div></div>
-          <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:4px">${joined.length ? Math.round(subs.length/joined.length*100) : 0}% abgegeben</div></div>
-        </div>
+    </div>
+    <div class="live-bar">
+      <div class="live-stat"><span class="live-stat-label">Zeit</span><div class="timer-live" id="timer-live">${KT.fmt(timerSecs)}</div></div>
+      <div style="width:1px;height:44px;background:var(--border);flex-shrink:0"></div>
+      <div class="live-stat"><span class="live-stat-label">Verbunden</span><div class="live-stat-val">${joined.length}</div></div>
+      <div class="live-stat"><span class="live-stat-label">Abgaben</span><div class="live-stat-val">${subs.length}</div></div>
+      <div class="live-stat"><span class="live-stat-label">Offen</span><div class="live-stat-val">${Math.max(0,joined.length-subs.length)}</div></div>
+      <div class="live-stat" style="margin-left:auto;min-width:180px">
+        <span class="live-stat-label">Fortschritt ${joined.length?Math.round(subs.length/joined.length*100):0}%</span>
+        <div class="progress-bar" style="margin-top:8px;width:180px"><div class="progress-fill" style="width:${joined.length?Math.round(subs.length/joined.length*100):0}%"></div></div>
       </div>
     </div>
     <div class="page">
       <div class="g2">
         <div class="panel">
-          <div class="panel-title">🎒 Schüler im Raum (${joined.length})</div>
+          <div class="panel-title">🎒 Schüler (${joined.length})</div>
           <div id="live-students">
-            ${!joined.length
-              ? '<div style="color:var(--ink3);font-size:13px;padding:12px 0">Noch niemand beigetreten.</div>'
-              : joined.map(s => { const sub = subs.find(x => x.studentName === s.name);
-                  return `<div class="stu-row"><div class="stu-avatar">${s.name.charAt(0).toUpperCase()}</div><div class="stu-name">${KT.esc(s.name)}</div><span class="badge ${sub ? 'badge-green' : 'badge-blue'}">${sub ? '✓ Abgegeben' : '⌛ Läuft'}</span></div>`;
-                }).join('')}
+            ${!joined.length?'<div style="color:var(--ink3);font-size:13px">Noch niemand beigetreten.</div>'
+              :joined.map(s=>{const sub=subs.find(x=>x.studentName===s.name);
+                return`<div class="stu-row"><div class="stu-av">${s.name.charAt(0).toUpperCase()}</div><div class="stu-name">${KT.esc(s.name)}</div><span class="badge ${sub?'badge-green':'badge-cyan'}">${sub?'✓ Abgegeben':'⌛ Läuft'}</span></div>`;
+              }).join('')}
           </div>
         </div>
         <div class="panel" style="text-align:center">
-          <div class="panel-title">📱 QR-Code &amp; Zugangscode</div>
-          <div class="qr-outer" style="margin:0 auto 16px"><div id="qr-canvas"></div></div>
+          <div class="panel-title">📱 QR & Code</div>
+          <div style="display:inline-flex;padding:12px;background:#fff;border-radius:var(--r2);margin:0 auto 16px"><div id="qr-canvas"></div></div>
           <div class="code-pill">${active.joinCode}</div>
           <div style="font-size:12px;color:var(--ink3);margin:12px 0 10px;line-height:1.7">Schüler öffnen <strong>schueler.html</strong><br>und geben den Code ein</div>
-          <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('${active.joinCode}').then(()=>KT.toast('📋 Code kopiert!'))">📋 Code kopieren</button>
+          <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('${active.joinCode}').then(()=>KT.toast('📋 Code kopiert!'))">📋 Kopieren</button>
         </div>
       </div>
     </div>`;
-  setTimeout(() => {
-    if (typeof QRCode !== 'undefined' && document.getElementById('qr-canvas')) {
-      const url = window.location.href.replace('lehrer.html', 'schueler.html') + '?code=' + active.joinCode;
-      new QRCode(document.getElementById('qr-canvas'), { text: url, width: 148, height: 148, colorDark: '#0f1117', colorLight: '#ffffff' });
+  setTimeout(()=>{
+    if(typeof QRCode!=='undefined'&&document.getElementById('qr-canvas')){
+      const url=window.location.href.replace('lehrer.html','schueler.html')+'?code='+active.joinCode;
+      new QRCode(document.getElementById('qr-canvas'),{text:url,width:140,height:140,colorDark:'#111',colorLight:'#fff'});
     }
     startPoll(active.id);
-  }, 100);
+  },100);
 }
 
-let pollInt = null;
-function startPoll(testId) {
+function startPoll(testId){
   clearInterval(pollInt);
-  pollInt = setInterval(() => {
-    if (!document.getElementById('live-students')) return clearInterval(pollInt);
-    const db = KT.get();
-    const subs = db.submissions.filter(s => s.testId === testId);
-    const joined = db.students.filter(s => s.currentTestId === testId);
-    const el = document.getElementById('live-students');
-    if (el) el.innerHTML = !joined.length
-      ? '<div style="color:var(--ink3);font-size:13px;padding:12px 0">Noch niemand beigetreten.</div>'
-      : joined.map(s => { const sub = subs.find(x => x.studentName === s.name);
-          return `<div class="stu-row"><div class="stu-avatar">${s.name.charAt(0).toUpperCase()}</div><div class="stu-name">${KT.esc(s.name)}</div><span class="badge ${sub ? 'badge-green' : 'badge-blue'}">${sub ? '✓ Abgegeben' : '⌛ Läuft'}</span></div>`;
-        }).join('');
-  }, 3000);
+  pollInt=setInterval(()=>{
+    if(!document.getElementById('live-students'))return clearInterval(pollInt);
+    const db=KT.get();
+    const subs=db.submissions.filter(s=>s.testId===testId);
+    const joined=db.students.filter(s=>s.currentTestId===testId);
+    const el=document.getElementById('live-students');
+    if(el)el.innerHTML=!joined.length?'<div style="color:var(--ink3);font-size:13px">Noch niemand beigetreten.</div>'
+      :joined.map(s=>{const sub=subs.find(x=>x.studentName===s.name);
+        return`<div class="stu-row"><div class="stu-av">${s.name.charAt(0).toUpperCase()}</div><div class="stu-name">${KT.esc(s.name)}</div><span class="badge ${sub?'badge-green':'badge-cyan'}">${sub?'✓ Abgegeben':'⌛ Läuft'}</span></div>`;
+      }).join('');
+  },3000);
 }
 
-function addTimeLive(m) {
-  timerSecs = Math.max(0, timerSecs + m * 60);
-  const el = document.getElementById('timer-live'); if (el) el.textContent = KT.fmt(timerSecs);
-  KT.toast((m > 0 ? '➕' : '➖') + Math.abs(m) + ' Minuten');
+function addTimeLive(m){
+  timerSecs=Math.max(0,timerSecs+m*60);
+  const el=document.getElementById('timer-live');if(el)el.textContent=KT.fmt(timerSecs);
+  KT.toast((m>0?'➕':'➖')+Math.abs(m)+' Minuten');
 }
 
-function togglePause(testId) {
-  paused = !paused;
-  const btn = document.getElementById('pause-btn');
-  if (paused) { clearInterval(timerInt); if (btn) btn.textContent = '▶ Weiter'; KT.toast('⏸ Pausiert'); }
-  else {
-    if (btn) btn.textContent = '⏸ Pause';
-    timerInt = setInterval(() => {
-      timerSecs = Math.max(0, timerSecs - 1);
-      const el = document.getElementById('timer-live');
-      if (el) el.textContent = KT.fmt(timerSecs);
-      if (timerSecs === 0) { clearInterval(timerInt); endTestAuto(testId); }
-    }, 1000);
+function togglePause(testId){
+  paused=!paused;
+  const btn=document.getElementById('pause-btn');
+  if(paused){clearInterval(timerInt);if(btn)btn.textContent='▶ Weiter';KT.toast('⏸ Pausiert');}
+  else{
+    if(btn)btn.textContent='⏸ Pause';
+    timerInt=setInterval(()=>{
+      timerSecs=Math.max(0,timerSecs-1);
+      const el=document.getElementById('timer-live');
+      if(el)el.textContent=KT.fmt(timerSecs);
+      if(timerSecs===0){clearInterval(timerInt);endTestAuto(testId);}
+    },1000);
     KT.toast('▶ Fortgesetzt');
   }
 }
 
-function collectAll(testId) {
-  if (!confirm('Alle laufenden Tests jetzt einsammeln?')) return;
-  const db = KT.get();
-  db.students.filter(s => s.currentTestId === testId).forEach(s => {
-    if (!db.submissions.find(x => x.studentName === s.name && x.testId === testId))
-      db.submissions.push({ id: KT.gid(), testId, studentName: s.name, answers: {}, submittedAt: Date.now(), submitted: true, corrected: false, autoCollected: true });
+function collectAll(testId){
+  if(!confirm('Alle laufenden Tests einsammeln?'))return;
+  const db=KT.get();
+  db.students.filter(s=>s.currentTestId===testId).forEach(s=>{
+    if(!db.submissions.find(x=>x.studentName===s.name&&x.testId===testId))
+      db.submissions.push({id:KT.gid(),testId,studentName:s.name,answers:{},submittedAt:Date.now(),submitted:true,corrected:false,autoCollected:true});
   });
-  KT.set(db); KT.toast('📥 Alle eingesammelt!'); render('live');
+  KT.set(db);KT.toast('📥 Alle eingesammelt!');render('live');
 }
 
-function renderSubs(mine, db) {
-  const mySubs = db.submissions.filter(s => mine.find(t => t.id === s.testId));
-  const el = document.getElementById('subs-list');
-  if (!mySubs.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Abgaben.</div></div>'; return; }
-  el.innerHTML = mySubs.slice().reverse().map(s => {
-    const t = mine.find(x => x.id === s.testId);
-    const sc = KT.calcScore(s, t);
-    return `<div class="test-card">
-      <div class="stu-avatar" style="width:44px;height:44px;font-size:16px;flex-shrink:0">${s.studentName.charAt(0).toUpperCase()}</div>
+// ─── SUBS ───
+function renderSubs(mine,db){
+  const mySubs=db.submissions.filter(s=>mine.find(t=>t.id===s.testId));
+  const el=document.getElementById('subs-list');
+  if(!mySubs.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Abgaben.</div></div>';return;}
+  el.innerHTML=mySubs.slice().reverse().map(s=>{
+    const t=mine.find(x=>x.id===s.testId);
+    const sc=KT.calcScore(s,t);
+    return`<div class="test-card">
+      <div class="stu-av" style="width:44px;height:44px;font-size:16px;border-radius:50%;flex-shrink:0">${s.studentName.charAt(0).toUpperCase()}</div>
       <div class="tc-info">
         <div class="tc-name">${KT.esc(s.studentName)}</div>
-        <div class="tc-meta">${t ? KT.esc(t.title) : '–'} · ${new Date(s.submittedAt).toLocaleString('de-DE')} · Auto: ${sc.scored}/${sc.total} Pt.</div>
-        ${s.grade ? `<span style="margin-top:4px;display:inline-block;font-size:13px;font-weight:700;color:var(--accent)">Note: ${KT.esc(s.grade)}</span>` : ''}
-        ${s.autoCollected ? '<span class="badge badge-amber" style="margin-top:4px">Auto-eingereicht</span>' : ''}
+        <div class="tc-meta">${t?KT.esc(t.title):'–'} · ${new Date(s.submittedAt).toLocaleString('de-DE')} · ${sc.scored}/${sc.total} Pt.</div>
+        ${s.grade?`<span style="font-size:13px;font-weight:800;color:var(--accent2)">Note: ${KT.esc(s.grade)}</span>`:''}
+        ${s.autoCollected?'<span class="badge badge-amber" style="margin-left:6px">Auto</span>':''}
       </div>
       <div class="tc-btns">
-        <span class="badge ${s.corrected ? 'badge-green' : 'badge-amber'}">${s.corrected ? '✓ Korrigiert' : '⏳ Offen'}</span>
-        <button class="btn btn-ghost btn-sm" onclick="openSub('${s.id}')">👁 Ansehen</button>
-        <button class="btn btn-ghost btn-sm" onclick="openCorr('${s.id}')">✏️ Korrigieren</button>
-        <button class="btn btn-ghost btn-sm" onclick="sendBack('${s.id}')">✉️ Senden</button>
-        <button class="btn btn-ghost btn-sm" onclick="dlSub('${s.id}')">💾</button>
+        <span class="badge ${s.corrected?'badge-green':'badge-amber'}">${s.corrected?'✓ Korrigiert':'⏳ Offen'}</span>
+        <button class="btn btn-ghost btn-sm" onclick="openSub('${s.id}')">👁</button>
+        <button class="btn btn-ghost btn-sm" onclick="openCorr('${s.id}')">✏️ Korr.</button>
+        <button class="btn btn-ghost btn-sm" onclick="sendBack('${s.id}')">✉️</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function openSub(subId) {
-  const db = KT.get(); const sub = db.submissions.find(s => s.id === subId); const t = db.tests.find(x => x.id === sub?.testId); if (!sub || !t) return;
-  const sc = KT.calcScore(sub, t);
-  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
-  openModal(`<div class="modal-head">${KT.esc(sub.studentName)} <button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">${KT.esc(t.title)} · Auto: ${sc.scored}/${sc.total} Pt.${sub.grade ? ' · Note: '+KT.esc(sub.grade) : ''}</div>
-    ${qBlocks.map(b => {
-      const ans = sub.answers?.[b.id];
-      return `<div class="corr-q-row">
+// ─── VIEW SUB ───
+function openSub(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  openModal(`<div class="modal-head">${KT.esc(sub.studentName)}<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">${KT.esc(t.title)} · Auto: ${sc.scored}/${sc.total} Pt.${sub.grade?' · Note: '+KT.esc(sub.grade):''}</div>
+    ${qBlocks.map(b=>{
+      const ans=sub.answers?.[b.id];
+      return`<div class="corr-q-row">
         <div class="corr-q-label">${b.type==='mc'?'MC':b.type==='multi'?'Mehrfach':'Frei'} · ${KT.esc(b.data.question)}</div>
-        ${b.type === 'mc' ? b.data.options.map((o, oi) => `<div class="corr-ans-row ${ans===oi ? oi===b.data.correctIndex?'corr-ok':'corr-wrong' : oi===b.data.correctIndex?'corr-ok':'corr-neutral'}">${oi===b.data.correctIndex?'✅':ans===oi?'❌':'○'} ${KT.esc(o)}${oi===b.data.correctIndex?'<em style="margin-left:auto;font-size:11px;opacity:.6">Richtig</em>':''}${ans===oi&&oi!==b.data.correctIndex?'<em style="margin-left:auto;font-size:11px;opacity:.6">Schülerantwort</em>':''}</div>`).join('')
-        : b.type === 'multi' ? b.data.options.map((o, oi) => { const sel=(ans||[]).includes(oi); const correct=(b.data.correctIndexes||[]).includes(oi); return `<div class="corr-ans-row ${sel&&correct?'corr-ok':sel&&!correct?'corr-wrong':correct?'corr-ok':'corr-neutral'}">${correct?'✅':sel?'❌':'☐'} ${KT.esc(o)}</div>`; }).join('')
-        : `<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:13px;white-space:pre-wrap;min-height:60px;line-height:1.6">${KT.esc(ans)||'<em style="color:var(--ink3)">Keine Antwort</em>'}</div>`}
+        ${b.type==='mc'?b.data.options.map((o,oi)=>`<div class="corr-ans-row ${ans===oi?oi===b.data.correctIndex?'corr-ok':'corr-wrong':oi===b.data.correctIndex?'corr-ok':'corr-neutral'}">${oi===b.data.correctIndex?'✅':ans===oi?'❌':'○'} ${KT.esc(o)}</div>`).join('')
+        :b.type==='multi'?b.data.options.map((o,oi)=>{const sel=(ans||[]).includes(oi);const correct=(b.data.correctIndexes||[]).includes(oi);return`<div class="corr-ans-row ${sel&&correct?'corr-ok':sel&&!correct?'corr-wrong':correct?'corr-ok':'corr-neutral'}">${correct?'✅':sel?'❌':'☐'} ${KT.esc(o)}</div>`;}).join('')
+        :`<div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:11px;font-size:13px;white-space:pre-wrap;min-height:60px">${KT.esc(ans)||'<em style="color:var(--ink3)">Keine Antwort</em>'}</div>`}
       </div>`;
     }).join('')}
     <div style="text-align:right;margin-top:1rem"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`);
 }
 
-function renderCorrect(mine, db) {
-  const open = db.submissions.filter(s => mine.find(t => t.id === s.testId) && !s.corrected);
-  const done = db.submissions.filter(s => mine.find(t => t.id === s.testId) && s.corrected);
-  const el = document.getElementById('correct-list');
-  if (!open.length && !done.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Abgaben zum Korrigieren.</div></div>'; return; }
-  el.innerHTML =
-    (open.length ? `<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Offen (${open.length})</div>` + open.map(s => {
-      const t = mine.find(x => x.id === s.testId);
-      return `<div class="corr-item" onclick="openCorr('${s.id}')">
-        <div class="stu-avatar" style="width:42px;height:42px">${s.studentName.charAt(0).toUpperCase()}</div>
-        <div class="tc-info"><div class="tc-name">${KT.esc(s.studentName)}</div><div class="tc-meta">${t ? KT.esc(t.title) : '–'}</div></div>
+// ─── CORRECT LIST ───
+function renderCorrect(mine,db){
+  const open=db.submissions.filter(s=>mine.find(t=>t.id===s.testId)&&!s.corrected);
+  const done=db.submissions.filter(s=>mine.find(t=>t.id===s.testId)&&s.corrected);
+  const el=document.getElementById('correct-list');
+  if(!open.length&&!done.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Abgaben.</div></div>';return;}
+  el.innerHTML=
+    (open.length?`<div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Offen (${open.length})</div>`+open.map(s=>{
+      const t=mine.find(x=>x.id===s.testId);
+      return`<div class="corr-item" onclick="openCorr('${s.id}')">
+        <div class="stu-av" style="width:42px;height:42px">${s.studentName.charAt(0).toUpperCase()}</div>
+        <div class="tc-info"><div class="tc-name">${KT.esc(s.studentName)}</div><div class="tc-meta">${t?KT.esc(t.title):'–'}</div></div>
         <button class="btn btn-primary btn-sm">Korrigieren →</button>
       </div>`;
-    }).join('') : '') +
-    (done.length ? `<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">Fertig (${done.length})</div>` + done.map(s => {
-      const t = mine.find(x => x.id === s.testId);
-      return `<div class="corr-item" onclick="openCorr('${s.id}')">
-        <div class="stu-avatar" style="width:42px;height:42px;background:var(--green-l);color:var(--green)">${s.studentName.charAt(0).toUpperCase()}</div>
-        <div class="tc-info"><div class="tc-name">${KT.esc(s.studentName)}</div><div class="tc-meta">${t ? KT.esc(t.title) : '–'}${s.grade ? ' · Note: '+KT.esc(s.grade) : ''}</div></div>
+    }).join(''):'') +
+    (done.length?`<div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 10px">Fertig (${done.length})</div>`+done.map(s=>{
+      const t=mine.find(x=>x.id===s.testId);
+      return`<div class="corr-item" onclick="openCorr('${s.id}')">
+        <div class="stu-av" style="width:42px;height:42px;background:var(--green-l);color:var(--green)">${s.studentName.charAt(0).toUpperCase()}</div>
+        <div class="tc-info"><div class="tc-name">${KT.esc(s.studentName)}</div><div class="tc-meta">${t?KT.esc(t.title):'–'}${s.grade?' · Note: '+KT.esc(s.grade):''}</div></div>
         <span class="badge badge-green">✓ Fertig</span>
-        ${s.sentBack ? '<span class="badge badge-blue">✉️ Gesendet</span>' : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();sendBack('${s.id}')">✉️ Senden</button>`}
+        ${s.sentBack?'<span class="badge badge-cyan">✉️ Gesendet</span>':`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();sendBack('${s.id}')">✉️ Senden</button>`}
       </div>`;
-    }).join('') : '');
+    }).join(''):'');
+  if(!seenTuts.has('tut_correct')&&(open.length||done.length)) setTimeout(()=>showTutorial('tut_correct'),400);
 }
 
-function openCorr(subId) {
-  const db = KT.get(); const sub = db.submissions.find(s => s.id === subId); const t = db.tests.find(x => x.id === sub?.testId); if (!sub || !t) return;
-  const sc = KT.calcScore(sub, t);
-  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
-  openModal(`<div class="modal-head">✏️ ${KT.esc(sub.studentName)} <button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">${KT.esc(t.title)} · Auto (MC/Mehrfach): ${sc.scored}/${sc.total} Pt.</div>
-    ${qBlocks.map(b => {
-      const ans = sub.answers?.[b.id];
-      const isCorrect = b.type === 'mc' && ans === b.data.correctIndex;
-      const multiOk = b.type === 'multi' && JSON.stringify([...(ans||[])].sort()) === JSON.stringify([...(b.data.correctIndexes||[])].sort());
-      return `<div class="corr-q-row">
+// ─── CORR MODAL WITH SIGNATURE ───
+function openCorr(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  openModal(`<div class="modal-head">✏️ ${KT.esc(sub.studentName)}<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:1.25rem">${KT.esc(t.title)} · Auto (MC): ${sc.scored}/${sc.total} Pt.</div>
+    ${qBlocks.map(b=>{
+      const ans=sub.answers?.[b.id];
+      const isOk=b.type==='mc'&&ans===b.data.correctIndex;
+      const multiOk=b.type==='multi'&&JSON.stringify([...(ans||[])].sort())===JSON.stringify([...(b.data.correctIndexes||[])].sort());
+      return`<div class="corr-q-row">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px">
           <div class="corr-q-label">${b.type==='mc'?'MC':b.type==='multi'?'Mehrfach':'Frei'} · ${KT.esc(b.data.question)} (${b.data.points||1} Pt.)</div>
-          ${b.type === 'mc' ? `<span class="badge ${isCorrect ? 'badge-green' : 'badge-red'}">${isCorrect ? '✓ Richtig' : '✗ Falsch'}</span>` : ''}
-          ${b.type === 'multi' ? `<span class="badge ${multiOk ? 'badge-green' : 'badge-red'}">${multiOk ? '✓ Richtig' : '✗ Falsch'}</span>` : ''}
+          ${b.type==='mc'?`<span class="badge ${isOk?'badge-green':'badge-red'}">${isOk?'✓ Richtig':'✗ Falsch'}</span>`:''}
+          ${b.type==='multi'?`<span class="badge ${multiOk?'badge-green':'badge-red'}">${multiOk?'✓ Richtig':'✗ Falsch'}</span>`:''}
         </div>
-        ${b.type === 'mc' ? b.data.options.map((o, oi) => `<div class="corr-ans-row ${ans===oi ? oi===b.data.correctIndex?'corr-ok':'corr-wrong' : oi===b.data.correctIndex?'corr-ok':'corr-neutral'}">${oi===b.data.correctIndex?'✅':ans===oi?'❌':'○'} ${KT.esc(o)}</div>`).join('')
-        : b.type === 'multi' ? b.data.options.map((o, oi) => { const sel=(ans||[]).includes(oi); const correct=(b.data.correctIndexes||[]).includes(oi); return `<div class="corr-ans-row ${sel&&correct?'corr-ok':sel&&!correct?'corr-wrong':correct?'corr-ok':'corr-neutral'}">${correct?'✅':sel?'❌':'☐'} ${KT.esc(o)}</div>`; }).join('')
-        : `<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:13px;white-space:pre-wrap;min-height:50px;margin-bottom:8px;line-height:1.6">${KT.esc(ans)||'<em style="color:var(--ink3)">Keine Antwort</em>'}</div>
+        ${b.type==='mc'?b.data.options.map((o,oi)=>`<div class="corr-ans-row ${ans===oi?oi===b.data.correctIndex?'corr-ok':'corr-wrong':oi===b.data.correctIndex?'corr-ok':'corr-neutral'}">${oi===b.data.correctIndex?'✅':ans===oi?'❌':'○'} ${KT.esc(o)}</div>`).join('')
+        :b.type==='multi'?b.data.options.map((o,oi)=>{const sel=(ans||[]).includes(oi);const correct=(b.data.correctIndexes||[]).includes(oi);return`<div class="corr-ans-row ${sel&&correct?'corr-ok':sel&&!correct?'corr-wrong':correct?'corr-ok':'corr-neutral'}">${correct?'✅':sel?'❌':'☐'} ${KT.esc(o)}</div>`;}).join('')
+        :`<div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:11px;font-size:13px;white-space:pre-wrap;min-height:50px;margin-bottom:8px">${KT.esc(ans)||'<em style="color:var(--ink3)">Keine Antwort</em>'}</div>
         <div style="display:grid;grid-template-columns:90px 1fr;gap:8px">
-          <div><label class="f-label">Punkte</label><input type="number" min="0" max="99" id="pts-${b.id}" placeholder="0" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;text-align:center;font-family:var(--mono)"></div>
-          <div><label class="f-label">Kommentar</label><input type="text" id="cmt-${b.id}" placeholder="Anmerkung…" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--font)"></div>
+          <div><label class="f-label">Punkte</label><input type="number" min="0" max="99" id="pts-${b.id}" placeholder="0" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:8px;font-size:15px;text-align:center;font-family:var(--mono);background:var(--bg3);color:var(--ink)"></div>
+          <div><label class="f-label">Kommentar</label><input type="text" id="cmt-${b.id}" placeholder="Anmerkung…" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:8px;font-size:13px;font-family:var(--font);background:var(--bg3);color:var(--ink)"></div>
         </div>`}
       </div>`;
     }).join('')}
     <div class="field" style="margin-top:1rem"><label>Gesamtfeedback</label>
-      <textarea id="overall-fb" rows="3" placeholder="Gesamtkommentar…" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;font-family:var(--font);resize:vertical"></textarea>
+      <textarea id="overall-fb" rows="3" placeholder="Kommentar…" style="width:100%;padding:10px;border:1px solid var(--border2);border-radius:var(--r);font-size:13px;font-family:var(--font);resize:vertical;background:var(--bg3);color:var(--ink)"></textarea>
     </div>
-    <div class="field"><label>Note vergeben</label>
-      <select id="grade-sel" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:var(--r);font-size:18px;font-weight:700;font-family:var(--mono);text-align:center">
+    <div class="field"><label>Note</label>
+      <select id="grade-sel" style="width:100%;padding:11px;border:1px solid var(--border2);border-radius:var(--r);font-size:20px;font-weight:800;font-family:var(--mono);text-align:center;background:var(--bg3);color:var(--ink)">
         <option value="">– Keine Note –</option>
         <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
         <option>1+</option><option>1-</option><option>2+</option><option>2-</option><option>3+</option><option>3-</option>
       </select>
     </div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap">
+
+    <!-- SIGNATURE PAD -->
+    <div style="margin-top:8px">
+      <label class="f-label" style="margin-bottom:8px">✍️ Unterschrift (optional – Apple Pencil oder Maus)</label>
+      <div class="sig-wrap" id="sig-wrap">
+        <canvas class="sig-canvas" id="sig-canvas" height="160"></canvas>
+        <div class="sig-toolbar">
+          <span style="font-size:10px;font-weight:700;color:var(--ink4);text-transform:uppercase;letter-spacing:.7px;margin-right:4px">Farbe:</span>
+          ${['#000000','#1e40af','#dc2626','#059669'].map((c,ci)=>`<div class="sig-color-btn ${ci===0?'active':''}" style="background:${c}" data-color="${c}" onclick="setSigColor('${c}',this)"></div>`).join('')}
+          <span style="font-size:10px;font-weight:700;color:var(--ink4);text-transform:uppercase;letter-spacing:.7px;margin-left:8px;margin-right:4px">Stärke:</span>
+          <button class="sig-size-btn active" data-size="2" onclick="setSigSize(2,this)">S</button>
+          <button class="sig-size-btn" data-size="4" onclick="setSigSize(4,this)">M</button>
+          <button class="sig-size-btn" data-size="7" onclick="setSigSize(7,this)">L</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-ghost btn-sm" onclick="clearSig()">🗑 Löschen</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap">
       <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
       <button class="btn btn-primary" onclick="saveCorr('${subId}',false)">💾 Speichern</button>
       <button class="btn btn-green btn-lg" onclick="saveCorr('${subId}',true)">✉️ An Schüler senden</button>
     </div>`);
+
+  setTimeout(()=>initSigPad(),80);
+  if(!seenTuts.has('tut_sig')) setTimeout(()=>showTutorial('tut_sig'),500);
 }
 
-function saveCorr(subId, send) {
-  const db = KT.get(); const sub = db.submissions.find(s => s.id === subId); const t = db.tests.find(x => x.id === sub?.testId); if (!sub || !t) return;
-  const sc = KT.calcScore(sub, t);
-  const grade = document.getElementById('grade-sel')?.value || '';
-  const overall = document.getElementById('overall-fb')?.value || '';
-  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
-  const gradeColor = grade ? KT.gradeColor(grade) : '#6366f1';
-  let fbHtml = `<div style="background:var(--accent-l);border-radius:8px;padding:11px 14px;margin-bottom:10px;border:1px solid var(--accent-m)"><strong>Automatischer Score:</strong> ${sc.scored}/${sc.total} Punkte</div>`;
-  if (grade) fbHtml += `<div style="text-align:center;margin-bottom:14px"><div style="width:60px;height:60px;border-radius:50%;background:${gradeColor};display:inline-flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;font-family:var(--display);margin-bottom:6px">${KT.esc(grade)}</div><div style="font-size:13px;font-weight:700;color:var(--ink2)">Deine Note</div></div>`;
-  if (overall) fbHtml += `<div style="padding:12px;background:var(--paper2);border-radius:9px;font-size:13px;line-height:1.7;margin-bottom:10px;border:1px solid var(--border)"><strong>Kommentar:</strong> ${KT.esc(overall)}</div>`;
-  qBlocks.forEach(b => {
-    if (b.type === 'free') {
-      const p = document.getElementById('pts-' + b.id)?.value;
-      const c = document.getElementById('cmt-' + b.id)?.value;
-      if (p || c) fbHtml += `<div style="padding:9px 12px;background:var(--paper2);border-radius:8px;margin-bottom:6px;font-size:13px;border:1px solid var(--border)"><strong>${KT.esc(b.data.question)}:</strong> ${p ? p+' Pt.' : ''} ${c ? '— '+KT.esc(c) : ''}</div>`;
+// ─── SIGNATURE PAD ───
+let sigCtx=null, sigDrawing=false, sigColor='#000000', sigSize=2;
+
+function initSigPad(){
+  const canvas=document.getElementById('sig-canvas');
+  if(!canvas)return;
+  const wrap=document.getElementById('sig-wrap');
+  canvas.width=wrap.offsetWidth||500;
+  sigCtx=canvas.getContext('2d');
+  sigCtx.fillStyle='#ffffff';
+  sigCtx.fillRect(0,0,canvas.width,canvas.height);
+  sigCtx.strokeStyle=sigColor;
+  sigCtx.lineWidth=sigSize;
+  sigCtx.lineCap='round';
+  sigCtx.lineJoin='round';
+
+  const getPos=(e)=>{
+    const r=canvas.getBoundingClientRect();
+    const src=e.touches?e.touches[0]:e;
+    return{x:(src.clientX-r.left)*(canvas.width/r.width),y:(src.clientY-r.top)*(canvas.height/r.height)};
+  };
+  const start=(e)=>{e.preventDefault();sigDrawing=true;const p=getPos(e);sigCtx.beginPath();sigCtx.moveTo(p.x,p.y);};
+  const draw=(e)=>{e.preventDefault();if(!sigDrawing)return;const p=getPos(e);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();};
+  const stop=(e)=>{e.preventDefault();sigDrawing=false;};
+
+  canvas.addEventListener('mousedown',start);
+  canvas.addEventListener('mousemove',draw);
+  canvas.addEventListener('mouseup',stop);
+  canvas.addEventListener('mouseleave',stop);
+  canvas.addEventListener('touchstart',start,{passive:false});
+  canvas.addEventListener('touchmove',draw,{passive:false});
+  canvas.addEventListener('touchend',stop,{passive:false});
+}
+
+function setSigColor(color,btn){
+  sigColor=color;
+  if(sigCtx){sigCtx.strokeStyle=color;}
+  document.querySelectorAll('.sig-color-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setSigSize(size,btn){
+  sigSize=size;
+  if(sigCtx)sigCtx.lineWidth=size;
+  document.querySelectorAll('.sig-size-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function clearSig(){
+  const canvas=document.getElementById('sig-canvas');
+  if(!canvas||!sigCtx)return;
+  sigCtx.fillStyle='#ffffff';
+  sigCtx.fillRect(0,0,canvas.width,canvas.height);
+}
+function getSigData(){
+  const canvas=document.getElementById('sig-canvas');
+  if(!canvas)return null;
+  // Check if anything drawn (compare to blank)
+  const blank=document.createElement('canvas');blank.width=canvas.width;blank.height=canvas.height;
+  const bCtx=blank.getContext('2d');bCtx.fillStyle='#ffffff';bCtx.fillRect(0,0,blank.width,blank.height);
+  if(canvas.toDataURL()===blank.toDataURL())return null;
+  return canvas.toDataURL('image/png');
+}
+
+function saveCorr(subId,send){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);const t=db.tests.find(x=>x.id===sub?.testId);if(!sub||!t)return;
+  const sc=KT.calcScore(sub,t);
+  const grade=document.getElementById('grade-sel')?.value||'';
+  const overall=document.getElementById('overall-fb')?.value||'';
+  const sigData=getSigData();
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  const gradeColor=grade?KT.gradeColor(grade):'#6366f1';
+
+  let fbHtml=`<div style="background:var(--accent-l);border-radius:8px;padding:11px 14px;margin-bottom:10px;border:1px solid var(--accent-m)"><strong>Auto-Score:</strong> ${sc.scored}/${sc.total} Punkte</div>`;
+  if(grade)fbHtml+=`<div style="text-align:center;margin-bottom:14px"><div style="width:60px;height:60px;border-radius:50%;background:${gradeColor};display:inline-flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;margin-bottom:6px">${KT.esc(grade)}</div><div style="font-size:13px;font-weight:700">Deine Note</div></div>`;
+  if(overall)fbHtml+=`<div style="padding:12px;background:var(--bg2);border-radius:9px;font-size:13px;line-height:1.7;margin-bottom:10px;border:1px solid var(--border)"><strong>Kommentar:</strong> ${KT.esc(overall)}</div>`;
+  qBlocks.forEach(b=>{
+    if(b.type==='free'){
+      const p=document.getElementById('pts-'+b.id)?.value;
+      const c=document.getElementById('cmt-'+b.id)?.value;
+      if(p||c)fbHtml+=`<div style="padding:9px 12px;background:var(--bg2);border-radius:8px;margin-bottom:6px;font-size:13px;border:1px solid var(--border)"><strong>${KT.esc(b.data.question)}:</strong> ${p?p+' Pt.':''} ${c?'— '+KT.esc(c):''}</div>`;
     }
   });
-  if (grade) sub.grade = grade;
-  sub.corrected = true; sub.returnedFeedback = fbHtml; sub.correctedAt = Date.now();
-  if (send) sub.sentBack = true;
-  KT.set(db); closeModal(); KT.toast(send ? '✉️ An Schüler gesendet!' : '💾 Gespeichert!'); render('subs');
+  if(sigData)fbHtml+=`<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Unterschrift der Lehrkraft:</div><img src="${sigData}" style="max-width:100%;border:1px solid var(--border);border-radius:8px;background:#fff"></div>`;
+
+  if(grade)sub.grade=grade;
+  sub.corrected=true;sub.returnedFeedback=fbHtml;sub.correctedAt=Date.now();
+  if(send)sub.sentBack=true;
+  KT.set(db);closeModal();KT.toast(send?'✉️ An Schüler gesendet!':'💾 Gespeichert!');render('subs');
 }
 
-function sendBack(subId) {
-  const db = KT.get(); const sub = db.submissions.find(s => s.id === subId); if (!sub) return;
-  if (!sub.corrected) { alert('Bitte zuerst korrigieren!'); return; }
-  sub.sentBack = true; KT.set(db); KT.toast('✉️ An Schüler gesendet!'); render('subs');
+function sendBack(subId){
+  const db=KT.get();const sub=db.submissions.find(s=>s.id===subId);if(!sub)return;
+  if(!sub.corrected){alert('Bitte zuerst korrigieren!');return;}
+  sub.sentBack=true;KT.set(db);KT.toast('✉️ Gesendet!');render('subs');
 }
 
-function dlTest(id) { const db = KT.get(); const t = db.tests.find(x => x.id === id); if (!t) return; KT.dl('test-'+t.title.replace(/\W/g,'_')+'.json', JSON.stringify(t, null, 2), 'application/json'); }
+// ════════════════════════════════════════
+// AUTO-TUTORIAL SYSTEM
+// ════════════════════════════════════════
+const TUTORIALS = {
+  welcome:{
+    steps:[
+      {emoji:'👋',title:'Willkommen!',desc:'Schön dass du da bist. Ich zeige dir kurz wie KlassenTest funktioniert.',noTarget:true},
+      {emoji:'📋',title:'Meine Tests',desc:'Hier siehst du alle deine Tests – aktive, beendete und Entwürfe. Du kannst Tests starten, bearbeiten und verwalten.',target:'#nb-tests'},
+      {emoji:'✦',title:'Test erstellen',desc:'Klicke hier um einen neuen Test zu erstellen. Du kannst Fragen, Bilder und Texte hinzufügen.',target:'#nb-create'},
+      {emoji:'🟢',title:'Live-Modus',desc:'Sobald ein Test läuft, siehst du hier alle verbundenen Schüler in Echtzeit – mit Timer und QR-Code.',target:'#nb-live'},
+      {emoji:'✏️',title:'Korrigieren',desc:'Hier korrigierst du Abgaben, vergibst Noten und kannst sogar deine Unterschrift hinzufügen!',target:'#nb-correct'},
+    ]
+  },
+  tut_mc:{
+    steps:[
+      {emoji:'☑',title:'Einfachauswahl',desc:'Du hast eine MC-Frage hinzugefügt. Gib die Frage und alle Antwortoptionen ein.',target:'#canvas'},
+      {emoji:'○',title:'Richtige Antwort',desc:'Klicke auf den Kreis (○) links neben einer Antwort um sie als RICHTIG zu markieren. Er wird grün. Für Schüler ist das unsichtbar!',target:'#canvas'},
+      {emoji:'⭐',title:'Punkte (Sterne)',desc:'Das ⭐ Feld zeigt die Punkte für diese Frage. Standard ist 1 Punkt – du kannst es ändern. Schwerere Fragen können mehr Punkte wert sein.',target:'#canvas'},
+      {emoji:'↕',title:'Größe ändern',desc:'Du kannst jeden Frageblock in der Höhe ziehen (unten rechts am Block) um mehr Platz zu haben.',target:'#canvas'},
+    ]
+  },
+  tut_multi:{
+    steps:[
+      {emoji:'☑☑',title:'Mehrfachauswahl',desc:'Hier können Schüler MEHRERE Antworten auswählen. Alle richtigen Antworten müssen sie finden.',target:'#canvas'},
+      {emoji:'☐',title:'Mehrere Richtige',desc:'Klicke auf die Quadrate (☐) um mehrere richtige Antworten zu markieren. Sie werden orange.',target:'#canvas'},
+      {emoji:'⭐',title:'Punkte',desc:'Bei Mehrfachauswahl gibt es die Punkte NUR wenn der Schüler ALLE richtigen und KEINE falschen wählt.',target:'#canvas'},
+    ]
+  },
+  tut_free:{
+    steps:[
+      {emoji:'✍',title:'Freie Antwort',desc:'Schüler können hier in einem Textfeld antworten. Du musst das manuell korrigieren.',target:'#canvas'},
+      {emoji:'📏',title:'Zeilen',desc:'Du kannst die Anzahl der Zeilen einstellen – mehr Zeilen = mehr Platz für längere Antworten.',target:'#canvas'},
+      {emoji:'⭐',title:'Punkte vergeben',desc:'Beim Korrigieren vergibst du die Punkte manuell. Die Maximalpunkte stellst du hier ein.',target:'#canvas'},
+    ]
+  },
+  tut_table:{
+    steps:[
+      {emoji:'📊',title:'Punktetabelle',desc:'Diese Tabelle hilft dir und dem Schüler den Überblick über alle Aufgaben und Punkte zu behalten.',target:'#canvas'},
+      {emoji:'✏️',title:'Bearbeiten',desc:'Alle Zellen und Spaltenüberschriften sind direkt klickbar und editierbar.',target:'#canvas'},
+      {emoji:'➕',title:'Zeilen & Spalten',desc:'Mit "+ Zeile" und "+ Spalte" kannst du die Tabelle beliebig erweitern. Mit "− Zeile" wieder verkleinern.',target:'#canvas'},
+    ]
+  },
+  tut_text:{
+    steps:[
+      {emoji:'📝',title:'Textblock',desc:'Füge Texte, Aufgabenstellungen oder Anweisungen hinzu. Der Text erscheint genauso beim Schüler.',target:'#canvas'},
+    ]
+  },
+  tut_image:{
+    steps:[
+      {emoji:'🖼',title:'Bild einfügen',desc:'Lade ein Bild hoch – z. B. ein Diagramm, eine Karte oder eine Zeichnung. Schüler sehen es während des Tests.',target:'#canvas'},
+    ]
+  },
+  tut_live:{
+    steps:[
+      {emoji:'🟢',title:'Test läuft!',desc:'Dein Test ist jetzt aktiv. Schüler können mit dem Code oder QR-Code beitreten.',target:'#nb-live'},
+      {emoji:'⏱',title:'Timer',desc:'Der Countdown läuft. Mit +5 Min / −5 Min kannst du die Zeit anpassen. Mit ⏸ Pause hältst du den Timer an.',noTarget:true},
+      {emoji:'📱',title:'QR-Code',desc:'Schüler scannen den QR-Code mit dem Handy oder geben den 6-stelligen Code auf schueler.html ein.',noTarget:true},
+      {emoji:'📥',title:'Alle einsammeln',desc:'Mit "Alle einsammeln" reichst du alle noch laufenden Tests automatisch ein – gut kurz vor Ablauf.',noTarget:true},
+    ]
+  },
+  tut_correct:{
+    steps:[
+      {emoji:'✏️',title:'Korrigieren',desc:'Hier siehst du alle Abgaben. Grüne haben MC-Fragen automatisch bewertet. Freie Antworten musst du manuell prüfen.',target:'#nb-correct'},
+      {emoji:'⭐',title:'Punkte & Note',desc:'Für jede freie Antwort kannst du Punkte vergeben. Am Ende wählst du eine Note (1-6 mit +/-).',noTarget:true},
+      {emoji:'✍️',title:'Unterschrift',desc:'Du kannst deine Unterschrift direkt mit dem Apple Pencil, Finger oder Maus auf dem Unterschrifts-Pad hinzufügen!',noTarget:true},
+      {emoji:'✉️',title:'Feedback senden',desc:'Mit "An Schüler senden" bekommt der Schüler sofort seine Korrektur, Note und dein Feedback auf schueler.html.',noTarget:true},
+    ]
+  },
+  tut_sig:{
+    steps:[
+      {emoji:'✍️',title:'Unterschrift-Pad',desc:'Hier kannst du mit Apple Pencil, Finger oder Maus deine Unterschrift hinzufügen.',noTarget:true},
+      {emoji:'🎨',title:'Farbe & Stärke',desc:'Wähle die Farbe (schwarz, blau, rot, grün) und Stärke (S, M, L) deines Stifts.',noTarget:true},
+      {emoji:'🗑',title:'Löschen',desc:'Mit dem Löschen-Button kannst du die Unterschrift zurücksetzen und neu zeichnen.',noTarget:true},
+    ]
+  },
+};
 
-function dlSub(subId) {
-  const db = KT.get(); const sub = db.submissions.find(s => s.id === subId); const t = db.tests.find(x => x.id === sub?.testId); if (!sub || !t) return;
-  const sc = KT.calcScore(sub, t);
-  let txt = `KlassenTest – Abgabe\n${'─'.repeat(40)}\nSchüler: ${sub.studentName}\nTest: ${t.title}\nAbgegeben: ${new Date(sub.submittedAt).toLocaleString('de-DE')}\nAuto-Score: ${sc.scored}/${sc.total}\n${sub.grade ? 'Note: '+sub.grade : ''}\n\n`;
-  (t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type)).forEach((b,i)=>{
-    const ans=sub.answers?.[b.id];txt+=`Frage ${i+1}: ${b.data.question}\n`;
-    if(b.type==='mc')txt+=`Antwort: ${ans!=null?b.data.options[ans]:'–'} (${ans===b.data.correctIndex?'Richtig':'Falsch'})\n\n`;
-    else if(b.type==='multi')txt+=`Antwort: ${(ans||[]).map(i=>b.data.options[i]).join(', ')||'–'}\n\n`;
-    else txt+=`Antwort: ${ans||'–'}\n\n`;
-  });
-  KT.dl('abgabe-'+sub.studentName.replace(/\W/g,'_')+'.txt', txt);
+let tutActive=false, tutId=null, tutStepIdx=0, tutSteps=[];
+
+function showTutorial(id){
+  if(seenTuts.has(id)||tutActive)return;
+  const tut=TUTORIALS[id];if(!tut)return;
+  tutActive=true; tutId=id; tutStepIdx=0; tutSteps=tut.steps;
+  const overlay=document.getElementById('tut-overlay');
+  overlay.classList.add('active');
+  document.getElementById('tut-skip-btn').style.display='block';
+  renderTutStep();
 }
 
-/* ─── TUTORIAL ─── */
-let tutStep = 0;
-const tutSteps = [
-  { target:'#nb-tests', title:'Meine Tests', desc:'Hier siehst du alle deine Tests – aktive, beendete und Entwürfe.', arrowDir:'arrow-left' },
-  { target:'#nb-create', title:'Test erstellen', desc:'Klicke hier, um einen neuen Test zu erstellen. Du kannst Fragen, Bilder und Texte hinzufügen.', arrowDir:'arrow-left' },
-  { target:'#tut-toolbar', title:'Block-Toolbar', desc:'Mit diesen Buttons fügst du Inhalte ein: Text, Bilder, MC-Fragen, Mehrfachauswahl und freie Antworten.', arrowDir:'arrow-bottom', navTo:'create' },
-  { target:'#tut-mc-btn', title:'Multiple Choice', desc:'Klick auf "Einfachauswahl" fügt eine MC-Frage ein. Klicke den Kreis neben der richtigen Antwort – für Schüler unsichtbar!', arrowDir:'arrow-bottom', navTo:'create' },
-  { target:'#tut-draft-btn', title:'Entwurf speichern', desc:'Speichere deinen Fortschritt jederzeit. Du kannst später weitermachen.', arrowDir:'arrow-top', navTo:'create' },
-  { target:'#tut-start-btn', title:'Test starten', desc:'Wenn du fertig bist, klick hier. Du wählst die Dauer und erhältst einen 6-stelligen Code für die Schüler.', arrowDir:'arrow-top', navTo:'create' },
-  { target:'#nb-live', title:'Live-Modus', desc:'Hier siehst du alle verbundenen Schüler, den Timer und kannst pausieren oder Zeit hinzufügen.', arrowDir:'arrow-left' },
-  { target:'#nb-subs', title:'Abgaben', desc:'Alle eingereichten Tests erscheinen hier. Du siehst den automatischen Score für MC-Fragen.', arrowDir:'arrow-left' },
-  { target:'#nb-correct', title:'Korrigieren', desc:'Hier korrigierst du freie Antworten manuell, vergibst Punkte und Noten und sendest Feedback zurück.', arrowDir:'arrow-left' }
-];
+function renderTutStep(){
+  const step=tutSteps[tutStepIdx];if(!step){endTutorial();return;}
+  const spot=document.getElementById('tut-spot');
+  const bubble=document.getElementById('tut-bubble');
+  bubble.style.display='block';
 
-function startTutorial() {
-  tutStep = 0;
-  document.getElementById('tut-overlay').style.display = 'block';
-  showTutStep();
+  // Render bubble content
+  bubble.innerHTML=`
+    <div class="tut-step-label">Schritt ${tutStepIdx+1} von ${tutSteps.length}</div>
+    <span class="tut-emoji">${step.emoji||'💡'}</span>
+    <div class="tut-title">${step.title}</div>
+    <div class="tut-desc">${step.desc}</div>
+    <div class="tut-nav">
+      <div class="tut-dots">${tutSteps.map((_,i)=>`<div class="tut-dot${i===tutStepIdx?' active':''}"></div>`).join('')}</div>
+      ${tutStepIdx>0?`<button class="btn btn-ghost btn-sm" onclick="tutPrev()">←</button>`:''}
+      <button class="btn btn-primary btn-sm" onclick="tutNext()">${tutStepIdx===tutSteps.length-1?'✓ Verstanden':'Weiter →'}</button>
+    </div>`;
+
+  // Position spotlight
+  if(step.target&&!step.noTarget){
+    const el=document.querySelector(step.target);
+    if(el){
+      spot.style.display='block';
+      const r=el.getBoundingClientRect();
+      spot.style.left=(r.left-6)+'px';
+      spot.style.top=(r.top-6)+'px';
+      spot.style.width=(r.width+12)+'px';
+      spot.style.height=(r.height+12)+'px';
+      // Position bubble
+      let bTop=r.bottom+16;
+      let bLeft=r.left;
+      if(bTop+260>window.innerHeight)bTop=r.top-270;
+      if(bLeft+330>window.innerWidth)bLeft=window.innerWidth-340;
+      bubble.style.left=Math.max(10,bLeft)+'px';
+      bubble.style.top=Math.max(10,bTop)+'px';
+      el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    } else {
+      spot.style.display='none';
+      centerBubble();
+    }
+  } else {
+    spot.style.display='none';
+    centerBubble();
+  }
 }
-function showTutStep() {
-  const step = tutSteps[tutStep]; if (!step) { endTutorial(); return; }
-  if (step.navTo) nav(step.navTo);
-  setTimeout(() => {
-    const target = document.querySelector(step.target);
-    if (!target) { tutStep++; showTutStep(); return; }
-    const rect = target.getBoundingClientRect();
-    const spot = document.getElementById('tut-spot');
-    const bubble = document.getElementById('tut-bubble');
-    const arrow = document.getElementById('tut-arrow');
-    spot.style.cssText = `left:${rect.left-4}px;top:${rect.top-4}px;width:${rect.width+8}px;height:${rect.height+8}px;`;
-    let bTop = rect.bottom + 14, bLeft = rect.left;
-    if (bTop + 200 > window.innerHeight) bTop = rect.top - 210;
-    if (bLeft + 310 > window.innerWidth) bLeft = window.innerWidth - 320;
-    bubble.className = 'tutorial-bubble ' + (step.arrowDir || 'arrow-top');
-    bubble.style.cssText = `left:${Math.max(10, bLeft)}px;top:${bTop}px;`;
-    bubble.innerHTML = `
-      <div class="tutorial-step">Schritt ${tutStep+1} von ${tutSteps.length}</div>
-      <div class="tutorial-title">${step.title}</div>
-      <div class="tutorial-desc">${step.desc}</div>
-      <div class="tutorial-nav">
-        <div class="tutorial-dots">${tutSteps.map((_,i) => `<div class="tutorial-dot${i===tutStep?' active':''}"></div>`).join('')}</div>
-        ${tutStep > 0 ? `<button class="btn btn-ghost btn-sm" onclick="tutPrev()">←</button>` : ''}
-        <button class="btn btn-primary btn-sm" onclick="tutNext()">${tutStep === tutSteps.length-1 ? '✓ Fertig' : 'Weiter →'}</button>
-      </div>`;
-    arrow.textContent = bTop > rect.bottom ? '👆' : '👇';
-    arrow.style.cssText = `left:${rect.left + rect.width/2 - 16}px;top:${bTop > rect.bottom ? rect.bottom + 4 : bTop - 36}px;`;
-    target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 150);
+
+function centerBubble(){
+  const bubble=document.getElementById('tut-bubble');
+  bubble.style.left='50%';
+  bubble.style.top='50%';
+  bubble.style.transform='translate(-50%,-50%)';
 }
-function tutNext() { tutStep++; if (tutStep >= tutSteps.length) endTutorial(); else showTutStep(); }
-function tutPrev() { tutStep = Math.max(0, tutStep-1); showTutStep(); }
-function endTutorial() {
-  document.getElementById('tut-overlay').style.display = 'none';
-  sessionStorage.setItem('kt_tut_done', '1');
-  KT.toast('🎓 Tutorial abgeschlossen!');
+
+function tutNext(){
+  tutStepIdx++;
+  if(tutStepIdx>=tutSteps.length)endTutorial();
+  else{
+    const b=document.getElementById('tut-bubble');
+    b.style.transform='';
+    renderTutStep();
+  }
+}
+function tutPrev(){
+  tutStepIdx=Math.max(0,tutStepIdx-1);
+  document.getElementById('tut-bubble').style.transform='';
+  renderTutStep();
+}
+
+function endTutorial(){
+  tutActive=false;
+  seenTuts.add(tutId);
+  sessionStorage.setItem('kt_seen_tuts',JSON.stringify([...seenTuts]));
+  const overlay=document.getElementById('tut-overlay');
+  overlay.classList.remove('active');
+  document.getElementById('tut-spot').style.display='none';
+  document.getElementById('tut-bubble').style.display='none';
+  document.getElementById('tut-skip-btn').style.display='none';
+  KT.toast('✓ Tutorial gespeichert!');
 }
 
 init();

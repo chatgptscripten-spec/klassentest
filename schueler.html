@@ -3,275 +3,478 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KlassenTest – Schüler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="kt.css">
 <style>
-body{background:var(--paper2);margin:0;font-family:var(--font)}
+:root {
+  --font: 'DM Sans', system-ui, sans-serif;
+  --display: 'Fraunces', Georgia, serif;
+  --mono: 'DM Mono', monospace;
 
-/* ── JOIN SCREEN ── */
-.join-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:1.5rem;
-  background:var(--paper2);
-  background-image:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(79,70,229,.06) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 80%,rgba(16,185,129,.05) 0%,transparent 50%);
-}
-.join-card{width:100%;max-width:420px;animation:scaleIn .3s cubic-bezier(.16,1,.3,1)}
+  --ink:  #111827;
+  --ink2: #374151;
+  --ink3: #6b7280;
+  --ink4: #9ca3af;
+  --paper: #ffffff;
+  --paper2: #f9fafb;
+  --paper3: #f3f4f6;
 
-.join-logo{text-align:center;margin-bottom:1.75rem}
-.join-logo-mark{
-  width:60px;height:60px;
-  background:linear-gradient(135deg,#6366f1,#4f46e5);
-  border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--display);font-size:28px;font-weight:800;color:#fff;
-  margin:0 auto 14px;
-  box-shadow:0 4px 20px rgba(79,70,229,.35);
-}
-.join-title{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-.6px;margin-bottom:5px;color:var(--ink)}
-.join-sub{font-size:13px;color:var(--ink3);line-height:1.7}
+  --accent: #4f46e5;
+  --accent-l: #eef2ff;
+  --accent-m: #c7d2fe;
+  --accent-d: #3730a3;
 
-.join-panel{
-  background:#fff;border:1px solid var(--border);
-  border-radius:var(--r3);padding:1.75rem;
-  box-shadow:var(--shadow3);
-}
+  --green: #059669;
+  --green-l: #ecfdf5;
+  --green-m: #a7f3d0;
+  --green-d: #065f46;
 
-.f-label-dark{
-  display:block;font-size:11px;font-weight:700;color:var(--ink3);
-  text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;
-}
-.f-inp-join{
-  width:100%;padding:11px 14px;
-  border:1.5px solid var(--border);border-radius:var(--r);
-  font-size:14px;font-family:var(--font);
-  background:var(--paper);color:var(--ink);
-  transition:border .15s,box-shadow .15s;margin-bottom:1rem;
-}
-.f-inp-join:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
-.f-inp-join::placeholder{color:var(--ink4)}
-.code-inp{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:7px;text-transform:uppercase;text-align:center}
+  --amber: #d97706;
+  --amber-l: #fffbeb;
+  --amber-m: #fde68a;
 
-/* ── TEST SCREEN ── */
-.test-screen{min-height:100vh;display:flex;flex-direction:column;background:var(--paper)}
+  --red: #dc2626;
+  --red-l: #fef2f2;
+  --red-m: #fecaca;
 
-.test-header{
-  background:#fff;border-bottom:1px solid var(--border);
-  position:sticky;top:0;z-index:10;
-}
-.test-topbar{
-  padding:0 1.5rem;height:54px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-}
-.test-name{
-  font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:-.3px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);
-}
-.timer-chip{
-  background:var(--ink);color:#fff;
-  border-radius:20px;padding:7px 15px;
-  font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:2px;
-  display:flex;align-items:center;gap:7px;flex-shrink:0;
-  transition:background .3s;
-}
-.timer-chip.warn{background:#92400e}
-.timer-chip.danger{background:var(--red);animation:blink .8s infinite}
+  --border: #e5e7eb;
+  --border2: #d1d5db;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow2: 0 4px 16px rgba(0,0,0,.08);
+  --shadow3: 0 8px 32px rgba(0,0,0,.1);
 
-.test-progress{height:3px;background:var(--paper3)}
-.test-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#818cf8);transition:width .4s cubic-bezier(.4,0,.2,1)}
+  --r: 10px;
+  --r2: 12px;
+  --r3: 16px;
+  --r4: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--paper2); color: var(--ink); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 
-.test-body{flex:1;padding:1.5rem;max-width:720px;width:100%;margin:0 auto}
+@keyframes scaleIn { from{opacity:0;transform:scale(.96) translateY(4px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 4px rgba(79,70,229,.15)} 50%{box-shadow:0 0 0 8px rgba(79,70,229,.04)} }
+@keyframes spin { to{transform:rotate(360deg)} }
 
-/* ── QUESTION DISPLAY ── */
-.student-q-block{
-  background:#fff;border:1px solid var(--border);
-  border-radius:var(--r3);padding:1.5rem;
-  box-shadow:var(--shadow);
-  animation:scaleIn .2s cubic-bezier(.16,1,.3,1);
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px;
+  border-radius: 9px;
+  border: 1.5px solid transparent;
+  font-family: var(--font);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
 }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-d); box-shadow: 0 2px 10px rgba(79,70,229,.3); }
+.btn-green { background: var(--green); color: #fff; border-color: var(--green); }
+.btn-green:hover { background: var(--green-d); }
+.btn-ghost { background: var(--paper); color: var(--ink2); border-color: var(--border2); }
+.btn-ghost:hover { border-color: var(--accent-m); color: var(--accent); background: var(--accent-l); }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+.btn-lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r2); }
+.btn-full { width: 100%; justify-content: center; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
 
-.q-header{
-  font-size:11px;font-weight:700;color:var(--ink3);
-  text-transform:uppercase;letter-spacing:.5px;
-  margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-}
-.q-tag{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:700;letter-spacing:.2px}
-.tag-mc{background:var(--accent-l);color:var(--accent)}
-.tag-multi{background:var(--amber-l);color:var(--amber)}
-.tag-free{background:var(--green-l);color:var(--green)}
+/* ─── ALERT ─── */
+.alert { padding: 11px 14px; border-radius: var(--r); font-size: 13px; line-height: 1.6; }
+.alert-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.alert-red { background: var(--red-l); color: var(--red); border: 1px solid var(--red-m); }
+.alert-green { background: var(--green-l); color: var(--green-d); border: 1px solid var(--green-m); }
 
-.q-text{font-size:18px;font-weight:600;line-height:1.55;color:var(--ink);margin-bottom:1.25rem;font-family:var(--display)}
-
-/* ── ANSWER OPTIONS ── */
-.ans-opt{
-  border:2px solid var(--border);border-radius:var(--r2);
-  padding:13px 16px;margin-bottom:8px;cursor:pointer;
-  display:flex;align-items:center;gap:13px;font-size:14px;color:var(--ink2);
-  transition:all .14s;user-select:none;background:#fff;
-  box-shadow:var(--shadow);
+/* ─── JOIN SCREEN ─── */
+.join-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  background: var(--paper2);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 20% 10%, rgba(79,70,229,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 85%, rgba(16,185,129,.05) 0%, transparent 50%);
 }
-.ans-opt:hover{border-color:var(--accent-m);background:var(--accent-l);color:var(--accent)}
-.ans-opt.sel{
-  border-color:var(--accent);background:var(--accent-l);color:var(--accent);font-weight:600;
-  box-shadow:0 0 0 1px var(--accent);
-}
-.opt-dot{
-  width:20px;height:20px;border-radius:50%;
-  border:2px solid var(--border2);flex-shrink:0;
-  transition:all .14s;
-}
-.ans-opt:hover .opt-dot{border-color:var(--accent-m)}
-.sel .opt-dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
-
-.opt-square{
-  width:20px;height:20px;border-radius:6px;
-  border:2px solid var(--border2);flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;transition:all .14s;
-}
-.ans-opt:hover .opt-square{border-color:var(--amber)}
-.sel .opt-square{background:var(--amber);border-color:var(--amber);color:#fff}
-
-.free-ta{
-  width:100%;border:1.5px solid var(--border);border-radius:var(--r);
-  padding:11px 14px;font-size:14px;color:var(--ink);font-family:var(--font);
-  transition:border .15s,box-shadow .15s;resize:vertical;line-height:1.7;
-}
-.free-ta:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.08)}
-.free-ta.ta-lined{
-  background:#fff;
-  background-image:repeating-linear-gradient(transparent,transparent 27px,#c5cfe0 27px,#c5cfe0 28px);
-  line-height:28px;padding:0 14px;
-}
-.free-ta.ta-grid{
-  background-image:linear-gradient(var(--paper3) 1px,transparent 1px),linear-gradient(90deg,var(--paper3) 1px,transparent 1px);
-  background-size:24px 24px;background-color:#fff;
+.join-card {
+  width: 100%; max-width: 420px;
+  animation: scaleIn .35s cubic-bezier(.16,1,.3,1);
 }
 
-/* ── PROGRESS NAV ── */
-.progress-nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1.25rem}
-.progress-dot{
-  width:30px;height:30px;border-radius:50%;
-  border:2px solid var(--border);background:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;cursor:pointer;
-  color:var(--ink3);transition:all .15s;
+.join-logo { text-align: center; margin-bottom: 2rem; }
+.join-logo-mark {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--display);
+  font-size: 30px; font-weight: 900;
+  color: #fff;
+  margin: 0 auto 16px;
+  box-shadow: 0 6px 24px rgba(79,70,229,.35), 0 0 0 6px rgba(79,70,229,.08);
 }
-.progress-dot:hover{border-color:var(--accent-m);color:var(--accent)}
-.progress-dot.answered{background:var(--accent-l);border-color:var(--accent-m);color:var(--accent)}
-.progress-dot.current{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.3)}
+.join-title {
+  font-family: var(--display);
+  font-size: 28px; font-weight: 900;
+  letter-spacing: -.6px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.join-sub { font-size: 14px; color: var(--ink3); line-height: 1.7; }
 
-/* ── NAV BAR ── */
-.nav-bar{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:1.25rem;gap:8px;
-  padding-top:1.25rem;border-top:1px solid var(--border);
-}
-
-/* ── WAIT SCREEN ── */
-.wait-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:2rem;flex-direction:column;gap:1rem;
-  background:var(--paper2);
-}
-.wait-icon{font-size:60px;animation:bounce 2.2s infinite}
-
-.wait-card{
-  background:#fff;border:1px solid var(--border);border-radius:var(--r3);
-  padding:2.5rem 2rem;max-width:380px;width:100%;
-  box-shadow:var(--shadow2);
-}
-.wait-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:.5rem}
-.wait-sub{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:1.25rem}
-.wait-name{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:var(--paper2);border-radius:20px;font-size:13px;font-weight:600;color:var(--ink2);border:1px solid var(--border);margin-bottom:1rem}
-
-/* ── DONE SCREEN ── */
-.done-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:1.5rem;background:var(--paper2);
-  background-image:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(79,70,229,.07) 0%,transparent 60%);
-}
-.done-card{
-  background:#fff;border:1px solid var(--border);border-radius:var(--r4);
-  padding:2.5rem 2rem;width:100%;max-width:560px;
-  text-align:center;box-shadow:var(--shadow3);
-}
-.done-icon{font-size:64px;margin-bottom:1rem;animation:scaleIn .4s cubic-bezier(.16,1,.3,1)}
-.done-title{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;color:var(--ink)}
-.done-sub{font-size:14px;color:var(--ink3);line-height:1.8;margin-bottom:1.75rem}
-
-.feedback-card{
-  background:var(--paper2);border:1px solid var(--border);
-  border-radius:var(--r2);padding:1.25rem;text-align:left;margin-bottom:1.25rem;
-}
-.feedback-title{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
-
-.grade-big{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:72px;height:72px;border-radius:50%;
-  background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;
-  font-family:var(--display);font-size:30px;font-weight:800;
-  margin-bottom:8px;box-shadow:0 4px 16px rgba(79,70,229,.35);
+.join-panel {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--r4);
+  padding: 2rem;
+  box-shadow: var(--shadow3);
 }
 
-.dl-btn{
-  display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
-  border-radius:var(--r);border:1.5px solid var(--border);background:#fff;
-  color:var(--ink2);font-size:13px;font-weight:600;font-family:var(--font);
-  cursor:pointer;margin:4px;transition:all .15s;
+.f-label {
+  display: block;
+  font-size: 11px; font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 6px;
 }
-.dl-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.f-inp {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 14px; font-family: var(--font);
+  background: var(--paper); color: var(--ink);
+  transition: border .15s, box-shadow .15s;
+  margin-bottom: 1rem;
+}
+.f-inp:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.1); }
+.f-inp::placeholder { color: var(--ink4); }
+.code-inp {
+  font-family: var(--mono);
+  font-size: 26px; font-weight: 700;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ─── TEST SCREEN ─── */
+.test-screen { min-height: 100vh; display: flex; flex-direction: column; background: var(--paper2); }
+
+.test-header {
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: var(--shadow);
+}
+.test-topbar {
+  padding: 0 1.5rem; height: 56px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.test-name {
+  font-family: var(--display);
+  font-size: 16px; font-weight: 800;
+  letter-spacing: -.3px;
+  color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.timer-chip {
+  background: var(--ink); color: #fff;
+  border-radius: 22px;
+  padding: 7px 16px;
+  font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: 2px;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+  transition: background .3s;
+}
+.timer-chip.warn { background: #92400e; }
+.timer-chip.danger { background: var(--red); animation: blink .8s infinite; }
+
+.test-progress { height: 4px; background: var(--paper3); }
+.test-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #818cf8); transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+.test-body { flex: 1; padding: 1.5rem; max-width: 720px; width: 100%; margin: 0 auto; }
+
+/* ─── QUESTION BLOCK ─── */
+.student-q-block {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--r4);
+  padding: 1.75rem;
+  box-shadow: var(--shadow2);
+  animation: scaleIn .2s cubic-bezier(.16,1,.3,1);
+}
+.q-header {
+  font-size: 11px; font-weight: 700; color: var(--ink3);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.q-tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 700; letter-spacing: .2px; }
+.tag-mc { background: var(--accent-l); color: var(--accent); }
+.tag-multi { background: var(--amber-l); color: var(--amber); }
+.tag-free { background: var(--green-l); color: var(--green-d); }
+.q-text {
+  font-family: var(--display);
+  font-size: 20px; font-weight: 700;
+  line-height: 1.5; color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+
+/* ─── ANSWER OPTIONS ─── */
+.ans-opt {
+  border: 2px solid var(--border);
+  border-radius: var(--r2);
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 14px;
+  font-size: 14px; color: var(--ink2);
+  transition: all .14s;
+  user-select: none;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.ans-opt:hover {
+  border-color: var(--accent-m);
+  background: var(--accent-l);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow2);
+}
+.ans-opt.sel {
+  border-color: var(--accent);
+  background: var(--accent-l);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--accent), var(--shadow2);
+}
+.ans-opt.sel-amber {
+  border-color: var(--amber) !important;
+  background: var(--amber-l) !important;
+  color: var(--amber) !important;
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--amber), var(--shadow2);
+}
+
+.opt-dot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  flex-shrink: 0;
+  transition: all .14s;
+}
+.ans-opt:hover .opt-dot { border-color: var(--accent-m); }
+.sel .opt-dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.2); }
+
+.opt-square {
+  width: 22px; height: 22px;
+  border-radius: 7px;
+  border: 2px solid var(--border2);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  transition: all .14s;
+}
+.ans-opt-amber:hover .opt-square { border-color: var(--amber); }
+.sel-amber .opt-square { background: var(--amber); border-color: var(--amber); color: #fff; }
+
+.free-ta {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r2);
+  padding: 14px 16px;
+  font-size: 15px; color: var(--ink);
+  font-family: var(--font);
+  transition: border .15s, box-shadow .15s;
+  resize: vertical; line-height: 1.7;
+  background: var(--paper);
+}
+.free-ta:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.08); }
+.free-ta.ta-lined {
+  background-image: repeating-linear-gradient(transparent, transparent 31px, #c5cfe0 31px, #c5cfe0 32px);
+  line-height: 32px; padding: 0 16px; background-color: var(--paper);
+}
+.free-ta.ta-grid {
+  background-image: linear-gradient(var(--paper3) 1px, transparent 1px), linear-gradient(90deg, var(--paper3) 1px, transparent 1px);
+  background-size: 26px 26px; background-color: var(--paper);
+}
+
+/* ─── PROGRESS NAV ─── */
+.progress-nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.progress-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer;
+  color: var(--ink3);
+  transition: all .15s;
+}
+.progress-dot:hover { border-color: var(--accent-m); color: var(--accent); transform: scale(1.1); }
+.progress-dot.answered { background: var(--accent-l); border-color: var(--accent-m); color: var(--accent); }
+.progress-dot.current { background: var(--accent); border-color: var(--accent); color: #fff; animation: pulse 2s infinite; }
+
+/* ─── NAV BAR ─── */
+.nav-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 1.5rem; gap: 8px;
+  padding-top: 1.25rem; border-top: 1px solid var(--border);
+}
+
+/* ─── WAIT SCREEN ─── */
+.wait-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem;
+  background: var(--paper2);
+  background-image: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(79,70,229,.06) 0%, transparent 60%);
+}
+.wait-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--r4);
+  padding: 3rem 2.5rem;
+  max-width: 400px; width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow3);
+  animation: scaleIn .3s cubic-bezier(.16,1,.3,1);
+}
+.wait-icon { font-size: 64px; margin-bottom: 1.25rem; animation: bounce 2.5s infinite; }
+.wait-title { font-family: var(--display); font-size: 24px; font-weight: 900; letter-spacing: -.4px; margin-bottom: 8px; }
+.wait-sub { font-size: 13px; color: var(--ink3); line-height: 1.7; margin-bottom: 1.5rem; }
+.wait-name {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px;
+  background: var(--paper2);
+  border-radius: 22px;
+  font-size: 14px; font-weight: 600; color: var(--ink2);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.wait-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 1.5rem; }
+.wait-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: bounce 1.4s infinite;
+}
+.wait-dot:nth-child(2) { animation-delay: .2s; background: var(--accent-m); }
+.wait-dot:nth-child(3) { animation-delay: .4s; background: var(--accent-l); border: 1px solid var(--accent-m); }
+
+/* ─── DONE SCREEN ─── */
+.done-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  background: var(--paper2);
+  background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,70,229,.08) 0%, transparent 60%);
+}
+.done-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--r4);
+  padding: 3rem 2.5rem;
+  width: 100%; max-width: 580px;
+  text-align: center;
+  box-shadow: var(--shadow3);
+  animation: scaleIn .35s cubic-bezier(.16,1,.3,1);
+}
+.done-icon { font-size: 72px; margin-bottom: 1.25rem; animation: scaleIn .4s cubic-bezier(.16,1,.3,1); }
+.done-title { font-family: var(--display); font-size: 30px; font-weight: 900; letter-spacing: -.5px; margin-bottom: 8px; color: var(--ink); }
+.done-sub { font-size: 14px; color: var(--ink3); line-height: 1.8; margin-bottom: 2rem; }
+
+.feedback-card {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  border-radius: var(--r3);
+  padding: 1.5rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  animation: fadeIn .4s cubic-bezier(.16,1,.3,1);
+}
+.feedback-title { font-size: 11px; font-weight: 700; color: var(--ink3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+
+.grade-circle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  font-family: var(--display); font-size: 34px; font-weight: 900;
+  box-shadow: 0 6px 24px rgba(79,70,229,.35), 0 0 0 6px rgba(79,70,229,.1);
+  margin-bottom: 10px;
+}
+
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  background: var(--paper);
+  color: var(--ink2);
+  font-size: 13px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; margin: 4px;
+  transition: all .15s;
+}
+.dl-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-l); }
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script src="kt.js"></script>
 <script>
-let student=null,testSession=null,timerInt=null,checkInt=null;
+let student=null, testSession=null, timerInt=null, waitPollInt=null;
 
-function init(){
-  const s=sessionStorage.getItem('kt_student');
-  const code=new URLSearchParams(window.location.search).get('code')||'';
-  if(s){student=JSON.parse(s);}
+function init() {
+  const s = sessionStorage.getItem('kt_student');
+  const code = new URLSearchParams(window.location.search).get('code') || '';
+  if (s) student = JSON.parse(s);
   render(code);
 }
 
-function render(prefillCode){
-  const app=document.getElementById('app');
-  if(!student){app.innerHTML=joinHTML(prefillCode||'');attachJoin();return;}
-  if(testSession?.submitted){app.innerHTML=doneHTML();return;}
-  if(!testSession){
-    const db=KT.get();
-    const stu=db.students.find(s=>s.name===student.name);
-    const t=stu?.currentTestId?db.tests.find(x=>x.id===stu.currentTestId):null;
-    if(!t||!t.active){app.innerHTML=waitHTML();startWaitPoll();return;}
-    const existingSub=db.submissions.find(s=>s.studentName===student.name&&s.testId===t.id&&s.submitted);
-    if(existingSub){testSession={submitted:true,testId:t.id};render();return;}
-    testSession={testId:t.id,currentIdx:0,answers:{},submitted:false};
-    if(t.timerSeconds){
-      timerInt&&clearInterval(timerInt);
-      let s=t.timerSeconds;
-      timerInt=setInterval(()=>{s--;updateTimer(s,t);if(s<=0){clearInterval(timerInt);submitTest();}},1000);
-      setTimeout(()=>updateTimer(t.timerSeconds,t),0);
+function render(prefillCode) {
+  const app = document.getElementById('app');
+  if (!student) { app.innerHTML = joinHTML(prefillCode || ''); attachJoin(); return; }
+  if (testSession?.submitted) { app.innerHTML = doneHTML(); return; }
+  if (!testSession) {
+    const db = KT.get();
+    const stu = db.students.find(s => s.name === student.name);
+    const t = stu?.currentTestId ? db.tests.find(x => x.id === stu.currentTestId) : null;
+    if (!t || !t.active) { app.innerHTML = waitHTML(); startWaitPoll(); return; }
+    const existingSub = db.submissions.find(s => s.studentName === student.name && s.testId === t.id && s.submitted);
+    if (existingSub) { testSession = { submitted: true, testId: t.id }; render(); return; }
+    testSession = { testId: t.id, currentIdx: 0, answers: {}, submitted: false };
+    if (t.timerSeconds) {
+      clearInterval(timerInt);
+      let s = t.timerSeconds;
+      timerInt = setInterval(() => { s--; updateTimer(s, t); if (s <= 0) { clearInterval(timerInt); submitTest(); } }, 1000);
+      setTimeout(() => updateTimerDisplay(t.timerSeconds), 0);
     }
   }
-  app.innerHTML=testHTML();
+  app.innerHTML = testHTML();
   attachTest();
 }
 
-function joinHTML(code){
-  return`<div class="join-screen">
+/* ─── JOIN ─── */
+function joinHTML(code) {
+  return `<div class="join-screen">
     <div class="join-card">
       <div class="join-logo">
         <div class="join-logo-mark">K</div>
         <div class="join-title">Zum Test beitreten</div>
-        <div class="join-sub">Gib deinen echten Namen an.<br>Dein Ergebnis wird sonst nicht gewertet.</div>
+        <div class="join-sub">Gib deinen echten Namen an – dein Ergebnis<br>wird sonst nicht gewertet.</div>
       </div>
       <div class="join-panel">
-        <div class="alert alert-blue" style="margin-bottom:1.25rem">⚠️ <strong>Verwende deinen echten Namen</strong> – Vor- und Nachname – damit die Lehrkraft dein Ergebnis zuordnen kann.</div>
-        <label class="f-label-dark">Dein vollständiger Name</label>
-        <input class="f-inp-join" id="j-name" type="text" placeholder="Vorname Nachname" autocomplete="off" autofocus>
-        <label class="f-label-dark">Test-Code (vom Lehrer)</label>
-        <input class="f-inp-join code-inp" id="j-code" type="text" placeholder="ABC123" maxlength="6" value="${KT.esc(code)}" oninput="this.value=this.value.toUpperCase()">
+        <div class="alert alert-blue" style="margin-bottom:1.5rem">⚠️ <strong>Verwende deinen vollständigen Namen</strong> (Vor- und Nachname), damit die Lehrkraft dein Ergebnis zuordnen kann.</div>
+        <label class="f-label">Dein vollständiger Name</label>
+        <input class="f-inp" id="j-name" type="text" placeholder="Vorname Nachname" autocomplete="off" autofocus>
+        <label class="f-label">Test-Code (vom Lehrer)</label>
+        <input class="f-inp code-inp" id="j-code" type="text" placeholder="ABC123" maxlength="6" value="${KT.esc(code)}" oninput="this.value=this.value.toUpperCase()">
         <div id="j-err" class="alert alert-red" style="display:none;margin-bottom:1rem"></div>
         <button class="btn btn-primary btn-full btn-lg" onclick="doJoin()">Test beitreten →</button>
       </div>
@@ -279,71 +482,77 @@ function joinHTML(code){
   </div>`;
 }
 
-function attachJoin(){
-  document.getElementById('j-name')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('j-code')?.focus();});
-  document.getElementById('j-code')?.addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
+function attachJoin() {
+  document.getElementById('j-name')?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('j-code')?.focus(); });
+  document.getElementById('j-code')?.addEventListener('keydown', e => { if (e.key === 'Enter') doJoin(); });
 }
 
-function doJoin(){
-  const name=document.getElementById('j-name').value.trim();
-  const code=document.getElementById('j-code').value.trim().toUpperCase();
-  const err=document.getElementById('j-err');
-  err.style.display='none';
-  if(!name){err.textContent='❌ Bitte gib deinen Namen ein.';err.style.display='block';return;}
-  if(!code){err.textContent='❌ Bitte gib den Code ein.';err.style.display='block';return;}
-  const db=KT.get();
-  const t=db.tests.find(x=>x.joinCode===code);
-  if(!t){err.textContent='❌ Ungültiger Code. Prüfe die Eingabe.';err.style.display='block';return;}
-  if(t.ended){err.textContent='❌ Dieser Test ist bereits beendet.';err.style.display='block';return;}
-  let stu=db.students.find(s=>s.name===name);
-  if(!stu){stu={name,lastSeen:Date.now(),currentTestId:t.active?t.id:null};db.students.push(stu);}
-  else{stu.lastSeen=Date.now();if(t.active)stu.currentTestId=t.id;}
+function doJoin() {
+  const name = document.getElementById('j-name').value.trim();
+  const code = document.getElementById('j-code').value.trim().toUpperCase();
+  const err = document.getElementById('j-err');
+  err.style.display = 'none';
+  if (!name) { err.textContent = '❌ Bitte gib deinen Namen ein.'; err.style.display = 'block'; return; }
+  if (!code) { err.textContent = '❌ Bitte gib den Code ein.'; err.style.display = 'block'; return; }
+  const db = KT.get();
+  const t = db.tests.find(x => x.joinCode === code);
+  if (!t) { err.textContent = '❌ Ungültiger Code. Prüfe die Eingabe.'; err.style.display = 'block'; return; }
+  if (t.ended) { err.textContent = '❌ Dieser Test ist bereits beendet.'; err.style.display = 'block'; return; }
+  let stu = db.students.find(s => s.name === name);
+  if (!stu) { stu = { name, lastSeen: Date.now(), currentTestId: t.active ? t.id : null }; db.students.push(stu); }
+  else { stu.lastSeen = Date.now(); if (t.active) stu.currentTestId = t.id; }
   KT.set(db);
-  student={name};
-  sessionStorage.setItem('kt_student',JSON.stringify(student));
-  const existingSub=db.submissions.find(s=>s.studentName===name&&s.testId===t.id&&s.submitted);
-  if(existingSub){testSession={submitted:true,testId:t.id};render();return;}
+  student = { name };
+  sessionStorage.setItem('kt_student', JSON.stringify(student));
+  const existingSub = db.submissions.find(s => s.studentName === name && s.testId === t.id && s.submitted);
+  if (existingSub) { testSession = { submitted: true, testId: t.id }; render(); return; }
   render();
 }
 
-function waitHTML(){
-  return`<div class="wait-screen">
+/* ─── WAIT ─── */
+function waitHTML() {
+  return `<div class="wait-screen">
     <div class="wait-card">
       <div class="wait-icon">⌛</div>
       <div class="wait-title">Warte auf den Lehrer…</div>
-      <div class="wait-sub">Der Test startet, sobald die Lehrkraft auf "Starten" klickt.<br>Diese Seite aktualisiert sich automatisch.</div>
+      <div class="wait-sub">Der Test startet, sobald die Lehrkraft auf "Starten" klickt. Diese Seite aktualisiert sich automatisch.</div>
       <div class="wait-name">👤 ${KT.esc(student?.name)}</div>
+      <div class="wait-dots">
+        <div class="wait-dot"></div>
+        <div class="wait-dot"></div>
+        <div class="wait-dot"></div>
+      </div>
       <button class="btn btn-ghost btn-sm" onclick="logout()">← Abmelden</button>
     </div>
   </div>`;
 }
 
-let waitPollInt=null;
-function startWaitPoll(){
+function startWaitPoll() {
   clearInterval(waitPollInt);
-  waitPollInt=setInterval(()=>{
-    const db=KT.get();
-    const stu=db.students.find(s=>s.name===student?.name);
-    const t=stu?.currentTestId?db.tests.find(x=>x.id===stu.currentTestId):null;
-    if(t&&t.active){clearInterval(waitPollInt);testSession=null;render();}
-  },3000);
+  waitPollInt = setInterval(() => {
+    const db = KT.get();
+    const stu = db.students.find(s => s.name === student?.name);
+    const t = stu?.currentTestId ? db.tests.find(x => x.id === stu.currentTestId) : null;
+    if (t && t.active) { clearInterval(waitPollInt); testSession = null; render(); }
+  }, 3000);
 }
 
-function testHTML(){
-  const db=KT.get();
-  const t=db.tests.find(x=>x.id===testSession.testId);
-  if(!t)return'<div style="padding:2rem;text-align:center;color:var(--ink3)">Test nicht gefunden.</div>';
-  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
-  const idx=testSession.currentIdx;
-  const total=qBlocks.length;
-  const answered=Object.keys(testSession.answers).filter(k=>testSession.answers[k]!=null&&testSession.answers[k]!=='').length;
+/* ─── TEST ─── */
+function testHTML() {
+  const db = KT.get();
+  const t = db.tests.find(x => x.id === testSession.testId);
+  if (!t) return '<div style="padding:3rem;text-align:center;color:var(--ink3)">Test nicht gefunden.</div>';
+  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  const idx = testSession.currentIdx;
+  const total = qBlocks.length;
+  const answered = Object.keys(testSession.answers).filter(k => testSession.answers[k] != null && testSession.answers[k] !== '').length;
 
-  return`<div class="test-screen">
+  return `<div class="test-screen">
     <div class="test-header">
       <div class="test-topbar">
         <div class="test-name">${KT.esc(t.title)}</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-          <span style="font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">${KT.esc(student?.name)}</span>
+        <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+          <span style="font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px">${KT.esc(student?.name)}</span>
           <div class="timer-chip" id="timer-chip">⏱ <span id="timer-val">–:––</span></div>
         </div>
       </div>
@@ -354,161 +563,162 @@ function testHTML(){
 
     <div class="test-body">
       <div class="progress-nav">
-        ${qBlocks.map((_,i)=>`<div class="progress-dot ${i===idx?'current':testSession.answers[qBlocks[i].id]!=null&&testSession.answers[qBlocks[i].id]!==''?'answered':''}" onclick="goQ(${i})" title="Frage ${i+1}">${i+1}</div>`).join('')}
+        ${qBlocks.map((_, i) => `<div class="progress-dot ${i===idx?'current':testSession.answers[qBlocks[i].id]!=null&&testSession.answers[qBlocks[i].id]!==''?'answered':''}" onclick="goQ(${i})" title="Frage ${i+1}">${i+1}</div>`).join('')}
       </div>
 
       ${renderQuestionBlock(qBlocks, idx, t)}
 
       <div class="nav-bar">
         <button class="btn btn-ghost" onclick="goQ(${idx-1})" ${idx===0?'disabled':''}>← Zurück</button>
-        <div style="font-size:12px;color:var(--ink3);font-weight:600">${answered}/${total} beantwortet</div>
-        ${idx<total-1
-          ?`<button class="btn btn-primary" onclick="goQ(${idx+1})">Weiter →</button>`
-          :`<button class="btn btn-green btn-lg" onclick="confirmSubmit()">📨 Test abschicken</button>`}
+        <div style="font-size:12px;color:var(--ink3);font-weight:600;text-align:center">${answered} / ${total}<br><span style="font-size:10px;font-weight:400">beantwortet</span></div>
+        ${idx < total-1
+          ? `<button class="btn btn-primary" onclick="goQ(${idx+1})">Weiter →</button>`
+          : `<button class="btn btn-green btn-lg" onclick="confirmSubmit()">📨 Test abschicken</button>`}
       </div>
     </div>
   </div>`;
 }
 
-function renderQuestionBlock(qBlocks, idx, t){
-  const q=qBlocks[idx];
-  const ans=testSession.answers[q.id];
-  const bg=t.bg||'lined';
+function renderQuestionBlock(qBlocks, idx, t) {
+  const q = qBlocks[idx];
+  const ans = testSession.answers[q.id];
+  const bg = t.bg || 'lined';
 
-  let html=`<div class="student-q-block">`;
-  html+=`<div class="q-header">
-    Frage ${idx+1} von ${qBlocks.length}
+  let html = `<div class="student-q-block">`;
+  html += `<div class="q-header">
+    <span>Frage ${idx+1} von ${qBlocks.length}</span>
     <span class="q-tag ${q.type==='mc'?'tag-mc':q.type==='multi'?'tag-multi':'tag-free'}">${q.type==='mc'?'Einfachauswahl':q.type==='multi'?'Mehrfachauswahl':'Freie Antwort'}</span>
-    ${q.data.points?`<span style="font-size:11px;color:var(--ink3);margin-left:auto">⭐ ${q.data.points} Pt.</span>`:''}
+    ${q.data.points ? `<span style="margin-left:auto;font-size:11px;color:var(--ink3);background:var(--paper2);padding:3px 9px;border-radius:20px;border:1px solid var(--border)">⭐ ${q.data.points} Pt.</span>` : ''}
   </div>`;
-  html+=`<div class="q-text">${KT.esc(q.data.question)}</div>`;
+  html += `<div class="q-text">${KT.esc(q.data.question)}</div>`;
 
-  if(q.type==='mc'){
-    html+=q.data.options.map((o,i)=>`<div class="ans-opt ${ans===i?'sel':''}" onclick="selectMC('${q.id}',${i})">
+  if (q.type === 'mc') {
+    html += q.data.options.map((o, i) => `<div class="ans-opt ${ans===i?'sel':''}" onclick="selectMC('${q.id}',${i})">
       <div class="opt-dot"></div><span>${KT.esc(o)}</span>
     </div>`).join('');
-  }else if(q.type==='multi'){
-    const selArr=ans||[];
-    html+=`<div style="font-size:12px;color:var(--ink3);margin-bottom:10px;display:flex;align-items:center;gap:5px">
-      <span style="background:var(--amber-l);color:var(--amber);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700">Mehrfach</span>
+  } else if (q.type === 'multi') {
+    const selArr = ans || [];
+    html += `<div style="font-size:12px;color:var(--ink3);margin-bottom:12px;display:flex;align-items:center;gap:7px">
+      <span style="background:var(--amber-l);color:var(--amber);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--amber-m)">Mehrfachauswahl</span>
       Mehrere Antworten möglich
     </div>`;
-    html+=q.data.options.map((o,i)=>`<div class="ans-opt ${selArr.includes(i)?'sel':''}" onclick="toggleMulti('${q.id}',${i})" style="${selArr.includes(i)?'border-color:var(--amber);background:var(--amber-l);color:var(--amber)':''}">
-      <div class="opt-square" style="${selArr.includes(i)?'background:var(--amber);border-color:var(--amber);color:#fff':''}">
-        ${selArr.includes(i)?'✓':''}
-      </div><span>${KT.esc(o)}</span>
+    html += q.data.options.map((o, i) => `<div class="ans-opt ${selArr.includes(i)?'sel-amber':''}" onclick="toggleMulti('${q.id}',${i})">
+      <div class="opt-square ${selArr.includes(i)?'sel-amber':''}" style="${selArr.includes(i)?'background:var(--amber);border-color:var(--amber);color:#fff':''}">${selArr.includes(i)?'✓':''}</div>
+      <span>${KT.esc(o)}</span>
     </div>`).join('');
-  }else{
-    const lines=q.data.lines||5;
-    html+=`<textarea class="free-ta ${bg==='lined'?'ta-lined':bg==='grid'?'ta-grid':''}" rows="${lines}" placeholder="Deine Antwort hier…" id="free-${q.id}" oninput="saveFree('${q.id}',this.value)">${KT.esc(ans||'')}</textarea>`;
+  } else {
+    const lines = q.data.lines || 5;
+    html += `<textarea class="free-ta ${bg==='lined'?'ta-lined':bg==='grid'?'ta-grid':''}" rows="${lines}" placeholder="Schreib deine Antwort hier…" id="free-${q.id}" oninput="saveFree('${q.id}',this.value)">${KT.esc(ans||'')}</textarea>`;
   }
-  html+=`</div>`;
+  html += `</div>`;
   return html;
 }
 
-function attachTest(){
-  setTimeout(()=>{
-    const db=KT.get();const t=db.tests.find(x=>x.id===testSession?.testId);
-    if(t&&t.timerSeconds){
-      const elapsed=Math.floor((Date.now()-(t.startedAt||Date.now()))/1000);
-      const rem=Math.max(0,t.timerSeconds-elapsed);
-      updateTimerDisplay(rem);
+function attachTest() {
+  setTimeout(() => {
+    const db = KT.get(); const t = db.tests.find(x => x.id === testSession?.testId);
+    if (t && t.timerSeconds) {
+      const elapsed = Math.floor((Date.now() - (t.startedAt || Date.now())) / 1000);
+      updateTimerDisplay(Math.max(0, t.timerSeconds - elapsed));
     }
-  },50);
+  }, 50);
 }
 
-function updateTimer(s,t){updateTimerDisplay(s);if(s===0){clearInterval(timerInt);submitTest();}}
-function updateTimerDisplay(s){
-  const chip=document.getElementById('timer-chip');
-  const val=document.getElementById('timer-val');
-  if(val)val.textContent=KT.fmt(s);
-  if(chip){chip.className='timer-chip'+(s<300?' warn':'')+(s<60?' danger':'');}
+function updateTimer(s, t) { updateTimerDisplay(s); if (s === 0) { clearInterval(timerInt); submitTest(); } }
+function updateTimerDisplay(s) {
+  const chip = document.getElementById('timer-chip');
+  const val = document.getElementById('timer-val');
+  if (val) val.textContent = KT.fmt(s);
+  if (chip) chip.className = 'timer-chip' + (s < 300 ? ' warn' : '') + (s < 60 ? ' danger' : '');
 }
 
-function goQ(idx){
-  const db=KT.get();const t=db.tests.find(x=>x.id===testSession.testId);
-  const qBlocks=(t?.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
-  if(idx<0||idx>=qBlocks.length)return;
-  testSession.currentIdx=idx;
-  document.getElementById('app').innerHTML=testHTML();
+function goQ(idx) {
+  const db = KT.get(); const t = db.tests.find(x => x.id === testSession.testId);
+  const qBlocks = (t?.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  if (idx < 0 || idx >= qBlocks.length) return;
+  testSession.currentIdx = idx;
+  document.getElementById('app').innerHTML = testHTML();
   attachTest();
 }
 
-function selectMC(qid,i){
-  testSession.answers[qid]=i;
-  document.getElementById('app').innerHTML=testHTML();
+function selectMC(qid, i) {
+  testSession.answers[qid] = i;
+  document.getElementById('app').innerHTML = testHTML();
   attachTest();
 }
 
-function toggleMulti(qid,i){
-  const cur=[...(testSession.answers[qid]||[])];
-  const idx2=cur.indexOf(i);if(idx2>=0)cur.splice(idx2,1);else cur.push(i);
-  testSession.answers[qid]=cur.length?cur:undefined;
-  document.getElementById('app').innerHTML=testHTML();
+function toggleMulti(qid, i) {
+  const cur = [...(testSession.answers[qid] || [])];
+  const idx = cur.indexOf(i);
+  if (idx >= 0) cur.splice(idx, 1); else cur.push(i);
+  testSession.answers[qid] = cur.length ? cur : undefined;
+  document.getElementById('app').innerHTML = testHTML();
   attachTest();
 }
 
-function saveFree(qid,val){testSession.answers[qid]=val||undefined;}
+function saveFree(qid, val) { testSession.answers[qid] = val || undefined; }
 
-function confirmSubmit(){
-  const db=KT.get();const t=db.tests.find(x=>x.id===testSession.testId);
-  const qBlocks=(t?.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
-  const answered=Object.keys(testSession.answers).filter(k=>testSession.answers[k]!=null&&testSession.answers[k]!=='').length;
-  const unanswered=qBlocks.length-answered;
-  if(unanswered>0){if(!confirm(`Du hast noch ${unanswered} Frage${unanswered!==1?'n':''} nicht beantwortet. Trotzdem abschicken?`))return;}
-  else if(!confirm('Test abschicken? Du kannst danach nichts mehr ändern.'))return;
+function confirmSubmit() {
+  const db = KT.get(); const t = db.tests.find(x => x.id === testSession.testId);
+  const qBlocks = (t?.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  const answered = Object.keys(testSession.answers).filter(k => testSession.answers[k] != null && testSession.answers[k] !== '').length;
+  const unanswered = qBlocks.length - answered;
+  if (unanswered > 0) { if (!confirm(`Du hast noch ${unanswered} Frage${unanswered!==1?'n':''} nicht beantwortet. Trotzdem abschicken?`)) return; }
+  else if (!confirm('Test abschicken? Du kannst danach nichts mehr ändern.')) return;
   submitTest();
 }
 
-function submitTest(){
-  if(!testSession||testSession.submitted)return;
+function submitTest() {
+  if (!testSession || testSession.submitted) return;
   clearInterval(timerInt);
-  const db=KT.get();
-  const existing=db.submissions.findIndex(s=>s.studentName===student.name&&s.testId===testSession.testId);
-  const sub={
-    id:existing>=0?db.submissions[existing].id:KT.gid(),
-    testId:testSession.testId,studentName:student.name,
-    answers:testSession.answers,submittedAt:Date.now(),
-    submitted:true,corrected:false
+  const db = KT.get();
+  const existing = db.submissions.findIndex(s => s.studentName === student.name && s.testId === testSession.testId);
+  const sub = {
+    id: existing >= 0 ? db.submissions[existing].id : KT.gid(),
+    testId: testSession.testId, studentName: student.name,
+    answers: testSession.answers, submittedAt: Date.now(),
+    submitted: true, corrected: false
   };
-  if(existing>=0)db.submissions[existing]=sub;else db.submissions.push(sub);
-  const stu=db.students.find(s=>s.name===student.name);if(stu)stu.currentTestId=null;
+  if (existing >= 0) db.submissions[existing] = sub; else db.submissions.push(sub);
+  const stu = db.students.find(s => s.name === student.name);
+  if (stu) stu.currentTestId = null;
   KT.set(db);
-  testSession={submitted:true,testId:testSession.testId};
+  testSession = { submitted: true, testId: testSession.testId };
   render();
 }
 
-function doneHTML(){
-  const db=KT.get();
-  const subs=db.submissions.filter(s=>s.studentName===student?.name&&s.submitted);
-  const latestSub=subs.sort((a,b)=>b.submittedAt-a.submittedAt)[0];
-  const t=latestSub?db.tests.find(x=>x.id===latestSub.testId):null;
+/* ─── DONE ─── */
+function doneHTML() {
+  const db = KT.get();
+  const subs = db.submissions.filter(s => s.studentName === student?.name && s.submitted);
+  const latestSub = subs.sort((a, b) => b.submittedAt - a.submittedAt)[0];
+  const t = latestSub ? db.tests.find(x => x.id === latestSub.testId) : null;
 
-  let feedbackSection='';
-  if(latestSub?.sentBack&&latestSub?.returnedFeedback){
-    feedbackSection=`<div class="feedback-card">
+  let feedbackSection = '';
+  if (latestSub?.sentBack && latestSub?.returnedFeedback) {
+    feedbackSection = `<div class="feedback-card">
       <div class="feedback-title">✉️ Rückmeldung von der Lehrkraft</div>
-      ${latestSub.grade?`<div style="text-align:center;margin-bottom:14px"><div class="grade-big">${KT.esc(latestSub.grade)}</div><div style="font-size:12px;color:var(--ink3);margin-top:4px">Deine Note</div></div>`:''}
-      <div style="font-size:13px;color:var(--ink2);line-height:1.8">${latestSub.returnedFeedback||''}</div>
+      ${latestSub.grade ? `<div style="text-align:center;margin-bottom:20px"><div class="grade-circle">${KT.esc(latestSub.grade)}</div><div style="font-size:13px;color:var(--ink3);margin-top:6px;font-weight:600">Deine Note</div></div>` : ''}
+      <div style="font-size:13px;color:var(--ink2);line-height:1.9">${latestSub.returnedFeedback || ''}</div>
     </div>
-    <div style="margin-bottom:1.25rem">
+    <div style="margin-bottom:1.5rem">
       <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Herunterladen als:</div>
       <button class="dl-btn" onclick="dlResult('txt')">📄 TXT</button>
       <button class="dl-btn" onclick="dlResult('json')">🗂 JSON</button>
       <button class="dl-btn" onclick="window.print()">🖨 Drucken / PDF</button>
     </div>`;
-  }else if(latestSub){
-    feedbackSection=`<div class="alert alert-blue" style="margin-bottom:1.25rem;text-align:left">⌛ Deine Lehrkraft korrigiert den Test und schickt ihn zurück. Komm später wieder und klicke auf "Prüfen".</div>
+  } else if (latestSub) {
+    feedbackSection = `<div class="alert alert-blue" style="margin-bottom:1.5rem;text-align:left">⌛ Deine Lehrkraft korrigiert den Test und schickt dir das Ergebnis zurück. Komm später wieder und klicke auf "Prüfen".</div>
     <button class="btn btn-ghost btn-full" onclick="checkForFeedback()" style="margin-bottom:1rem">🔄 Auf Rückmeldung prüfen</button>`;
   }
 
-  return`<div class="done-screen">
+  return `<div class="done-screen">
     <div class="done-card">
-      <div class="done-icon">${latestSub?.sentBack?'🎉':'✅'}</div>
-      <div class="done-title">${latestSub?.sentBack?'Korrektur erhalten!':'Test abgeschickt!'}</div>
+      <div class="done-icon">${latestSub?.sentBack ? '🎉' : '✅'}</div>
+      <div class="done-title">${latestSub?.sentBack ? 'Korrektur erhalten!' : 'Test abgeschickt!'}</div>
       <div class="done-sub">
-        ${latestSub?.sentBack?'Deine Lehrkraft hat deinen Test korrigiert.':'Dein Test wurde erfolgreich abgeschickt.'}<br>
-        ${t?`Test: <strong>${KT.esc(t.title)}</strong>`:''}
+        ${latestSub?.sentBack ? 'Deine Lehrkraft hat deinen Test korrigiert.' : 'Dein Test wurde erfolgreich eingereicht.'}<br>
+        ${t ? `Test: <strong>${KT.esc(t.title)}</strong>` : ''}
       </div>
       ${feedbackSection}
       <button class="btn btn-ghost btn-sm" onclick="logout()">← Zurück zur Startseite</button>
@@ -516,31 +726,31 @@ function doneHTML(){
   </div>`;
 }
 
-function checkForFeedback(){
-  const db=KT.get();
-  const sub=db.submissions.find(s=>s.studentName===student?.name&&s.submitted&&s.sentBack);
-  if(sub){render();}else{KT.toast('⏳ Noch keine Rückmeldung.');}
+function checkForFeedback() {
+  const db = KT.get();
+  const sub = db.submissions.find(s => s.studentName === student?.name && s.submitted && s.sentBack);
+  if (sub) render(); else KT.toast('⏳ Noch keine Rückmeldung.');
 }
 
-function dlResult(format){
-  const db=KT.get();
-  const sub=db.submissions.find(s=>s.studentName===student?.name&&s.submitted);
-  const t=db.tests.find(x=>x.id===sub?.testId);
-  if(!sub||!t)return;
-  const sc=KT.calcScore(sub,t);
-  if(format==='json'){
-    KT.dl('ergebnis-'+student.name.replace(/\W/g,'_')+'.json',JSON.stringify({student:student.name,test:t.title,score:sc,grade:sub.grade,feedback:sub.returnedFeedback},null,2),'application/json');
+function dlResult(format) {
+  const db = KT.get();
+  const sub = db.submissions.find(s => s.studentName === student?.name && s.submitted);
+  const t = db.tests.find(x => x.id === sub?.testId);
+  if (!sub || !t) return;
+  const sc = KT.calcScore(sub, t);
+  if (format === 'json') {
+    KT.dl('ergebnis-' + student.name.replace(/\W/g,'_') + '.json', JSON.stringify({ student: student.name, test: t.title, score: sc, grade: sub.grade, feedback: sub.returnedFeedback }, null, 2), 'application/json');
     return;
   }
-  let txt=`KlassenTest – Ergebnis\n${'─'.repeat(40)}\nSchüler: ${student.name}\nTest: ${t.title}\nAbgegeben: ${new Date(sub.submittedAt).toLocaleString('de-DE')}\nScore: ${sc.scored}/${sc.total}\n${sub.grade?'Note: '+sub.grade:''}\n\nRückmeldung:\n${sub.returnedFeedback?.replace(/<[^>]+>/g,'')||'–'}\n`;
-  KT.dl('ergebnis-'+student.name.replace(/\W/g,'_')+'.txt',txt);
+  let txt = `KlassenTest – Ergebnis\n${'─'.repeat(40)}\nSchüler: ${student.name}\nTest: ${t.title}\nAbgegeben: ${new Date(sub.submittedAt).toLocaleString('de-DE')}\nScore: ${sc.scored}/${sc.total}\n${sub.grade ? 'Note: '+sub.grade : ''}\n\nRückmeldung:\n${sub.returnedFeedback?.replace(/<[^>]+>/g, '') || '–'}\n`;
+  KT.dl('ergebnis-' + student.name.replace(/\W/g,'_') + '.txt', txt);
 }
 
-function logout(){
+function logout() {
   sessionStorage.removeItem('kt_student');
-  clearInterval(timerInt);clearInterval(waitPollInt);
-  student=null;testSession=null;
-  window.location.href=window.location.pathname;
+  clearInterval(timerInt); clearInterval(waitPollInt);
+  student = null; testSession = null;
+  window.location.href = window.location.pathname;
 }
 
 init();

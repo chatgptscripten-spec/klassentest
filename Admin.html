@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KlassenTest – Admin Dashboard</title>
+<link rel="stylesheet" href="kt.css">
+<style>
+.admin-header-bar {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  padding: 10px 20px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.admin-header-bar .logo-mark { background: rgba(255,255,255,.15); box-shadow: none; }
+.admin-title { font-family: var(--display); font-size: 15px; font-weight: 800; color: #fff; }
+.admin-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 1px; }
+
+.section-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--paper); }
+.tab-btn {
+  padding: 13px 20px; font-size: 13px; font-weight: 700;
+  color: var(--ink3); border: none; background: transparent;
+  cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s;
+  display: flex; align-items: center; gap: 7px;
+}
+.tab-btn:hover { color: var(--ink2); background: var(--paper2); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.tab-content { display: none; flex: 1; overflow-y: auto; }
+.tab-content.active { display: block; }
+
+.secret-mark {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(79,70,229,.1); border: 1px solid rgba(79,70,229,.2);
+  border-radius: 6px; padding: 3px 9px; font-size: 10px; font-weight: 700; color: var(--accent);
+}
+
+.answer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-top: 16px; }
+.answer-card {
+  background: var(--paper); border: 1px solid var(--border); border-radius: var(--r2);
+  padding: 16px; box-shadow: var(--shadow); cursor: pointer; transition: all .15s;
+}
+.answer-card:hover { border-color: var(--accent-m); box-shadow: var(--shadow2); transform: translateY(-1px); }
+
+.solution-row {
+  display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px;
+  border-radius: 8px; margin-bottom: 4px; font-size: 13px;
+}
+.sol-correct { background: var(--green-l); color: var(--green-d); border: 1px solid var(--green-m); }
+.sol-wrong { background: var(--red-l); color: var(--red); border: 1px solid var(--red-m); }
+.sol-neutral { background: var(--paper2); color: var(--ink2); border: 1px solid var(--border); }
+
+.student-answer-view {
+  background: var(--paper2); border-radius: 10px; padding: 12px;
+  font-size: 13px; color: var(--ink2); margin-top: 6px; white-space: pre-wrap; line-height: 1.6;
+  border: 1px solid var(--border); min-height: 40px;
+}
+
+.overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+@media (max-width: 900px) { .overview-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.teacher-row {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--paper); border: 1px solid var(--border); border-radius: var(--r);
+  margin-bottom: 8px;
+}
+
+.filter-bar {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;
+}
+.filter-bar select, .filter-bar input {
+  padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: var(--font); font-size: 13px; color: var(--ink); background: var(--paper);
+}
+.filter-bar select:focus, .filter-bar input:focus { outline: none; border-color: var(--accent); }
+
+.corr-badge {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.corr-check { background: var(--green-l); color: var(--green); border: 1px solid var(--green-m); }
+.corr-x { background: var(--red-l); color: var(--red); border: 1px solid var(--red-m); }
+
+.expand-btn {
+  background: none; border: none; cursor: pointer; color: var(--accent);
+  font-size: 12px; font-weight: 700; padding: 4px 0; font-family: var(--font);
+}
+.expand-btn:hover { text-decoration: underline; }
+
+.secret-banner {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  border-radius: var(--r2); padding: 14px 18px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+.secret-banner-icon { font-size: 24px; flex-shrink: 0; }
+.secret-banner-text { color: rgba(255,255,255,.8); font-size: 13px; line-height: 1.6; }
+.secret-banner-text strong { color: #fff; }
+
+.del-btn-sm {
+  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--red-m);
+  background: var(--red-l); color: var(--red); font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); transition: all .15s;
+}
+.del-btn-sm:hover { background: var(--red); color: #fff; }
+</style>
+</head>
+<body>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <div class="admin-header-bar">
+    <div class="logo-mark">K</div>
+    <div>
+      <div class="admin-title">KlassenTest Admin</div>
+      <div class="admin-sub">Vollzugriff auf alle Daten</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <span class="admin-badge">🔐 Administrator</span>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6)" onclick="exportAll()">📦 Export</button>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6)" onclick="logout()">← Abmelden</button>
+    </div>
+  </div>
+
+  <div class="section-tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')">📊 Übersicht</button>
+    <button class="tab-btn" onclick="switchTab('tests')">📝 Alle Tests</button>
+    <button class="tab-btn" onclick="switchTab('students')">🎒 Alle Schüler</button>
+    <button class="tab-btn" onclick="switchTab('teachers')">👩‍🏫 Lehrkräfte</button>
+    <button class="tab-btn" onclick="switchTab('data')">🗄 Rohdaten</button>
+  </div>
+
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <div class="tab-content active" id="tab-overview" style="padding:24px;overflow-y:auto">
+      <div id="overview-content"></div>
+    </div>
+    <div class="tab-content" id="tab-tests" style="padding:24px;overflow-y:auto">
+      <div id="tests-content"></div>
+    </div>
+    <div class="tab-content" id="tab-students" style="padding:24px;overflow-y:auto">
+      <div id="students-content"></div>
+    </div>
+    <div class="tab-content" id="tab-teachers" style="padding:24px;overflow-y:auto">
+      <div id="teachers-content"></div>
+    </div>
+    <div class="tab-content" id="tab-data" style="padding:24px;overflow-y:auto">
+      <div id="data-content"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<script src="kt.js"></script>
+<script>
+if (!sessionStorage.getItem('kt_admin')) { window.location.href = 'index.html'; }
+
+function logout() { sessionStorage.removeItem('kt_admin'); window.location.href = 'index.html'; }
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function openModal(html) { document.getElementById('modal-body').innerHTML = html; document.getElementById('modal-bg').classList.add('open'); }
+
+let currentTab = 'overview';
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const ids = ['overview','tests','students','teachers','data'];
+    b.classList.toggle('active', ids[i] === id);
+  });
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  currentTab = id;
+  renderTab(id);
+}
+
+function renderTab(id) {
+  const db = KT.get();
+  if (id === 'overview') renderOverview(db);
+  if (id === 'tests') renderTests(db);
+  if (id === 'students') renderStudents(db);
+  if (id === 'teachers') renderTeachers(db);
+  if (id === 'data') renderData(db);
+}
+
+function renderOverview(db) {
+  const el = document.getElementById('overview-content');
+  const totalTests = db.tests.length;
+  const activeTests = db.tests.filter(t => t.active).length;
+  const totalSubs = db.submissions.length;
+  const totalStudents = db.students.length;
+  const corrected = db.submissions.filter(s => s.corrected).length;
+  const avgScore = db.submissions.length > 0 ? (() => {
+    let sum = 0, count = 0;
+    db.submissions.forEach(s => {
+      const t = db.tests.find(x => x.id === s.testId);
+      if (!t) return;
+      const sc = KT.calcScore(s, t);
+      if (sc.total > 0) { sum += sc.scored / sc.total * 100; count++; }
+    });
+    return count > 0 ? Math.round(sum / count) : 0;
+  })() : 0;
+
+  el.innerHTML = `
+    <div class="secret-banner">
+      <div class="secret-banner-icon">🔐</div>
+      <div class="secret-banner-text">
+        <strong>Admin-Vollzugriff aktiv.</strong> Du siehst alle Tests, alle Schülerantworten und Musterlösungen.
+        Lehrkräfte und Schüler haben keinen Zugriff auf diesen Bereich.
+      </div>
+    </div>
+    <div class="overview-grid">
+      <div class="stat-card"><div class="stat-val">${totalTests}</div><div class="stat-label">Tests gesamt</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--green)">${activeTests}</div><div class="stat-label">Aktive Tests</div></div>
+      <div class="stat-card"><div class="stat-val">${totalSubs}</div><div class="stat-label">Abgaben gesamt</div></div>
+      <div class="stat-card"><div class="stat-val">${totalStudents}</div><div class="stat-label">Schüler registriert</div></div>
+      <div class="stat-card"><div class="stat-val">${corrected}/${totalSubs}</div><div class="stat-label">Korrigiert</div></div>
+      <div class="stat-card"><div class="stat-val">${avgScore}%</div><div class="stat-label">⌀ Score (Auto-MC)</div></div>
+      <div class="stat-card"><div class="stat-val">${db.teachers.length}</div><div class="stat-label">Lehrkräfte</div></div>
+      <div class="stat-card"><div class="stat-val">${db.tests.filter(t=>t.ended).length}</div><div class="stat-label">Beendete Tests</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Letzte Aktivität</div>
+      ${db.submissions.slice().reverse().slice(0, 10).map(s => {
+        const t = db.tests.find(x => x.id === s.testId);
+        const sc = KT.calcScore(s, t);
+        return `<div class="stu-row">
+          <div class="stu-avatar">${s.studentName.charAt(0).toUpperCase()}</div>
+          <div class="tc-info">
+            <div class="stu-name">${KT.esc(s.studentName)}</div>
+            <div style="font-size:12px;color:var(--ink3)">${t ? KT.esc(t.title) : '–'} · ${new Date(s.submittedAt).toLocaleString('de-DE')}</div>
+          </div>
+          <span class="badge ${s.corrected ? 'badge-green' : 'badge-amber'}">${s.corrected ? '✓ Korrigiert' : '⏳ Offen'}</span>
+          <span class="badge badge-gray">${sc.scored}/${sc.total} Pt.</span>
+          ${s.grade ? `<span class="badge badge-purple">Note ${KT.esc(s.grade)}</span>` : ''}
+        </div>`;
+      }).join('') || '<div style="color:var(--ink3);font-size:13px;padding:8px">Noch keine Abgaben.</div>'}
+    </div>`;
+}
+
+function renderTests(db) {
+  const el = document.getElementById('tests-content');
+  if (!db.tests.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Tests.</div></div>';
+    return;
+  }
+  el.innerHTML = `<div class="filter-bar">
+    <input type="text" id="test-search" placeholder="🔍 Test suchen…" oninput="renderTests(KT.get())" style="min-width:220px">
+    <select id="test-filter-status" onchange="renderTests(KT.get())">
+      <option value="">Alle Status</option>
+      <option value="active">🟢 Aktiv</option>
+      <option value="ended">🔴 Beendet</option>
+      <option value="draft">⚪ Entwurf</option>
+    </select>
+  </div>
+  <div id="tests-list-inner"></div>`;
+
+  const search = () => {
+    const q = (document.getElementById('test-search')?.value || '').toLowerCase();
+    const status = document.getElementById('test-filter-status')?.value || '';
+    let tests = db.tests.slice().reverse();
+    if (q) tests = tests.filter(t => t.title.toLowerCase().includes(q) || (t.teacherName || '').toLowerCase().includes(q));
+    if (status === 'active') tests = tests.filter(t => t.active);
+    if (status === 'ended') tests = tests.filter(t => t.ended);
+    if (status === 'draft') tests = tests.filter(t => !t.active && !t.ended);
+    const inner = document.getElementById('tests-list-inner');
+    if (!inner) return;
+    inner.innerHTML = tests.map(t => {
+      const subs = db.submissions.filter(s => s.testId === t.id);
+      const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+      return `<div class="test-card">
+        <div class="tc-icon">📝</div>
+        <div class="tc-info">
+          <div class="tc-name">${KT.esc(t.title)}</div>
+          <div class="tc-meta">👩‍🏫 ${KT.esc(t.teacherName || '–')} · ${t.subject || '–'} · Klasse ${t.cls || '–'} · ${qBlocks.length} Fragen · ${subs.length} Abgaben</div>
+          <div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap">
+            <span class="badge ${t.active ? 'badge-green' : t.ended ? 'badge-red' : 'badge-gray'}">${t.active ? '🟢 Aktiv' : t.ended ? '🔴 Beendet' : '⚪ Entwurf'}</span>
+            ${t.joinCode ? `<code style="font-family:var(--mono);font-size:11px;background:var(--paper2);padding:2px 8px;border-radius:5px;color:var(--ink3)">Code: ${t.joinCode}</code>` : ''}
+          </div>
+        </div>
+        <div class="tc-btns">
+          <button class="btn btn-ghost btn-sm" onclick="viewTest('${t.id}')">👁 Vollansicht</button>
+          <button class="btn btn-ghost btn-sm" onclick="viewTestSolutions('${t.id}')">🔑 Musterlösung</button>
+          <button class="btn btn-ghost btn-sm" onclick="viewAllAnswers('${t.id}')">📊 Alle Antworten</button>
+          <button class="del-btn-sm" onclick="deleteTest('${t.id}')">🗑 Löschen</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Kein Test gefunden.</div></div>';
+  };
+  search();
+  setTimeout(() => {
+    document.getElementById('test-search')?.addEventListener('input', search);
+    document.getElementById('test-filter-status')?.addEventListener('change', search);
+  }, 50);
+}
+
+function viewTest(testId) {
+  const db = KT.get();
+  const t = db.tests.find(x => x.id === testId);
+  if (!t) return;
+  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  openModal(`<div class="modal-head">📝 ${KT.esc(t.title)} <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="secret-banner" style="margin-bottom:14px">
+      <div class="secret-banner-icon">🔐</div>
+      <div class="secret-banner-text"><strong>Admin-Ansicht:</strong> Vollständiger Test inkl. Musterlösung</div>
+    </div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.8">
+      👩‍🏫 ${KT.esc(t.teacherName || '–')} &nbsp;·&nbsp; ${KT.esc(t.subject || '–')} &nbsp;·&nbsp; Klasse ${KT.esc(t.cls || '–')}<br>
+      Erstellt: ${new Date(t.createdAt).toLocaleString('de-DE')} &nbsp;·&nbsp; Code: <code style="font-family:var(--mono)">${t.joinCode || '–'}</code>
+    </div>
+    ${qBlocks.map((b, i) => `<div class="corr-q-row">
+      <div class="corr-q-label">${b.type === 'mc' ? 'Einfachauswahl' : b.type === 'multi' ? 'Mehrfachauswahl' : 'Freie Antwort'} – Frage ${i+1} (${b.data.points || 1} Pt.)</div>
+      <div style="font-weight:600;margin-bottom:8px">${KT.esc(b.data.question)}</div>
+      ${b.type === 'mc' ? b.data.options.map((o, oi) => `<div class="solution-row ${oi === b.data.correctIndex ? 'sol-correct' : 'sol-neutral'}">
+        ${oi === b.data.correctIndex ? '✅ RICHTIG' : `○ ${oi+1}`} &nbsp; ${KT.esc(o)}
+      </div>`).join('')
+      : b.type === 'multi' ? b.data.options.map((o, oi) => `<div class="solution-row ${(b.data.correctIndexes||[]).includes(oi) ? 'sol-correct' : 'sol-neutral'}">
+        ${(b.data.correctIndexes||[]).includes(oi) ? '✅ RICHTIG' : `☐ ${oi+1}`} &nbsp; ${KT.esc(o)}
+      </div>`).join('')
+      : `<div style="font-size:12px;color:var(--ink3);font-style:italic">Freie Antwort – manuelle Korrektur</div>`}
+    </div>`).join('')}
+    <div style="text-align:right;margin-top:14px"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`);
+}
+
+function viewTestSolutions(testId) {
+  const db = KT.get();
+  const t = db.tests.find(x => x.id === testId);
+  if (!t) return;
+  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  let html = `<div class="modal-head">🔑 Musterlösung <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="secret-banner" style="margin-bottom:14px">
+      <div class="secret-banner-icon">🔒</div>
+      <div class="secret-banner-text"><strong>${KT.esc(t.title)}</strong> — Nur für Administrator sichtbar</div>
+    </div>`;
+  if (!qBlocks.length) { html += '<div style="color:var(--ink3)">Keine Fragen.</div>'; }
+  qBlocks.forEach((b, i) => {
+    html += `<div class="corr-q-row">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="corr-q-label">Frage ${i+1}: ${KT.esc(b.data.question)}</div>
+        <span class="badge badge-gray">${b.data.points||1} Pt.</span>
+      </div>`;
+    if (b.type === 'mc') {
+      b.data.options.forEach((o, oi) => {
+        html += `<div class="solution-row ${oi === b.data.correctIndex ? 'sol-correct' : 'sol-neutral'}">
+          <span style="font-weight:700;min-width:80px">${oi === b.data.correctIndex ? '✅ RICHTIG' : `○ Option ${oi+1}`}</span>
+          ${KT.esc(o)}
+        </div>`;
+      });
+    } else if (b.type === 'multi') {
+      b.data.options.forEach((o, oi) => {
+        const ok = (b.data.correctIndexes||[]).includes(oi);
+        html += `<div class="solution-row ${ok ? 'sol-correct' : 'sol-neutral'}">
+          <span style="font-weight:700;min-width:80px">${ok ? '✅ RICHTIG' : `☐ Option ${oi+1}`}</span>
+          ${KT.esc(o)}
+        </div>`;
+      });
+    } else {
+      html += `<div style="padding:8px;font-size:12px;color:var(--ink3);font-style:italic">Freie Antwort – kein festes Muster</div>`;
+    }
+    html += `</div>`;
+  });
+  html += `<div style="text-align:right;margin-top:14px"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`;
+  openModal(html);
+}
+
+function viewAllAnswers(testId) {
+  const db = KT.get();
+  const t = db.tests.find(x => x.id === testId);
+  if (!t) return;
+  const subs = db.submissions.filter(s => s.testId === testId);
+  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  if (!subs.length) { alert('Noch keine Abgaben für diesen Test.'); return; }
+
+  let html = `<div class="modal-head">📊 Alle Antworten <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="secret-banner" style="margin-bottom:14px">
+      <div class="secret-banner-icon">👁</div>
+      <div class="secret-banner-text"><strong>${KT.esc(t.title)}</strong> — ${subs.length} Abgaben · Vollansicht aller Schülerantworten</div>
+    </div>`;
+
+  subs.forEach(sub => {
+    const sc = KT.calcScore(sub, t);
+    const pct = sc.total > 0 ? Math.round(sc.scored / sc.total * 100) : 0;
+    html += `<div style="background:var(--paper2);border-radius:var(--r2);padding:16px;margin-bottom:12px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <div class="stu-avatar">${sub.studentName.charAt(0).toUpperCase()}</div>
+        <div>
+          <div style="font-weight:700;font-size:14px">${KT.esc(sub.studentName)}</div>
+          <div style="font-size:11px;color:var(--ink3)">${new Date(sub.submittedAt).toLocaleString('de-DE')} · Auto: ${sc.scored}/${sc.total} Pt. (${pct}%)</div>
+        </div>
+        ${sub.grade ? `<span class="badge badge-purple" style="margin-left:auto">Note ${KT.esc(sub.grade)}</span>` : ''}
+        <span class="badge ${sub.corrected ? 'badge-green' : 'badge-amber'}">${sub.corrected ? '✓ Korrigiert' : '⏳ Offen'}</span>
+      </div>
+      ${qBlocks.map((b, i) => {
+        const ans = sub.answers?.[b.id];
+        let ansDisplay = '';
+        let correct = false;
+        if (b.type === 'mc') {
+          correct = ans === b.data.correctIndex;
+          ansDisplay = ans != null ? `"${KT.esc(b.data.options[ans])}"` : '<em>Keine Antwort</em>';
+        } else if (b.type === 'multi') {
+          const correctArr = JSON.stringify([...(b.data.correctIndexes||[])].sort((a,c)=>a-c));
+          const givenArr = JSON.stringify([...(ans||[])].sort((a,c)=>a-c));
+          correct = correctArr === givenArr;
+          ansDisplay = (ans||[]).length ? (ans||[]).map(idx => `"${KT.esc(b.data.options[idx])}"`).join(', ') : '<em>Keine Antwort</em>';
+        } else {
+          ansDisplay = ans ? KT.esc(ans) : '<em>Keine Antwort</em>';
+        }
+        return `<div style="margin-bottom:7px">
+          <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">
+            F${i+1}: ${KT.esc(b.data.question)}
+            ${b.type !== 'free' ? `<span style="margin-left:6px;font-size:11px;color:${correct ? 'var(--green)' : 'var(--red)'}">${correct ? '✅ Richtig' : '❌ Falsch'}</span>` : ''}
+          </div>
+          <div class="answer-peek">${ansDisplay}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  html += `<div style="text-align:right;margin-top:14px"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`;
+  openModal(html);
+}
+
+function deleteTest(testId) {
+  if (!confirm('Test und alle zugehörigen Abgaben wirklich löschen? Dies kann nicht rückgängig gemacht werden.')) return;
+  const db = KT.get();
+  db.tests = db.tests.filter(t => t.id !== testId);
+  db.submissions = db.submissions.filter(s => s.testId !== testId);
+  KT.set(db);
+  KT.toast('🗑 Test gelöscht.');
+  renderTests(db);
+}
+
+function renderStudents(db) {
+  const el = document.getElementById('students-content');
+  const allStudents = db.students;
+  if (!allStudents.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🎒</div><div class="empty-text">Noch keine Schüler.</div></div>';
+    return;
+  }
+
+  el.innerHTML = `<div class="filter-bar">
+    <input type="text" id="stu-search" placeholder="🔍 Schüler suchen…" style="min-width:220px">
+  </div>
+  <div id="stu-list-inner"></div>`;
+
+  const render = () => {
+    const q = (document.getElementById('stu-search')?.value || '').toLowerCase();
+    let students = allStudents.filter(s => !q || s.name.toLowerCase().includes(q));
+    const inner = document.getElementById('stu-list-inner');
+    if (!inner) return;
+    inner.innerHTML = students.map(stu => {
+      const subs = db.submissions.filter(s => s.studentName === stu.name);
+      const tests = [...new Set(subs.map(s => s.testId))].map(id => db.tests.find(t => t.id === id)).filter(Boolean);
+      return `<div class="test-card" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px;width:100%">
+          <div class="stu-avatar" style="width:44px;height:44px;font-size:16px">${stu.name.charAt(0).toUpperCase()}</div>
+          <div class="tc-info">
+            <div class="tc-name">${KT.esc(stu.name)}</div>
+            <div class="tc-meta">Zuletzt aktiv: ${stu.lastSeen ? new Date(stu.lastSeen).toLocaleString('de-DE') : '–'} · ${subs.length} Abgabe${subs.length!==1?'n':''}</div>
+          </div>
+          <div class="tc-btns">
+            <button class="btn btn-ghost btn-sm" onclick="viewStudentDetail('${encodeURIComponent(stu.name)}')">📊 Detail</button>
+            <button class="del-btn-sm" onclick="deleteStudent('${encodeURIComponent(stu.name)}')">🗑</button>
+          </div>
+        </div>
+        ${subs.length ? `<div style="width:100%;padding-top:8px;border-top:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Abgaben</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${subs.map(sub => {
+              const t = db.tests.find(x => x.id === sub.testId);
+              const sc = KT.calcScore(sub, t);
+              return `<span class="badge ${sub.corrected ? 'badge-green' : 'badge-amber'}" style="cursor:pointer" onclick="viewStudentSub('${sub.id}')">
+                ${t ? KT.esc(t.title.slice(0,20)) : '?'} · ${sc.scored}/${sc.total} ${sub.grade ? '· Note '+KT.esc(sub.grade) : ''}
+              </span>`;
+            }).join('')}
+          </div>
+        </div>` : ''}
+      </div>`;
+    }).join('') || '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Kein Schüler gefunden.</div></div>';
+  };
+  render();
+  setTimeout(() => document.getElementById('stu-search')?.addEventListener('input', render), 50);
+}
+
+function viewStudentDetail(name) {
+  const db = KT.get();
+  const n = decodeURIComponent(name);
+  const subs = db.submissions.filter(s => s.studentName === n);
+  let html = `<div class="modal-head">🎒 ${KT.esc(n)} <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="secret-banner" style="margin-bottom:14px">
+      <div class="secret-banner-icon">👁</div>
+      <div class="secret-banner-text">Vollständige Abgabehistorie inkl. aller Antworten</div>
+    </div>`;
+  if (!subs.length) { html += '<div style="color:var(--ink3)">Noch keine Abgaben.</div>'; }
+  subs.forEach(sub => {
+    const t = db.tests.find(x => x.id === sub.testId);
+    const sc = KT.calcScore(sub, t);
+    const qBlocks = t ? (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type)) : [];
+    html += `<div class="corr-q-row">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-weight:700">${t ? KT.esc(t.title) : '–'}</div>
+          <div style="font-size:12px;color:var(--ink3)">${new Date(sub.submittedAt).toLocaleString('de-DE')} · ${sc.scored}/${sc.total} Pt.</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${sub.grade ? `<span class="badge badge-purple">Note ${KT.esc(sub.grade)}</span>` : ''}
+          <span class="badge ${sub.corrected ? 'badge-green' : 'badge-amber'}">${sub.corrected ? '✓ Korrigiert' : '⏳ Offen'}</span>
+        </div>
+      </div>
+      ${qBlocks.map((b, i) => {
+        const ans = sub.answers?.[b.id];
+        let ansText = '';
+        if (b.type === 'mc') ansText = ans != null ? KT.esc(b.data.options[ans]) : '–';
+        else if (b.type === 'multi') ansText = (ans||[]).map(idx => KT.esc(b.data.options[idx])).join(', ') || '–';
+        else ansText = KT.esc(ans || '–');
+        const correct = b.type === 'mc' ? ans === b.data.correctIndex :
+          b.type === 'multi' ? JSON.stringify([...(b.data.correctIndexes||[])].sort()) === JSON.stringify([...(ans||[])].sort()) : null;
+        return `<div style="margin-bottom:7px;padding:9px 12px;border-radius:8px;background:var(--paper);border:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:4px">
+            F${i+1}: ${KT.esc(b.data.question)}
+            ${correct !== null ? `<span style="margin-left:6px;color:${correct ? 'var(--green)' : 'var(--red)'}">${correct ? '✅' : '❌'}</span>` : ''}
+          </div>
+          <div style="font-size:13px;color:var(--ink2)">${ansText}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  html += `<div style="text-align:right;margin-top:14px"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`;
+  openModal(html);
+}
+
+function viewStudentSub(subId) {
+  const db = KT.get();
+  const sub = db.submissions.find(s => s.id === subId);
+  if (!sub) return;
+  viewStudentDetail(encodeURIComponent(sub.studentName));
+}
+
+function deleteStudent(name) {
+  if (!confirm('Schüler und alle Abgaben löschen?')) return;
+  const n = decodeURIComponent(name);
+  const db = KT.get();
+  db.students = db.students.filter(s => s.name !== n);
+  db.submissions = db.submissions.filter(s => s.studentName !== n);
+  KT.set(db);
+  KT.toast('🗑 Schüler gelöscht.');
+  renderStudents(db);
+}
+
+function renderTeachers(db) {
+  const el = document.getElementById('teachers-content');
+  if (!db.teachers.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div><div class="empty-text">Noch keine Lehrkräfte.</div></div>';
+    return;
+  }
+  el.innerHTML = `<div class="panel">
+    <div class="panel-title">Alle Lehrkräfte</div>
+    ${db.teachers.map(t => {
+      const tests = db.tests.filter(x => x.teacherName === t.name);
+      const subs = db.submissions.filter(s => tests.find(x => x.id === s.testId));
+      return `<div class="teacher-row">
+        <div class="stu-avatar" style="background:var(--green-l);color:var(--green)">${t.name.charAt(0).toUpperCase()}</div>
+        <div class="tc-info">
+          <div class="stu-name">${KT.esc(t.name)}</div>
+          <div style="font-size:12px;color:var(--ink3)">${tests.length} Tests · ${subs.length} Abgaben · Zuletzt: ${t.lastSeen ? new Date(t.lastSeen).toLocaleString('de-DE') : '–'}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="viewTeacherTests('${encodeURIComponent(t.name)}')">Tests ansehen</button>
+        <button class="del-btn-sm" onclick="deleteTeacher('${encodeURIComponent(t.name)}')">🗑</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function viewTeacherTests(name) {
+  const db = KT.get();
+  const n = decodeURIComponent(name);
+  const tests = db.tests.filter(t => t.teacherName === n);
+  let html = `<div class="modal-head">👩‍🏫 ${KT.esc(n)} <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:14px">${tests.length} Tests erstellt</div>`;
+  tests.forEach(t => {
+    const subs = db.submissions.filter(s => s.testId === t.id);
+    html += `<div class="test-card">
+      <div class="tc-icon">📝</div>
+      <div class="tc-info">
+        <div class="tc-name">${KT.esc(t.title)}</div>
+        <div class="tc-meta">${subs.length} Abgaben · ${new Date(t.createdAt).toLocaleDateString('de-DE')}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal();viewAllAnswers('${t.id}')">Antworten</button>
+    </div>`;
+  });
+  if (!tests.length) html += '<div style="color:var(--ink3)">Noch keine Tests.</div>';
+  html += `<div style="text-align:right;margin-top:14px"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`;
+  openModal(html);
+}
+
+function deleteTeacher(name) {
+  if (!confirm('Lehrkraft löschen?')) return;
+  const n = decodeURIComponent(name);
+  const db = KT.get();
+  db.teachers = db.teachers.filter(t => t.name !== n);
+  KT.set(db);
+  KT.toast('🗑 Lehrkraft gelöscht.');
+  renderTeachers(db);
+}
+
+function renderData(db) {
+  const el = document.getElementById('data-content');
+  const raw = JSON.stringify(db, null, 2);
+  el.innerHTML = `<div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="panel-title" style="margin-bottom:0">🗄 Rohdaten (localStorage)</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="exportAll()">📦 JSON Export</button>
+        <button class="btn btn-red btn-sm" onclick="resetAll()">⚠️ Alles zurücksetzen</button>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:10px">
+      Tests: ${db.tests.length} · Schüler: ${db.students.length} · Abgaben: ${db.submissions.length} · Lehrkräfte: ${db.teachers.length}
+    </div>
+    <textarea style="width:100%;height:400px;font-family:var(--mono);font-size:11px;padding:12px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--paper2);color:var(--ink2);resize:vertical" readonly>${KT.esc(raw)}</textarea>
+    <div style="margin-top:12px">
+      <div class="f-label" style="font-size:10px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Daten importieren (JSON einfügen)</div>
+      <textarea id="import-area" style="width:100%;height:120px;font-family:var(--mono);font-size:11px;padding:12px;border:1.5px solid var(--border);border-radius:var(--r);resize:vertical" placeholder="JSON hier einfügen…"></textarea>
+      <button class="btn btn-amber btn-sm" style="margin-top:8px" onclick="importData()">📥 Importieren</button>
+    </div>
+  </div>`;
+}
+
+function exportAll() {
+  const db = KT.get();
+  KT.dl('klassentest-export-' + new Date().toISOString().slice(0,10) + '.json', JSON.stringify(db, null, 2), 'application/json');
+  KT.toast('📦 Export gespeichert.');
+}
+
+function resetAll() {
+  if (!confirm('ACHTUNG: Alle Daten (Tests, Schüler, Abgaben) wirklich löschen? Dies kann NICHT rückgängig gemacht werden!')) return;
+  if (!confirm('Wirklich? Alle Daten gehen verloren!')) return;
+  localStorage.removeItem('klassentest_v3');
+  KT.toast('✅ Zurückgesetzt.', 'info');
+  renderTab('overview');
+}
+
+function importData() {
+  const raw = document.getElementById('import-area')?.value?.trim();
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    if (!data.tests || !data.students) { alert('Ungültiges Format.'); return; }
+    KT.set(data);
+    KT.toast('📥 Daten importiert!', 'info');
+    renderTab(currentTab);
+  } catch (e) { alert('JSON-Fehler: ' + e.message); }
+}
+
+renderTab('overview');
+</script>
+</body>
+</html>

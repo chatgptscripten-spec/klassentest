@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KlassenTest – Schüler</title>
+<link rel="stylesheet" href="kt.css">
+<style>
+body{background:var(--paper);margin:0;font-family:var(--font)}
+.join-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:var(--paper2)}
+.join-card{width:100%;max-width:420px}
+.join-logo{text-align:center;margin-bottom:2rem}
+.join-logo-mark{width:56px;height:56px;background:var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:26px;font-weight:800;color:#fff;margin:0 auto 12px}
+.join-title{font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.join-sub{font-size:13px;color:var(--ink3);line-height:1.6}
+.join-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:1.75rem;box-shadow:var(--shadow2)}
+.f-label-dark{display:block;font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.f-inp-join{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;background:var(--paper);color:var(--ink);transition:border .15s,box-shadow .15s;margin-bottom:1rem}
+.f-inp-join:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-l)}
+.f-inp-join::placeholder{color:var(--ink3)}
+.code-inp{font-family:monospace;font-size:22px;font-weight:700;letter-spacing:5px;text-transform:uppercase;text-align:center}
+
+.test-screen{min-height:100vh;display:flex;flex-direction:column}
+.test-header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.test-topbar{padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.test-name{font-family:var(--display);font-size:15px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timer-chip{background:var(--ink);color:#fff;border-radius:20px;padding:7px 14px;font-family:monospace;font-size:15px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-chip.warn{background:#a05c00}
+.timer-chip.danger{background:var(--red);animation:blink .8s infinite}
+.test-progress{height:4px;background:var(--paper3)}
+.test-progress-fill{height:100%;background:var(--accent);transition:width .3s}
+
+.test-body{flex:1;padding:1.5rem;max-width:720px;width:100%;margin:0 auto}
+
+.q-header{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.q-tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700}
+.tag-mc{background:var(--accent-l);color:var(--accent)}
+.tag-multi{background:var(--amber-l);color:var(--amber)}
+.tag-free{background:var(--green-l);color:var(--green)}
+.q-text{font-size:16px;font-weight:600;line-height:1.5;color:var(--ink);margin-bottom:1rem}
+
+.ans-opt{border:2px solid var(--border);border-radius:var(--r);padding:11px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink);transition:all .15s;user-select:none;background:#fff}
+.ans-opt:hover{border-color:var(--accent-m);background:var(--accent-l)}
+.ans-opt.sel{border-color:var(--accent);background:var(--accent-l);color:var(--accent);font-weight:600}
+.opt-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;transition:all .15s}
+.sel .opt-dot{background:var(--accent);border-color:var(--accent)}
+.opt-square{width:18px;height:18px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:all .15s}
+.sel .opt-square{background:var(--amber);border-color:var(--amber);color:#fff}
+
+.free-ta{width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 13px;font-size:14px;color:var(--ink);font-family:var(--font);transition:border .15s}
+.free-ta:focus{outline:none;border-color:var(--accent)}
+.free-ta.ta-lined{background:repeating-linear-gradient(#fff 0,#fff 27px,#b8c0d8 27px,#b8c0d8 28px);line-height:28px;padding:0 13px}
+.free-ta.ta-grid{background-image:linear-gradient(#b8c0d8 1px,transparent 1px),linear-gradient(90deg,#b8c0d8 1px,transparent 1px);background-size:24px 24px;background-color:#fff}
+
+.nav-bar{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:8px}
+
+.wait-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;flex-direction:column;gap:1rem}
+.wait-icon{font-size:56px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.done-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.done-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:2rem;width:100%;max-width:580px;text-align:center;box-shadow:var(--shadow2)}
+.done-icon{font-size:60px;margin-bottom:1rem}
+.done-title{font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.done-sub{font-size:14px;color:var(--ink3);line-height:1.7;margin-bottom:1.5rem}
+
+.feedback-card{background:var(--paper2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;text-align:left;margin-bottom:1.25rem}
+.feedback-title{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.grade-big{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--display);font-size:28px;font-weight:800;margin-bottom:8px}
+
+.dl-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);border:1.5px solid var(--border);background:#fff;color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;margin:4px;transition:all .15s}
+.dl-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.progress-nav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.25rem}
+.progress-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--ink3)}
+.progress-dot.answered{background:var(--accent-l);border-color:var(--accent-m);color:var(--accent)}
+.progress-dot.current{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.img-block-view{max-width:100%;border-radius:var(--r);margin-bottom:1rem;display:block}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="kt.js"></script>
+<script>
+let student=null, testSession=null, timerInt=null, checkInt=null;
+
+function init(){
+  const s=sessionStorage.getItem('kt_student');
+  const code=new URLSearchParams(window.location.search).get('code')||'';
+  if(s){student=JSON.parse(s);}
+  render(code);
+}
+
+function render(prefillCode){
+  const app=document.getElementById('app');
+  if(!student){app.innerHTML=joinHTML(prefillCode||'');attachJoin();return;}
+  if(testSession?.submitted){app.innerHTML=doneHTML();return;}
+  if(!testSession){
+    const db=KT.get();
+    const stu=db.students.find(s=>s.name===student.name);
+    const t=stu?.currentTestId?db.tests.find(x=>x.id===stu.currentTestId):null;
+    if(!t||!t.active){app.innerHTML=waitHTML();startWaitPoll();return;}
+    const existingSub=db.submissions.find(s=>s.studentName===student.name&&s.testId===t.id&&s.submitted);
+    if(existingSub){testSession={submitted:true,testId:t.id};render();return;}
+    const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+    testSession={testId:t.id,currentIdx:0,answers:{},submitted:false};
+    if(t.timerSeconds){timerInt&&clearInterval(timerInt);let s=t.timerSeconds;timerInt=setInterval(()=>{s--;updateTimer(s,t);if(s<=0){clearInterval(timerInt);submitTest();}},1000);setTimeout(()=>updateTimer(t.timerSeconds,t),0);}
+  }
+  app.innerHTML=testHTML();
+  attachTest();
+}
+
+function joinHTML(code){
+  return`<div class="join-screen">
+    <div class="join-card">
+      <div class="join-logo">
+        <div class="join-logo-mark">K</div>
+        <div class="join-title">Zum Test beitreten</div>
+        <div class="join-sub">Gib deinen echten Namen an.<br>Dein Ergebnis wird sonst nicht gewertet.</div>
+      </div>
+      <div class="join-panel">
+        <div class="alert alert-blue" style="margin-bottom:1.25rem">⚠️ <strong>Verwende deinen echten Namen</strong> – Vor- und Nachname – damit die Lehrkraft dein Ergebnis zuordnen kann.</div>
+        <label class="f-label-dark">Dein vollständiger Name</label>
+        <input class="f-inp-join" id="j-name" type="text" placeholder="Vorname Nachname" autocomplete="off" autofocus>
+        <label class="f-label-dark">Test-Code (vom Lehrer)</label>
+        <input class="f-inp-join code-inp" id="j-code" type="text" placeholder="ABC123" maxlength="6" value="${KT.esc(code)}" oninput="this.value=this.value.toUpperCase()">
+        <div id="j-err" class="alert alert-red" style="display:none;margin-bottom:1rem"></div>
+        <button class="btn btn-primary btn-full btn-lg" onclick="doJoin()">Test beitreten →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function attachJoin(){
+  document.getElementById('j-name')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('j-code')?.focus();});
+  document.getElementById('j-code')?.addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
+}
+
+function doJoin(){
+  const name=document.getElementById('j-name').value.trim();
+  const code=document.getElementById('j-code').value.trim().toUpperCase();
+  const err=document.getElementById('j-err');
+  err.style.display='none';
+  if(!name){err.textContent='❌ Bitte gib deinen Namen ein.';err.style.display='block';return;}
+  if(!code){err.textContent='❌ Bitte gib den Code ein.';err.style.display='block';return;}
+  const db=KT.get();
+  const t=db.tests.find(x=>x.joinCode===code);
+  if(!t){err.textContent='❌ Ungültiger Code.';err.style.display='block';return;}
+  if(t.ended){err.textContent='❌ Dieser Test ist bereits beendet.';err.style.display='block';return;}
+  let stu=db.students.find(s=>s.name===name);
+  if(!stu){stu={name,lastSeen:Date.now(),currentTestId:t.active?t.id:null};db.students.push(stu);}
+  else{stu.lastSeen=Date.now();if(t.active)stu.currentTestId=t.id;}
+  KT.set(db);
+  student={name};
+  sessionStorage.setItem('kt_student',JSON.stringify(student));
+  const existingSub=db.submissions.find(s=>s.studentName===name&&s.testId===t.id&&s.submitted);
+  if(existingSub){testSession={submitted:true,testId:t.id};render();return;}
+  render();
+}
+
+function waitHTML(){
+  return`<div class="wait-screen">
+    <div class="wait-icon">⌛</div>
+    <div style="font-family:var(--display);font-size:22px;font-weight:800">Warte auf den Lehrer…</div>
+    <div style="font-size:14px;color:var(--ink3)">Der Test startet, sobald die Lehrkraft auf "Starten" klickt.<br>Diese Seite aktualisiert sich automatisch.</div>
+    <div style="font-size:12px;color:var(--ink3)">Angemeldet als: <strong>${KT.esc(student?.name)}</strong></div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">← Abmelden</button>
+  </div>`;
+}
+
+let waitPollInt=null;
+function startWaitPoll(){
+  clearInterval(waitPollInt);
+  waitPollInt=setInterval(()=>{
+    const db=KT.get();
+    const stu=db.students.find(s=>s.name===student?.name);
+    const t=stu?.currentTestId?db.tests.find(x=>x.id===stu.currentTestId):null;
+    if(t&&t.active){clearInterval(waitPollInt);testSession=null;render();}
+  },3000);
+}
+
+function testHTML(){
+  const db=KT.get();
+  const t=db.tests.find(x=>x.id===testSession.testId);
+  if(!t) return '<div style="padding:2rem;text-align:center">Test nicht gefunden.</div>';
+  const qBlocks=(t.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  const idx=testSession.currentIdx;
+  const q=qBlocks[idx];
+  const total=qBlocks.length;
+  const answered=Object.keys(testSession.answers).length;
+
+  return`<div class="test-screen">
+    <div class="test-header">
+      <div class="test-topbar">
+        <div class="test-name">${KT.esc(t.title)}</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <span style="font-size:12px;color:var(--ink3)">${student?.name}</span>
+          <div class="timer-chip" id="timer-chip">⏱ <span id="timer-val">–:––</span></div>
+        </div>
+      </div>
+      <div class="test-progress"><div class="test-progress-fill" style="width:${Math.round((answered/total)*100)}%"></div></div>
+    </div>
+
+    <div class="test-body">
+      <div class="progress-nav">
+        ${qBlocks.map((_,i)=>`<div class="progress-dot ${i===idx?'current':testSession.answers[qBlocks[i].id]!=null?'answered':''}" onclick="goQ(${i})">${i+1}</div>`).join('')}
+      </div>
+
+      ${renderBlocks(t.blocks, qBlocks, idx, t)}
+
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goQ(${idx-1})" ${idx===0?'disabled':''}>← Zurück</button>
+        <div style="font-size:13px;color:var(--ink3)">${answered}/${total} beantwortet</div>
+        ${idx<total-1
+          ?`<button class="btn btn-primary" onclick="goQ(${idx+1})">Weiter →</button>`
+          :`<button class="btn btn-green btn-lg" onclick="confirmSubmit()">📨 Test abschicken</button>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderBlocks(allBlocks, qBlocks, idx, t){
+  const q=qBlocks[idx];
+  const ans=testSession.answers[q.id];
+  const bg=t.bg||'lined';
+
+  let html=`<div class="student-q-block">`;
+  html+=`<div class="q-header">Frage ${idx+1} von ${qBlocks.length} <span class="q-tag ${q.type==='mc'?'tag-mc':q.type==='multi'?'tag-multi':'tag-free'}">${q.type==='mc'?'Einfachauswahl':q.type==='multi'?'Mehrfachauswahl':'Freie Antwort'}</span>${q.data.points?`<span style="font-size:11px;color:var(--ink3)">⭐ ${q.data.points} Pt.</span>`:''}</div>`;
+  html+=`<div class="q-text">${KT.esc(q.data.question)}</div>`;
+
+  if(q.type==='mc'){
+    html+=q.data.options.map((o,i)=>`<div class="ans-opt ${ans===i?'sel':''}" onclick="selectMC('${q.id}',${i})">
+      <div class="opt-dot"></div><span>${KT.esc(o)}</span>
+    </div>`).join('');
+  } else if(q.type==='multi'){
+    const selArr=ans||[];
+    html+=`<div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Mehrere Antworten möglich</div>`;
+    html+=q.data.options.map((o,i)=>`<div class="ans-opt ${selArr.includes(i)?'sel':''}" onclick="toggleMulti('${q.id}',${i})">
+      <div class="opt-square">${selArr.includes(i)?'✓':''}</div><span>${KT.esc(o)}</span>
+    </div>`).join('');
+  } else {
+    const lines=q.data.lines||5;
+    html+=`<textarea class="free-ta ${bg==='lined'?'ta-lined':bg==='grid'?'ta-grid':''}" rows="${lines}" placeholder="Deine Antwort hier…" id="free-${q.id}" oninput="saveFree('${q.id}',this.value)">${KT.esc(ans||'')}</textarea>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function attachTest(){
+  setTimeout(()=>{
+    const db=KT.get();const t=db.tests.find(x=>x.id===testSession?.testId);
+    if(t&&t.timerSeconds){
+      const elapsed=Math.floor((Date.now()-(t.startedAt||Date.now()))/1000);
+      const rem=Math.max(0,t.timerSeconds-elapsed);
+      updateTimerDisplay(rem);
+    }
+  },50);
+}
+
+function updateTimer(s,t){
+  updateTimerDisplay(s);
+  if(s===0){clearInterval(timerInt);submitTest();}
+}
+function updateTimerDisplay(s){
+  const chip=document.getElementById('timer-chip');
+  const val=document.getElementById('timer-val');
+  if(val)val.textContent=KT.fmt(s);
+  if(chip){chip.className='timer-chip'+(s<300?' warn':'')+(s<60?' danger':'');}
+}
+
+function goQ(idx){
+  const db=KT.get();const t=db.tests.find(x=>x.id===testSession.testId);
+  const qBlocks=(t?.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  if(idx<0||idx>=qBlocks.length)return;
+  testSession.currentIdx=idx;
+  const app=document.getElementById('app');
+  app.innerHTML=testHTML();
+  attachTest();
+}
+function selectMC(qid,i){testSession.answers[qid]=i;const app=document.getElementById('app');app.innerHTML=testHTML();attachTest();}
+function toggleMulti(qid,i){
+  const cur=testSession.answers[qid]||[];
+  const idx2=cur.indexOf(i);if(idx2>=0)cur.splice(idx2,1);else cur.push(i);
+  testSession.answers[qid]=cur.length?cur:undefined;
+  const app=document.getElementById('app');app.innerHTML=testHTML();attachTest();
+}
+function saveFree(qid,val){testSession.answers[qid]=val||undefined;}
+
+function confirmSubmit(){
+  const db=KT.get();const t=db.tests.find(x=>x.id===testSession.testId);
+  const qBlocks=(t?.blocks||[]).filter(b=>['mc','multi','free'].includes(b.type));
+  const answered=Object.keys(testSession.answers).filter(k=>testSession.answers[k]!=null&&testSession.answers[k]!=='').length;
+  const unanswered=qBlocks.length-answered;
+  if(unanswered>0){if(!confirm(`Du hast noch ${unanswered} Frage(n) nicht beantwortet. Trotzdem abschicken?`))return;}
+  else if(!confirm('Test abschicken? Du kannst danach nichts mehr ändern.'))return;
+  submitTest();
+}
+
+function submitTest(){
+  if(!testSession||testSession.submitted)return;
+  clearInterval(timerInt);
+  const db=KT.get();
+  const existing=db.submissions.findIndex(s=>s.studentName===student.name&&s.testId===testSession.testId);
+  const sub={id:existing>=0?db.submissions[existing].id:KT.gid(),testId:testSession.testId,studentName:student.name,answers:testSession.answers,submittedAt:Date.now(),submitted:true,corrected:false};
+  if(existing>=0)db.submissions[existing]=sub;else db.submissions.push(sub);
+  const stu=db.students.find(s=>s.name===student.name);if(stu)stu.currentTestId=null;
+  KT.set(db);
+  testSession={submitted:true,testId:testSession.testId};
+  render();
+}
+
+function doneHTML(){
+  const db=KT.get();
+  const subs=db.submissions.filter(s=>s.studentName===student?.name&&s.submitted);
+  const latestSub=subs.sort((a,b)=>b.submittedAt-a.submittedAt)[0];
+  const t=latestSub?db.tests.find(x=>x.id===latestSub.testId):null;
+
+  let feedbackSection='';
+  if(latestSub?.sentBack&&latestSub?.returnedFeedback){
+    feedbackSection=`<div class="feedback-card">
+      <div class="feedback-title">✉️ Rückmeldung von der Lehrkraft</div>
+      ${latestSub.grade?`<div style="text-align:center;margin-bottom:12px"><div class="grade-big">${KT.esc(latestSub.grade)}</div><div style="font-size:12px;color:var(--ink3)">Deine Note</div></div>`:''}
+      <div style="font-size:13px;color:var(--ink2);line-height:1.7">${latestSub.returnedFeedback||''}</div>
+    </div>
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Test herunterladen als:</div>
+      <button class="dl-btn" onclick="dlResult('txt')">📄 TXT</button>
+      <button class="dl-btn" onclick="dlResult('json')">🗂 JSON</button>
+      <button class="dl-btn" onclick="window.print()">🖨 Drucken / PDF</button>
+    </div>`;
+  } else if(latestSub) {
+    feedbackSection=`<div class="alert alert-blue" style="margin-bottom:1.25rem">⌛ Deine Lehrkraft korrigiert den Test und schickt ihn zurück. Komm später wieder und klicke auf "Test ansehen".</div>
+    <button class="btn btn-ghost btn-full" onclick="checkForFeedback()">🔄 Auf Rückmeldung prüfen</button>`;
+  }
+
+  return`<div class="done-screen">
+    <div class="done-card">
+      <div class="done-icon">${latestSub?.sentBack?'🎉':'✅'}</div>
+      <div class="done-title">${latestSub?.sentBack?'Korrektur erhalten!':'Test abgeschickt!'}</div>
+      <div class="done-sub">
+        ${latestSub?.sentBack?`Deine Lehrkraft hat deinen Test korrigiert.`:`Dein Test wurde erfolgreich abgeschickt.`}<br>
+        ${t?`Test: <strong>${KT.esc(t.title)}</strong>`:''}
+      </div>
+      ${feedbackSection}
+      <button class="btn btn-ghost btn-sm" onclick="logout()">← Zurück zur Startseite</button>
+    </div>
+  </div>`;
+}
+
+function checkForFeedback(){
+  const db=KT.get();
+  const sub=db.submissions.find(s=>s.studentName===student?.name&&s.submitted&&s.sentBack);
+  if(sub){render();}else{KT.toast('⏳ Noch keine Rückmeldung.',false);}
+}
+
+function dlResult(format){
+  const db=KT.get();
+  const sub=db.submissions.find(s=>s.studentName===student?.name&&s.submitted);
+  const t=db.tests.find(x=>x.id===sub?.testId);
+  if(!sub||!t) return;
+  const sc=KT.calcScore(sub,t);
+  if(format==='json'){KT.dl('ergebnis-'+student.name.replace(/\W/g,'_')+'.json',JSON.stringify({student:student.name,test:t.title,score:sc,grade:sub.grade,feedback:sub.returnedFeedback},null,2),'application/json');return;}
+  let txt=`KlassenTest – Ergebnis\n${'─'.repeat(40)}\nSchüler: ${student.name}\nTest: ${t.title}\nAbgegeben: ${new Date(sub.submittedAt).toLocaleString('de-DE')}\nScore: ${sc.scored}/${sc.total}\n${sub.grade?'Note: '+sub.grade:''}\n\nRückmeldung:\n${sub.returnedFeedback?.replace(/<[^>]+>/g,'')||'–'}\n`;
+  KT.dl('ergebnis-'+student.name.replace(/\W/g,'_')+'.txt',txt);
+}
+
+function logout(){
+  sessionStorage.removeItem('kt_student');
+  clearInterval(timerInt);clearInterval(waitPollInt);
+  student=null;testSession=null;
+  window.location.href=window.location.pathname;
+}
+
+init();
+</script>
+</body>
+</html>

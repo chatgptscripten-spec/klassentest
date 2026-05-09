@@ -5,112 +5,92 @@
 <title>KlassenTest – Admin</title>
 <link rel="stylesheet" href="kt.css">
 <style>
-body{
-  background:#0d1117;
-  display:flex;align-items:center;justify-content:center;
-  min-height:100vh;padding:1.5rem;
+body {
+  background: #080c14;
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(99,102,241,.18) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 40% at 90% 90%,rgba(79,70,229,.1) 0%,transparent 50%);
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,.22) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 90%, rgba(79,70,229,.12) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 10% 80%, rgba(16,185,129,.06) 0%, transparent 50%);
 }
 
-.login-wrap{width:100%;max-width:400px;animation:scaleIn .35s cubic-bezier(.16,1,.3,1)}
+.login-wrap { width: 100%; max-width: 420px; animation: scaleIn .4s cubic-bezier(.16,1,.3,1); }
 
-.login-head{text-align:center;margin-bottom:2rem}
+.login-head { text-align: center; margin-bottom: 2rem; }
+.logo-big {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 34px; font-weight: 800; color: #fff;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 60px rgba(99,102,241,.5), 0 4px 20px rgba(0,0,0,.4);
+}
+.login-title { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -.6px; margin-bottom: 6px; }
+.login-sub { font-size: 13px; color: rgba(255,255,255,.3); line-height: 1.7; }
 
-.logo-big{
-  width:64px;height:64px;
-  background:linear-gradient(135deg,#6366f1,#4f46e5);
-  border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--display);font-size:30px;font-weight:800;color:#fff;
-  margin:0 auto 1rem;
-  box-shadow:0 0 40px rgba(99,102,241,.4),0 4px 16px rgba(79,70,229,.5);
+.login-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 22px; padding: 2rem;
+  backdrop-filter: blur(24px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
 }
 
-.login-title{
-  font-family:var(--display);font-size:28px;font-weight:800;
-  color:#fff;letter-spacing:-.6px;margin-bottom:5px;
+.f-label { display: block; font-size: 10px; font-weight: 800; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+.f-inp {
+  width: 100%; padding: 12px 15px;
+  border: 1.5px solid rgba(255,255,255,.1); border-radius: 11px;
+  background: rgba(255,255,255,.07); color: #fff;
+  font-size: 14px; font-family: 'DM Sans', sans-serif;
+  transition: border .15s, box-shadow .15s; margin-bottom: 14px;
 }
+.f-inp:focus { outline: none; border-color: rgba(99,102,241,.7); box-shadow: 0 0 0 3px rgba(79,70,229,.25); }
+.f-inp::placeholder { color: rgba(255,255,255,.2); }
 
-.login-sub{font-size:13px;color:rgba(255,255,255,.35);line-height:1.6}
-
-.login-card{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:20px;padding:1.75rem;
-  backdrop-filter:blur(20px);
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
+.err-msg {
+  background: rgba(220,38,38,.15); border: 1px solid rgba(220,38,38,.3);
+  border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #fca5a5;
+  margin-bottom: 14px; display: none;
 }
+.err-msg.show { display: block; animation: slideUp .2s; }
 
-.f-label{
-  display:block;font-size:11px;font-weight:700;
-  color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;
-  margin-bottom:5px;
+.btn-login {
+  width: 100%; padding: 13px 20px; border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none; color: #fff; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 800; cursor: pointer;
+  transition: all .15s; letter-spacing: .2px;
+  box-shadow: 0 4px 20px rgba(79,70,229,.4);
 }
-
-.f-inp-dark{
-  width:100%;padding:11px 14px;
-  border:1.5px solid rgba(255,255,255,.1);border-radius:var(--r);
-  background:rgba(255,255,255,.06);color:#fff;
-  font-size:14px;font-family:var(--font);
-  transition:border .15s,box-shadow .15s;margin-bottom:1rem;
+.btn-login:hover {
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  box-shadow: 0 8px 28px rgba(79,70,229,.55); transform: translateY(-1px);
 }
-.f-inp-dark:focus{
-  outline:none;border-color:rgba(99,102,241,.7);
-  box-shadow:0 0 0 3px rgba(79,70,229,.2);
+.btn-login:active { transform: translateY(0); }
+
+.sep { height: 1px; background: rgba(255,255,255,.08); margin: 1.5rem 0; }
+
+.link-label { font-size: 10px; font-weight: 800; color: rgba(255,255,255,.25); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px; padding: 10px 13px; margin-bottom: 7px;
+  transition: background .15s;
 }
-.f-inp-dark::placeholder{color:rgba(255,255,255,.2)}
-
-.err{
-  background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);
-  border-radius:var(--r);padding:10px 13px;font-size:13px;color:#fca5a5;
-  margin-bottom:1rem;display:none;
+.link-row:hover { background: rgba(255,255,255,.07); }
+.link-icon { font-size: 18px; flex-shrink: 0; }
+.link-url { flex: 1; font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,.35); word-break: break-all; }
+.link-copy {
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 7px;
+  padding: 5px 11px; font-size: 11px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  color: rgba(255,255,255,.5); cursor: pointer; flex-shrink: 0; transition: all .15s;
 }
-.err.show{display:block;animation:slideUp .2s}
+.link-copy:hover { background: rgba(255,255,255,.15); color: #fff; border-color: rgba(255,255,255,.25); }
 
-.sep{height:1px;background:rgba(255,255,255,.07);margin:1.25rem 0}
+.notice { font-size: 12px; color: rgba(255,255,255,.18); text-align: center; margin-top: 1.5rem; line-height: 1.9; }
 
-.link-label{
-  font-size:10px;font-weight:700;color:rgba(255,255,255,.25);
-  text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px;
-}
-
-.link-row{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);border-radius:var(--r);
-  padding:10px 13px;margin-bottom:7px;
-  transition:background .15s;
-}
-.link-row:hover{background:rgba(255,255,255,.06)}
-
-.link-icon{font-size:18px;flex-shrink:0}
-.link-url{flex:1;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);word-break:break-all}
-
-.link-copy{
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);border-radius:7px;
-  padding:5px 11px;font-size:11px;font-weight:600;font-family:var(--font);
-  color:rgba(255,255,255,.55);cursor:pointer;flex-shrink:0;transition:all .15s;
-}
-.link-copy:hover{background:rgba(255,255,255,.13);color:#fff;border-color:rgba(255,255,255,.2)}
-
-.notice{font-size:12px;color:rgba(255,255,255,.2);text-align:center;margin-top:1.25rem;line-height:1.8}
-
-.btn-admin{
-  width:100%;padding:12px 20px;border-radius:var(--r);
-  background:linear-gradient(135deg,#6366f1,#4f46e5);
-  border:none;color:#fff;
-  font-family:var(--font);font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .15s;letter-spacing:.1px;
-}
-.btn-admin:hover{
-  background:linear-gradient(135deg,#818cf8,#6366f1);
-  box-shadow:0 6px 20px rgba(79,70,229,.5);
-  transform:translateY(-1px);
-}
-.btn-admin:active{transform:translateY(0)}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Fraunces:wght@700;800;900&display=swap');
 </style>
 </head>
 <body>
@@ -118,15 +98,15 @@ body{
   <div class="login-head">
     <div class="logo-big">K</div>
     <div class="login-title">KlassenTest</div>
-    <div class="login-sub">Schulverwaltungs-System &mdash; Nur für den Administrator</div>
+    <div class="login-sub">Verwaltungsportal &mdash; Nur für den Administrator</div>
   </div>
   <div class="login-card">
     <label class="f-label">Benutzername</label>
-    <input class="f-inp-dark" id="u" type="text" placeholder="Benutzername" autocomplete="off" onkeydown="if(event.key==='Enter')login()">
+    <input class="f-inp" id="u" type="text" placeholder="Benutzername" autocomplete="off" onkeydown="if(event.key==='Enter')login()">
     <label class="f-label">Passwort</label>
-    <input class="f-inp-dark" id="p" type="password" placeholder="••••••••••••" onkeydown="if(event.key==='Enter')login()">
-    <div class="err" id="err">❌ Benutzername oder Passwort falsch.</div>
-    <button class="btn-admin" onclick="login()">Als Administrator anmelden →</button>
+    <input class="f-inp" id="p" type="password" placeholder="••••••••••••" onkeydown="if(event.key==='Enter')login()">
+    <div class="err-msg" id="err">❌ Benutzername oder Passwort falsch.</div>
+    <button class="btn-login" onclick="login()">Als Administrator anmelden →</button>
     <div class="sep"></div>
     <div class="link-label">Links für Lehrkräfte &amp; Schüler</div>
     <div class="link-row">
@@ -140,28 +120,37 @@ body{
       <button class="link-copy" onclick="cp('student')">Kopieren</button>
     </div>
   </div>
-  <div class="notice">Diese Anmeldeseite ist nur für den Schulleiter / Administrator.<br>Lehrkräfte und Schüler haben ihre eigenen Links.</div>
+  <div class="notice">Diese Seite ist nur für den Schulleiter / Administrator.<br>Lehrkräfte und Schüler nutzen ihre eigenen Links.</div>
 </div>
+
 <script>
-const AU='Samuelsingh368',AP='Samuelforever385!';
-const base=window.location.href.replace(/[^/]*$/,'');
-document.getElementById('lnk-teacher').textContent=base+'lehrer.html';
-document.getElementById('lnk-student').textContent=base+'schueler.html';
-function login(){
-  if(document.getElementById('u').value===AU&&document.getElementById('p').value===AP){
-    sessionStorage.setItem('kt_admin','1');
-    window.location.href='admin.html';
-  }else{
-    const e=document.getElementById('err');e.classList.add('show');
-    setTimeout(()=>e.classList.remove('show'),3000);
+const AU = 'Samuelsingh368', AP = 'Samuelforever385!';
+const base = window.location.href.replace(/[^/]*$/, '');
+document.getElementById('lnk-teacher').textContent = base + 'lehrer.html';
+document.getElementById('lnk-student').textContent = base + 'schueler.html';
+
+function login() {
+  const u = document.getElementById('u').value;
+  const p = document.getElementById('p').value;
+  if (u === AU && p === AP) {
+    sessionStorage.setItem('kt_admin', '1');
+    window.location.href = 'admin.html';
+  } else {
+    const e = document.getElementById('err');
+    e.classList.add('show');
+    document.getElementById('p').value = '';
+    setTimeout(() => e.classList.remove('show'), 3500);
   }
 }
-function cp(t){
-  const url=base+(t==='teacher'?'lehrer.html':'schueler.html');
-  navigator.clipboard.writeText(url).then(()=>{
-    const btn=event.target;const orig=btn.textContent;
-    btn.textContent='✓ Kopiert!';btn.style.color='#4ade80';
-    setTimeout(()=>{btn.textContent=orig;btn.style.color='';},1800);
+
+function cp(t) {
+  const url = base + (t === 'teacher' ? 'lehrer.html' : 'schueler.html');
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Kopiert!';
+    btn.style.color = '#4ade80';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1800);
   });
 }
 </script>

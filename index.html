@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KlassenTest – Admin</title>
+<link rel="stylesheet" href="kt.css">
+<style>
+body{background:var(--ink);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem}
+.login-wrap{width:100%;max-width:400px}
+.login-head{text-align:center;margin-bottom:2rem}
+.logo-big{width:60px;height:60px;background:var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:28px;font-weight:800;color:#fff;margin:0 auto 1rem}
+.login-title{font-family:var(--display);font-size:26px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px}
+.login-sub{font-size:13px;color:rgba(255,255,255,.4)}
+.login-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:var(--r3);padding:1.75rem}
+.f-label{color:rgba(255,255,255,.45);margin-bottom:5px}
+.f-inp-dark{width:100%;padding:11px 14px;border:1.5px solid rgba(255,255,255,.12);border-radius:var(--r);background:rgba(255,255,255,.06);color:#fff;font-size:14px;transition:border .15s;margin-bottom:1rem}
+.f-inp-dark:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(41,64,232,.3)}
+.f-inp-dark::placeholder{color:rgba(255,255,255,.25)}
+.err{background:var(--red-l);border:1px solid #f0a0a0;border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--red);margin-bottom:1rem;display:none}
+.err.show{display:block}
+.sep{height:1px;background:rgba(255,255,255,.08);margin:1.25rem 0}
+.link-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.link-row{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:10px 13px;margin-bottom:8px}
+.link-icon{font-size:18px;flex-shrink:0}
+.link-url{flex:1;font-family:monospace;font-size:12px;color:rgba(255,255,255,.5);word-break:break-all}
+.link-copy{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,.6);cursor:pointer;flex-shrink:0;transition:all .15s}
+.link-copy:hover{background:rgba(255,255,255,.14);color:#fff}
+.notice{font-size:12px;color:rgba(255,255,255,.25);text-align:center;margin-top:1.25rem;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-head">
+    <div class="logo-big">K</div>
+    <div class="login-title">KlassenTest</div>
+    <div class="login-sub">Schulverwaltungs-System — Nur für den Administrator</div>
+  </div>
+  <div class="login-card">
+    <div class="f-label">Benutzername</div>
+    <input class="f-inp-dark" id="u" type="text" placeholder="Benutzername" autocomplete="off" onkeydown="if(event.key==='Enter')login()">
+    <div class="f-label">Passwort</div>
+    <input class="f-inp-dark" id="p" type="password" placeholder="••••••••••••" onkeydown="if(event.key==='Enter')login()">
+    <div class="err" id="err">❌ Benutzername oder Passwort falsch.</div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="login()">Als Administrator anmelden →</button>
+
+    <div class="sep"></div>
+    <div class="link-label">Links für Lehrkräfte & Schüler</div>
+    <div class="link-row">
+      <div class="link-icon">👩‍🏫</div>
+      <div class="link-url" id="lnk-teacher"></div>
+      <button class="link-copy" onclick="cp('teacher')">Kopieren</button>
+    </div>
+    <div class="link-row">
+      <div class="link-icon">🎒</div>
+      <div class="link-url" id="lnk-student"></div>
+      <button class="link-copy" onclick="cp('student')">Kopieren</button>
+    </div>
+  </div>
+  <div class="notice">Diese Anmeldeseite ist nur für den Schulleiter / Administrator.<br>Lehrkräfte und Schüler haben ihre eigenen Links.</div>
+</div>
+<script>
+const AU='Samuelsingh368', AP='Samuelforever385!';
+const base = window.location.href.replace(/[^/]*$/, '');
+document.getElementById('lnk-teacher').textContent = base + 'lehrer.html';
+document.getElementById('lnk-student').textContent = base + 'schueler.html';
+function login(){
+  if(document.getElementById('u').value===AU && document.getElementById('p').value===AP){
+    sessionStorage.setItem('kt_admin','1');
+    window.location.href='admin.html';
+  } else {
+    const e=document.getElementById('err'); e.classList.add('show');
+    setTimeout(()=>e.classList.remove('show'),3000);
+  }
+}
+function cp(t){
+  const url = base + (t==='teacher'?'lehrer.html':'schueler.html');
+  navigator.clipboard.writeText(url).then(()=>alert('✅ Link kopiert!'));
+}
+</script>
+</body>
+</html>

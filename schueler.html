@@ -470,11 +470,10 @@ function joinHTML(code) {
         <div class="join-sub">Gib deinen echten Namen an – dein Ergebnis<br>wird sonst nicht gewertet.</div>
       </div>
       <div class="join-panel">
-        <div class="alert alert-blue" style="margin-bottom:1.5rem">⚠️ <strong>Echter Vor- und Nachname</strong> – z.B. <em>Leon Schulz</em>. Spitznamen oder Fantasienamen werden nicht akzeptiert.</div>
         <label class="f-label">Dein vollständiger Name</label>
-        <input class="f-inp" id="j-name" type="text" placeholder="z.B. Leon Schulz" autocomplete="off" autofocus>
+        <input class="f-inp" id="j-name" type="text" placeholder="" autocomplete="off" autofocus>
         <label class="f-label">Test-Code (vom Lehrer)</label>
-        <input class="f-inp code-inp" id="j-code" type="text" placeholder="ABC123" maxlength="6" value="${KT.esc(code)}" oninput="this.value=this.value.toUpperCase()">
+        <input class="f-inp code-inp" id="j-code" type="text" placeholder="" maxlength="6" value="${KT.esc(code)}" oninput="this.value=this.value.toUpperCase()">
         <div id="j-err" class="alert alert-red" style="display:none;margin-bottom:1rem"></div>
         <button class="btn btn-primary btn-full btn-lg" onclick="doJoin()">Test beitreten →</button>
       </div>
@@ -493,8 +492,8 @@ function doJoin() {
   const err = document.getElementById('j-err');
   err.style.display = 'none';
   if (!name) { err.textContent = '❌ Bitte gib deinen Namen ein.'; err.style.display = 'block'; return; }
-  if (name.split(' ').length < 2) { err.textContent = '❌ Bitte Vor- UND Nachname eingeben (z.B. Leon Schulz).'; err.style.display = 'block'; return; }
-  if (/\d{4,}/.test(name)) { err.textContent = '❌ Bitte deinen echten Namen eingeben – keine Zahlen oder Spitznamen.'; err.style.display = 'block'; return; }
+  if (name.split(' ').length < 2) { err.textContent = '❌ Bitte Vor- und Nachname eingeben.'; err.style.display = 'block'; return; }
+  if (/\d{4,}/.test(name)) { err.textContent = '❌ Bitte deinen echten Namen eingeben.'; err.style.display = 'block'; return; }
   if (!code) { err.textContent = '❌ Bitte gib den Code ein.'; err.style.display = 'block'; return; }
   const db = KT.get();
   const t = db.tests.find(x => x.joinCode === code);

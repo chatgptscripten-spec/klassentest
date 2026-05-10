@@ -544,7 +544,7 @@ function testHTML() {
   const db = KT.get();
   const t = db.tests.find(x => x.id === testSession.testId);
   if (!t) return '<div style="padding:3rem;text-align:center;color:var(--ink3)">Test nicht gefunden.</div>';
-  const qBlocks = (t.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  const qBlocks = (t.pages || []).flatMap(pg => pg.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
   const idx = testSession.currentIdx;
   const total = qBlocks.length;
   const answered = Object.keys(testSession.answers).filter(k => testSession.answers[k] != null && testSession.answers[k] !== '').length;
@@ -590,12 +590,12 @@ function renderQuestionBlock(qBlocks, idx, t) {
   html += `<div class="q-header">
     <span>Frage ${idx+1} von ${qBlocks.length}</span>
     <span class="q-tag ${q.type==='mc'?'tag-mc':q.type==='multi'?'tag-multi':'tag-free'}">${q.type==='mc'?'Einfachauswahl':q.type==='multi'?'Mehrfachauswahl':'Freie Antwort'}</span>
-    ${q.data.points ? `<span style="margin-left:auto;font-size:11px;color:var(--ink3);background:var(--paper2);padding:3px 9px;border-radius:20px;border:1px solid var(--border)">⭐ ${q.data.points} Pt.</span>` : ''}
+    ${q.points ? `<span style="margin-left:auto;font-size:11px;color:var(--ink3);background:var(--paper2);padding:3px 9px;border-radius:20px;border:1px solid var(--border)">⭐ ${q.points} Pt.</span>` : ''}
   </div>`;
-  html += `<div class="q-text">${KT.esc(q.data.question)}</div>`;
+  html += `<div class="q-text">${KT.esc(q.question)}</div>`;
 
   if (q.type === 'mc') {
-    html += q.data.options.map((o, i) => `<div class="ans-opt ${ans===i?'sel':''}" onclick="selectMC('${q.id}',${i})">
+    html += q.options.map((o, i) => `<div class="ans-opt ${ans===i?'sel':''}" onclick="selectMC('${q.id}',${i})">
       <div class="opt-dot"></div><span>${KT.esc(o)}</span>
     </div>`).join('');
   } else if (q.type === 'multi') {
@@ -604,12 +604,12 @@ function renderQuestionBlock(qBlocks, idx, t) {
       <span style="background:var(--amber-l);color:var(--amber);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--amber-m)">Mehrfachauswahl</span>
       Mehrere Antworten möglich
     </div>`;
-    html += q.data.options.map((o, i) => `<div class="ans-opt ${selArr.includes(i)?'sel-amber':''}" onclick="toggleMulti('${q.id}',${i})">
+    html += q.options.map((o, i) => `<div class="ans-opt ${selArr.includes(i)?'sel-amber':''}" onclick="toggleMulti('${q.id}',${i})">
       <div class="opt-square ${selArr.includes(i)?'sel-amber':''}" style="${selArr.includes(i)?'background:var(--amber);border-color:var(--amber);color:#fff':''}">${selArr.includes(i)?'✓':''}</div>
       <span>${KT.esc(o)}</span>
     </div>`).join('');
   } else {
-    const lines = q.data.lines || 5;
+    const lines = q.lines || 5;
     html += `<textarea class="free-ta ${bg==='lined'?'ta-lined':bg==='grid'?'ta-grid':''}" rows="${lines}" placeholder="Schreib deine Antwort hier…" id="free-${q.id}" oninput="saveFree('${q.id}',this.value)">${KT.esc(ans||'')}</textarea>`;
   }
   html += `</div>`;
@@ -636,7 +636,7 @@ function updateTimerDisplay(s) {
 
 function goQ(idx) {
   const db = KT.get(); const t = db.tests.find(x => x.id === testSession.testId);
-  const qBlocks = (t?.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  const qBlocks = (t?.pages || []).flatMap(pg => pg.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
   if (idx < 0 || idx >= qBlocks.length) return;
   testSession.currentIdx = idx;
   document.getElementById('app').innerHTML = testHTML();
@@ -662,7 +662,7 @@ function saveFree(qid, val) { testSession.answers[qid] = val || undefined; }
 
 function confirmSubmit() {
   const db = KT.get(); const t = db.tests.find(x => x.id === testSession.testId);
-  const qBlocks = (t?.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
+  const qBlocks = (t?.pages || []).flatMap(pg => pg.blocks || []).filter(b => ['mc','multi','free'].includes(b.type));
   const answered = Object.keys(testSession.answers).filter(k => testSession.answers[k] != null && testSession.answers[k] !== '').length;
   const unanswered = qBlocks.length - answered;
   if (unanswered > 0) { if (!confirm(`Du hast noch ${unanswered} Frage${unanswered!==1?'n':''} nicht beantwortet. Trotzdem abschicken?`)) return; }

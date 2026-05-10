@@ -568,6 +568,7 @@ body { min-height:100vh; overflow:hidden; }
     <div class="topbar">
       <div class="topbar-title">📋 Meine Tests</div>
       <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="showStudentLink()" title="Schüler-Link anzeigen">🎒 Schüler-Link</button>
         <button class="btn btn-primary" onclick="navTo('create')">✦ Neuer Test</button>
       </div>
     </div>
@@ -759,21 +760,22 @@ function applyTeacher() {
 function showLoginModal() {
   _modalLocked = true;
   openModal(`
-    <div class="modal-head" style="font-size:22px">👋 Willkommen bei KlassenTest</div>
-    <div class="alert alert-blue" style="margin-bottom:16px">Gib deinen vollständigen Namen ein. Kein Passwort nötig — außer du hast eines gesetzt.</div>
+    <div class="modal-head" style="font-size:22px">👋 Als Lehrkraft anmelden</div>
+    <div class="alert alert-blue" style="margin-bottom:16px">Bitte vollständigen Namen und ein Passwort eingeben. Das Passwort schützt deinen Account.</div>
     <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;margin-bottom:10px">
       <div class="field" style="margin:0">
         <label>Titel</label>
         <select id="l-title" style="padding:10px 8px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px">
-          ${KT.TITLES.map(t=>`<option>${t}</option>`).join('')}
+          ${KT.TITLES.map(t=>\`<option>\${t}</option>\`).join('')}
         </select>
       </div>
-      <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="z.B. Maria" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-      <div class="field" style="margin:0"><label>Nachname</label><input type="text" id="l-last" placeholder="z.B. Müller" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+      <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="Max" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+      <div class="field" style="margin:0"><label>Nachname</label><input type="text" id="l-last" placeholder="Mustermann" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     </div>
-    <div class="field"><label>2. Vorname (optional)</label><input type="text" id="l-mid" placeholder="z.B. Anna" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-    <div class="field"><label>Standort / Stadt</label><input type="text" id="l-city" placeholder="z.B. Köln" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-    <div class="field"><label>Passwort (optional – zum Schutz deines Accounts)</label><input type="password" id="l-pass" placeholder="Leer lassen = kein Passwort" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>2. Vorname (optional)</label><input type="text" id="l-mid" placeholder="z.B. Karl" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Standort / Stadt</label><input type="text" id="l-city" placeholder="Musterstadt" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Passwort <span style="color:var(--red)">*</span> (Pflicht)</label><input type="password" id="l-pass" placeholder="••••••••" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Passwort bestätigen <span style="color:var(--red)">*</span></label><input type="password" id="l-pass2" placeholder="••••••••" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     <div id="l-err" class="alert alert-red" style="display:none;margin-bottom:12px"></div>
     <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Weiter →</button>
   `);
@@ -787,38 +789,47 @@ async function doLogin() {
   const last   = document.getElementById('l-last').value.trim();
   const city   = document.getElementById('l-city').value.trim();
   const pass   = document.getElementById('l-pass').value;
+  const pass2  = document.getElementById('l-pass2')?.value || '';
   const err    = document.getElementById('l-err');
   err.style.display = 'none';
 
   if (!first || !last) { err.textContent = '❌ Bitte Vor- und Nachname eingeben.'; err.style.display='block'; return; }
+  if (!city) { err.textContent = '❌ Bitte Standort / Stadt eingeben.'; err.style.display='block'; return; }
+  if (!pass) { err.textContent = '❌ Bitte ein Passwort eingeben (Pflicht).'; err.style.display='block'; return; }
 
   const parts = [title, first];
   if (mid) parts.push(mid);
   parts.push(last);
   const fullName = parts.join(' ');
 
-  // Check if admin
+  // Check if admin (silent - no hint)
   const admin = await KT.checkAdmin(fullName, city, pass);
 
-  // Check existing teacher password
   const db = KT.get();
   let tRecord = db.teachers.find(t => t.name === fullName && (t.city||'').toLowerCase() === (city||'').toLowerCase());
-  if (tRecord && tRecord.passHash) {
-    const ph = await KT.sha256(pass);
-    if (ph !== tRecord.passHash) {
-      err.textContent = '❌ Falsches Passwort für diesen Account.'; err.style.display='block'; return;
+
+  if (tRecord) {
+    // Existing account: verify password
+    if (tRecord.passHash) {
+      const ph = await KT.sha256(pass);
+      if (ph !== tRecord.passHash) {
+        err.textContent = '❌ Falsches Passwort für diesen Account.'; err.style.display='block'; return;
+      }
     }
+  } else {
+    // New account: check for duplicate name (different city = different person OK, same name same city = blocked)
+    const dupName = db.teachers.find(t => t.name.toLowerCase() === fullName.toLowerCase() && (t.city||'').toLowerCase() === (city||'').toLowerCase());
+    if (dupName) { err.textContent = '❌ Dieser Name ist in dieser Stadt bereits vergeben.'; err.style.display='block'; return; }
+    // Passwort-Bestätigung prüfen (nur bei Neuregistrierung)
+    if (pass !== pass2) { err.textContent = '❌ Passwörter stimmen nicht überein.'; err.style.display='block'; return; }
+    if (pass.length < 6) { err.textContent = '❌ Passwort muss mindestens 6 Zeichen haben.'; err.style.display='block'; return; }
+    // Save new teacher
+    tRecord = { name: fullName, city, lastSeen: Date.now() };
+    tRecord.passHash = await KT.sha256(pass);
+    db.teachers.push(tRecord);
   }
 
-  // Save teacher
-  if (!tRecord) {
-    tRecord = { name: fullName, city, lastSeen: Date.now() };
-    if (pass) tRecord.passHash = await KT.sha256(pass);
-    db.teachers.push(tRecord);
-  } else {
-    tRecord.lastSeen = Date.now();
-    if (pass && !tRecord.passHash) tRecord.passHash = await KT.sha256(pass);
-  }
+  tRecord.lastSeen = Date.now();
   KT.set(db);
 
   _teacher = { name: fullName, city, isAdmin: admin };
@@ -834,6 +845,17 @@ async function doLogin() {
 function doLogout() {
   sessionStorage.removeItem('kt_teacher');
   window.location.reload();
+}
+
+function showStudentLink() {
+  const url = window.location.href.replace('lehrer.html', 'schueler.html').replace(/\?.*$/, '');
+  openModal(`<div class="modal-head" style="font-size:18px">🎒 Schüler-Link</div>
+    <div class="alert alert-blue" style="margin-bottom:14px">Gib diesen Link an deine Schüler weiter. Sie öffnen ihn im Browser und geben dann den Test-Code ein.</div>
+    <div style="background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--ink2);word-break:break-all;margin-bottom:14px">${KT.esc(url)}</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal()">Schließen</button>
+      <button class="btn btn-primary" onclick="navigator.clipboard.writeText('${url}').then(()=>KT.toast('📋 Link kopiert!'))">📋 Kopieren</button>
+    </div>`);
 }
 
 // ═══════════════════════════════════════

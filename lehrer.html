@@ -766,7 +766,7 @@ function showLoginModal() {
       <div class="field" style="margin:0">
         <label>Titel</label>
         <select id="l-title" style="padding:10px 8px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px">
-          ${KT.TITLES.map(t=>\`<option>\${t}</option>\`).join('')}
+          ${KT.TITLES.map(t=>`<option>${t}</option>`).join('')}
         </select>
       </div>
       <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="Max" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
@@ -849,12 +849,13 @@ function doLogout() {
 
 function showStudentLink() {
   const url = window.location.href.replace('lehrer.html', 'schueler.html').replace(/\?.*$/, '');
+  window._stuUrl = url;
   openModal(`<div class="modal-head" style="font-size:18px">🎒 Schüler-Link</div>
     <div class="alert alert-blue" style="margin-bottom:14px">Gib diesen Link an deine Schüler weiter. Sie öffnen ihn im Browser und geben dann den Test-Code ein.</div>
     <div style="background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--ink2);word-break:break-all;margin-bottom:14px">${KT.esc(url)}</div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeModal()">Schließen</button>
-      <button class="btn btn-primary" onclick="navigator.clipboard.writeText('${url}').then(()=>KT.toast('📋 Link kopiert!'))">📋 Kopieren</button>
+      <button class="btn btn-primary" onclick="navigator.clipboard.writeText(window._stuUrl).then(()=>KT.toast('📋 Link kopiert!'))">📋 Kopieren</button>
     </div>`);
 }
 

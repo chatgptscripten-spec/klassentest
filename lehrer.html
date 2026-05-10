@@ -768,11 +768,11 @@ function showLoginModal() {
           ${KT.TITLES.map(t=>`<option>${t}</option>`).join('')}
         </select>
       </div>
-      <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="Samuel" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-      <div class="field" style="margin:0"><label>Nachname</label><input type="text" id="l-last" placeholder="Singh" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+      <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="z.B. Maria" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+      <div class="field" style="margin:0"><label>Nachname</label><input type="text" id="l-last" placeholder="z.B. Müller" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     </div>
-    <div class="field"><label>2. Vorname (optional)</label><input type="text" id="l-mid" placeholder="z.B. Kumar" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-    <div class="field"><label>Standort / Stadt</label><input type="text" id="l-city" placeholder="z.B. Lüdenscheid" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>2. Vorname (optional)</label><input type="text" id="l-mid" placeholder="z.B. Anna" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Standort / Stadt</label><input type="text" id="l-city" placeholder="z.B. Köln" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     <div class="field"><label>Passwort (optional – zum Schutz deines Accounts)</label><input type="password" id="l-pass" placeholder="Leer lassen = kein Passwort" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     <div id="l-err" class="alert alert-red" style="display:none;margin-bottom:12px"></div>
     <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Weiter →</button>

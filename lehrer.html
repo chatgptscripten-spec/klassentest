@@ -600,7 +600,7 @@ body { min-height:100vh; overflow:hidden; }
         <option value="">Klasse wählen…</option>
         <option value="_custom">✏️ Eigene eingeben…</option>
       </select>
-      <input type="text" id="c-class-custom" placeholder="z.B. 9b" style="display:none;width:80px;padding:8px 10px;border-radius:8px;border:1px solid var(--accent-m);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px">
+      <input type="text" id="c-class-custom" placeholder="" style="display:none;width:80px;padding:8px 10px;border-radius:8px;border:1px solid var(--accent-m);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px">
     </div>
     <!-- Page tabs -->
     <div class="page-tabs" id="page-tabs"></div>
@@ -761,7 +761,7 @@ function showLoginModal() {
   _modalLocked = true;
   openModal(`
     <div class="modal-head" style="font-size:22px">👋 Als Lehrkraft anmelden</div>
-    <div class="alert alert-blue" style="margin-bottom:16px">Bitte vollständigen Namen und ein Passwort eingeben. Das Passwort schützt deinen Account.</div>
+    
     <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;margin-bottom:10px">
       <div class="field" style="margin:0">
         <label>Titel</label>
@@ -769,13 +769,13 @@ function showLoginModal() {
           ${KT.TITLES.map(t=>`<option>${t}</option>`).join('')}
         </select>
       </div>
-      <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="Max" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-      <div class="field" style="margin:0"><label>Nachname</label><input type="text" id="l-last" placeholder="Mustermann" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+      <div class="field" style="margin:0"><label>Vorname</label><input type="text" id="l-first" placeholder="" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+      <div class="field" style="margin:0"><label>Nachname</label><input type="text" id="l-last" placeholder="" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     </div>
-    <div class="field"><label>2. Vorname (optional)</label><input type="text" id="l-mid" placeholder="z.B. Karl" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-    <div class="field"><label>Standort / Stadt</label><input type="text" id="l-city" placeholder="Musterstadt" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-    <div class="field"><label>Passwort <span style="color:var(--red)">*</span> (Pflicht)</label><input type="password" id="l-pass" placeholder="••••••••" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
-    <div class="field"><label>Passwort bestätigen <span style="color:var(--red)">*</span></label><input type="password" id="l-pass2" placeholder="••••••••" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>2. Vorname (optional)</label><input type="text" id="l-mid" placeholder="" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Standort / Stadt</label><input type="text" id="l-city" placeholder="" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Passwort <span style="color:var(--red)">*</span> (Pflicht)</label><input type="password" id="l-pass" placeholder="" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
+    <div class="field"><label>Passwort bestätigen <span style="color:var(--red)">*</span></label><input type="password" id="l-pass2" placeholder="" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--ink);font-family:var(--font);font-size:13px;width:100%"></div>
     <div id="l-err" class="alert alert-red" style="display:none;margin-bottom:12px"></div>
     <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Weiter →</button>
   `);

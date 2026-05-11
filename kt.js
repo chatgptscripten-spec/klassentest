@@ -1,6 +1,6 @@
-// KlassenTest – kt.js v4
+// Fusion – kt.js v4
 const KT = (() => {
-  const KEY = 'klassentest_v4';
+  const KEY = 'fusion_v4';
 
   function get() {
     try {

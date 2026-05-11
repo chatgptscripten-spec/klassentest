@@ -3,16 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KlassenTest</title>
-<meta http-equiv="refresh" content="0; url=lehrer.html">
+<title>Fusion</title>
 <style>
-body { background:#07080d; display:flex; align-items:center; justify-content:center; min-height:100vh; font-family:system-ui,sans-serif; margin:0; }
-.msg { color:rgba(255,255,255,.4); font-size:14px; text-align:center; line-height:2; }
-a { color:#7b7ef8; text-decoration:none; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #07080d;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+  }
+  .card {
+    text-align: center;
+    padding: 3rem 2.5rem;
+    background: #0f1117;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 24px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  }
+  .logo {
+    width: 90px; height: 90px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg,#4f8ef7,#6c3fe8);
+    border-radius: 22px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(79,142,247,.35);
+    overflow: hidden;
+  }
+  .logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 22px; }
+  h1 {
+    font-size: 32px; font-weight: 900;
+    color: #fff; letter-spacing: -.6px; margin-bottom: 8px;
+  }
+  p { color: rgba(255,255,255,.4); font-size: 14px; line-height: 1.7; margin-bottom: 2rem; }
+  .btns { display: flex; flex-direction: column; gap: 10px; }
+  a {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none;
+    transition: all .15s;
+  }
+  .btn-teacher {
+    background: linear-gradient(135deg,#5b5ef4,#7b5ea7);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(91,94,244,.4);
+  }
+  .btn-teacher:hover { filter: brightness(1.12); transform: translateY(-1px); }
+  .btn-student {
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.8);
+    border: 1px solid rgba(255,255,255,.1);
+  }
+  .btn-student:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .badge {
+    font-size: 10px; font-weight: 800; padding: 3px 8px;
+    border-radius: 20px; letter-spacing: .4px;
+  }
+  .badge-t { background: rgba(255,255,255,.15); color: rgba(255,255,255,.7); }
+  .badge-s { background: rgba(255,255,255,.08); color: rgba(255,255,255,.4); }
 </style>
 </head>
 <body>
-<div class="msg">KlassenTest wird geladen…<br><a href="lehrer.html">Hier klicken falls nichts passiert</a></div>
-<script>window.location.replace('lehrer.html');</script>
+<div class="card">
+  <div class="logo">
+    <img src="logo.png" alt="Fusion Logo" onerror="this.parentElement.innerHTML='<span style=\'font-size:40px;font-weight:900;color:#fff\'>F</span>'">
+  </div>
+  <h1>Fusion</h1>
+  <p>Wähle deine Ansicht, um fortzufahren.</p>
+  <div class="btns">
+    <a class="btn-teacher" href="lehrer.html">
+      <span>👩‍🏫</span>
+      <span>Lehreransicht</span>
+      <span class="badge badge-t">Tests erstellen & verwalten</span>
+    </a>
+    <a class="btn-student" href="schueler.html">
+      <span>🎒</span>
+      <span>Schüleransicht</span>
+      <span class="badge badge-s">Test beitreten</span>
+    </a>
+  </div>
+</div>
 </body>
 </html>

@@ -446,8 +446,8 @@ function init(){
     const ci=document.getElementById('c-class-custom');
     ci.style.display=cls.value==='_custom'?'block':'none';
   });
-  const s=sessionStorage.getItem('fusion_teacher');
-  if(s){const t=JSON.parse(s);_teacher=t;_isAdmin=t.isAdmin||false;applyTeacher();navTo('tests');}
+  const t=KT.loadTeacher();
+  if(t){_teacher=t;_isAdmin=t.isAdmin||false;applyTeacher();navTo('tests');}
   else showLoginModal();
 }
 
@@ -507,12 +507,12 @@ async function doLogin(){
   }
   tRecord.lastSeen=Date.now();KT.set(db);
   _teacher={name:fullName,city,isAdmin:admin};_isAdmin=admin;
-  sessionStorage.setItem('fusion_teacher',JSON.stringify(_teacher));
+  KT.saveTeacher(_teacher);
   applyTeacher();_modalLocked=false;closeModal();navTo('tests');
   if(!_seenTuts.has('welcome'))setTimeout(()=>startTutorial('welcome'),700);
 }
 
-function doLogout(){sessionStorage.removeItem('fusion_teacher');window.location.reload();}
+function doLogout(){KT.clearTeacher();window.location.reload();}
 
 function showStudentLink(){
   const url=getStudentBaseUrl();

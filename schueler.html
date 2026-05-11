@@ -449,11 +449,21 @@ function render(prefillCode) {
     const existingSub = db.submissions.find(s => s.studentName === student.name && s.testId === t.id && s.submitted);
     if (existingSub) { testSession = { submitted: true, testId: t.id }; render(); return; }
     testSession = { testId: t.id, currentIdx: 0, answers: {}, submitted: false };
+    // Restore answers from localStorage if they exist (persist across reloads)
+    const savedAnswers = _loadStudentAnswers(student.name, t.id);
+    if (savedAnswers) testSession.answers = savedAnswers;
     if (t.timerSeconds) {
       clearInterval(timerInt);
-      let s = t.timerSeconds;
-      timerInt = setInterval(() => { s--; updateTimer(s, t); if (s <= 0) { clearInterval(timerInt); submitTest(); } }, 1000);
-      setTimeout(() => updateTimerDisplay(t.timerSeconds), 0);
+      // Calculate remaining time based on when test actually started
+      const elapsed = Math.floor((Date.now() - (t.startedAt || Date.now())) / 1000);
+      let remaining = Math.max(0, t.timerSeconds - elapsed);
+      if (remaining <= 0) { submitTest(); return; }
+      timerInt = setInterval(() => {
+        remaining--;
+        updateTimer(remaining, t);
+        if (remaining <= 0) { clearInterval(timerInt); submitTest(); }
+      }, 1000);
+      setTimeout(() => updateTimerDisplay(remaining), 0);
     }
   }
   app.innerHTML = testHTML();

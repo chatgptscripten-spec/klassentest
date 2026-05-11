@@ -1,57 +1,64 @@
-/* KlassenTest – kt.css v4 */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@400;500;700&display=swap');
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Fusion – kt.css */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&display=swap');
 
 :root {
-  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --serif: 'Playfair Display', Georgia, serif;
-  --mono: 'JetBrains Mono', monospace;
+  --font:  'DM Sans', system-ui, sans-serif;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono:  'DM Mono', monospace;
 
-  --bg:    #07080d;
-  --bg2:   #0e0f16;
-  --bg3:   #161720;
-  --bg4:   #1e1f2a;
-  --bg5:   #262733;
+  --ink:  #e2e4f0;
+  --ink2: #b8bdd4;
+  --ink3: #7b82a0;
+  --ink4: #50566e;
+  --ink5: #30354a;
+
+  --bg:  #07080d;
+  --bg2: #0d0f1a;
+  --bg3: #121420;
+  --bg4: #181b2a;
+  --bg5: #1e2235;
 
   --border:  rgba(255,255,255,.07);
-  --border2: rgba(255,255,255,.12);
-  --border3: rgba(255,255,255,.2);
+  --border2: rgba(255,255,255,.10);
+  --border3: rgba(255,255,255,.15);
 
-  --ink:  #eeeef5;
-  --ink2: #b0b1c8;
-  --ink3: #72738a;
-  --ink4: #44455a;
+  --accent:  #6366f1;
+  --accent2: #818cf8;
+  --accent-l: rgba(99,102,241,.12);
+  --accent-m: rgba(99,102,241,.25);
+  --accent-d: #4338ca;
 
-  --accent:   #5b5ef4;
-  --accent2:  #7b7ef8;
-  --accent-l: rgba(91,94,244,.14);
-  --accent-m: rgba(91,94,244,.32);
+  --green:   #10b981;
+  --green-l: rgba(16,185,129,.12);
+  --green-m: rgba(16,185,129,.25);
+  --green-d: #059669;
 
-  --green:   #22d47e;
-  --green-l: rgba(34,212,126,.12);
-  --green-m: rgba(34,212,126,.28);
+  --amber:   #f59e0b;
+  --amber-l: rgba(245,158,11,.12);
+  --amber-m: rgba(245,158,11,.25);
 
-  --amber:   #f5a623;
-  --amber-l: rgba(245,166,35,.12);
-  --amber-m: rgba(245,166,35,.28);
+  --red:   #ef4444;
+  --red-l: rgba(239,68,68,.12);
+  --red-m: rgba(239,68,68,.25);
 
-  --red:   #f05252;
-  --red-l: rgba(240,82,82,.12);
-  --red-m: rgba(240,82,82,.28);
+  --cyan:   #06b6d4;
+  --cyan-l: rgba(6,182,212,.12);
+  --cyan-m: rgba(6,182,212,.25);
 
-  --cyan:   #22d3ee;
-  --cyan-l: rgba(34,211,238,.12);
+  --purple:   #a78bfa;
+  --purple-l: rgba(167,139,250,.12);
 
-  --r:  10px;
-  --r2: 14px;
-  --r3: 18px;
-  --r4: 24px;
+  --r:  8px;
+  --r2: 12px;
+  --r3: 16px;
+  --r4: 20px;
 
-  --shadow:  0 2px 8px rgba(0,0,0,.5);
-  --shadow2: 0 8px 32px rgba(0,0,0,.6);
-  --shadow3: 0 20px 60px rgba(0,0,0,.7);
+  --shadow:  0 1px 4px rgba(0,0,0,.4);
+  --shadow2: 0 4px 16px rgba(0,0,0,.5);
+  --shadow3: 0 8px 40px rgba(0,0,0,.6);
 }
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: var(--font);
@@ -59,115 +66,90 @@ body {
   color: var(--ink);
   font-size: 14px;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* ── STAT CARD ── */
-.stat-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  padding: 16px 18px;
-}
-.stat-val {
-  font-family: var(--mono);
-  font-size: 26px; font-weight: 700;
-  color: var(--ink); line-height: 1.1; margin-bottom: 4px;
-}
-.stat-label {
-  font-size: 10px; font-weight: 700;
-  color: var(--ink3); text-transform: uppercase; letter-spacing: .6px;
+@keyframes scaleIn  { from{opacity:0;transform:scale(.96) translateY(4px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes fadeIn   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.35} }
+@keyframes pulse    { 0%,100%{box-shadow:0 0 0 4px rgba(99,102,241,.18)} 50%{box-shadow:0 0 0 8px rgba(99,102,241,.05)} }
+@keyframes spin     { to{transform:rotate(360deg)} }
+@keyframes shimmer  { from{background-position:-200% 0} to{background-position:200% 0} }
+
+/* ── Logo Mark ── */
+.logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5, #7c3aed);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-size: 18px; font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(99,102,241,.4);
 }
 
-/* ── BADGES ── */
+/* ── Badges ── */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 9px; border-radius: 20px;
-  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; letter-spacing: .2px;
+  white-space: nowrap;
 }
 .badge-green  { background: var(--green-l);  color: var(--green);  border: 1px solid var(--green-m); }
 .badge-amber  { background: var(--amber-l);  color: var(--amber);  border: 1px solid var(--amber-m); }
 .badge-red    { background: var(--red-l);    color: var(--red);    border: 1px solid var(--red-m); }
-.badge-accent { background: var(--accent-l); color: var(--accent2);border: 1px solid var(--accent-m); }
-.badge-gray   { background: var(--bg4);      color: var(--ink3);   border: 1px solid var(--border2); }
-.badge-cyan   { background: var(--cyan-l);   color: var(--cyan);   border: 1px solid rgba(34,211,238,.28); }
-.badge-purple { background: rgba(139,92,246,.12); color: #a78bfa; border: 1px solid rgba(139,92,246,.28); }
+.badge-cyan   { background: var(--cyan-l);   color: var(--cyan);   border: 1px solid var(--cyan-m); }
+.badge-gray   { background: rgba(255,255,255,.05); color: var(--ink3); border: 1px solid var(--border2); }
+.badge-purple { background: var(--purple-l); color: var(--purple); border: 1px solid rgba(167,139,250,.25); }
+.badge-blue   { background: rgba(59,130,246,.12); color: #93c5fd;  border: 1px solid rgba(59,130,246,.22); }
 
-/* ── ADMIN BADGE ── */
-.admin-badge {
-  background: linear-gradient(135deg, rgba(91,94,244,.2), rgba(139,92,246,.2));
-  border: 1px solid var(--accent-m);
-  border-radius: 20px; padding: 5px 13px;
-  font-size: 11px; font-weight: 800;
-  color: var(--accent2); letter-spacing: .3px;
-}
-
-/* ── ANSWER PEEK ── */
-.answer-peek {
-  background: var(--bg4); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 12px;
-  font-size: 13px; color: var(--ink2);
-  white-space: pre-wrap; word-break: break-word;
-}
-
-/* ── LOGO MARK ── */
-.logo-mark {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, var(--accent2), var(--accent));
-  border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--serif); font-style: italic;
-  font-size: 17px; font-weight: 700; color: #fff;
-  box-shadow: 0 4px 16px rgba(91,94,244,.4);
-  flex-shrink: 0;
-}
-
-/* ── STU AVATAR ── */
+/* ── Avatar ── */
 .stu-avatar {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: var(--accent-l); color: var(--accent2);
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), #7c3aed);
   display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 13px; flex-shrink: 0;
-  border: 1px solid var(--accent-m);
+  font-size: 14px; font-weight: 800; color: #fff;
 }
 
-/* ── CORR ROWS ── */
+/* ── Stat Card ── */
+.stat-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 16px;
+  text-align: center;
+}
+.stat-val   { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 10px; font-weight: 800; color: var(--ink4); text-transform: uppercase; letter-spacing: .8px; }
+
+/* ── Admin Badge ── */
+.admin-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+  background: rgba(99,102,241,.2); color: var(--accent2);
+  border: 1px solid rgba(99,102,241,.3);
+}
+
+/* ── Correction styles ── */
 .corr-q-row {
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: var(--r2); padding: 14px 16px; margin-bottom: 10px;
 }
-.corr-q-label {
-  font-size: 10px; font-weight: 700; color: var(--ink3);
-  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px;
-}
+.corr-q-label { font-size: 12px; font-weight: 700; color: var(--ink2); }
 .corr-ans-row {
-  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
-  border-radius: 8px; font-size: 13px; margin-bottom: 4px; border: 1px solid transparent;
+  padding: 7px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 5px;
+  border: 1px solid var(--border);
 }
-.corr-ok      { background: var(--green-l); color: var(--green); border-color: var(--green-m); }
-.corr-wrong   { background: var(--red-l);   color: var(--red);   border-color: var(--red-m); }
-.corr-neutral { background: var(--bg4);     color: var(--ink2);  border-color: var(--border); }
+.corr-ok      { background: var(--green-l); border-color: var(--green-m); color: var(--green); }
+.corr-wrong   { background: var(--red-l);   border-color: var(--red-m);   color: var(--red); }
+.corr-neutral { background: var(--bg4);     color: var(--ink3); }
+.answer-peek  { font-size: 12px; color: var(--ink3); background: var(--bg4); border-radius: 7px; padding: 6px 10px; font-family: var(--mono); margin-top: 3px; }
 
-/* ── SOL ROWS (admin) ── */
-.sol-row { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; font-size: 13px; }
-.sol-correct { background: var(--green-l); color: var(--green); border: 1px solid var(--green-m); }
-.sol-neutral { background: var(--bg4);     color: var(--ink3);  border: 1px solid var(--border2); }
-
-/* ── DEL BTN ── */
+/* ── Delete btn ── */
 .del-btn {
-  padding: 5px 11px; border-radius: 7px;
-  border: 1px solid var(--red-m); background: var(--red-l); color: var(--red);
-  font-size: 11px; font-weight: 700; cursor: pointer; transition: all .14s;
-  font-family: var(--font);
+  background: var(--red-l); border: 1px solid var(--red-m);
+  border-radius: 8px; padding: 6px 10px;
+  color: var(--red); cursor: pointer; font-size: 13px;
+  transition: all .14s;
 }
 .del-btn:hover { background: var(--red); color: #fff; }
-
-/* ── ANIMATIONS ── */
-@keyframes scaleIn  { from{opacity:0;transform:scale(.94) translateY(6px)} to{opacity:1;transform:scale(1) translateY(0)} }
-@keyframes slideUp  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
-@keyframes pulse    { 0%,100%{box-shadow:0 0 0 3px var(--green-m)} 50%{box-shadow:0 0 0 6px rgba(34,212,126,.08)} }
-@keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.3} }
-@keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes spin     { to{transform:rotate(360deg)} }
-@keyframes shimmer  { 0%{background-position:-200% 0} 100%{background-position:200% 0} }

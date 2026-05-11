@@ -121,7 +121,7 @@ body{min-height:100vh;overflow:hidden}
 
 /* PAGE BUILDER */
 .builder-wrap{display:flex;flex:1;overflow:hidden}
-.builder-tools{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:16px 14px}
+.builder-tools{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:12px 10px}
 .tool-section{margin-bottom:18px}
 .tool-section-label{font-size:9px;font-weight:800;color:var(--ink4);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;padding:0 2px}
 .tool-btn{width:100%;padding:9px 12px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--ink2);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .13s;margin-bottom:5px;text-align:left}
@@ -135,8 +135,11 @@ body{min-height:100vh;overflow:hidden}
 .page-tab .del-pg:hover{opacity:1;color:var(--red)}
 .add-page-btn{padding:6px 12px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--ink3);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .13s}
 .add-page-btn:hover{border-color:var(--accent-m);color:var(--accent2);background:var(--accent-l)}
-.canvas-scroll{flex:1;overflow:auto;background:var(--bg);padding:24px}
+.canvas-scroll{flex:1;overflow:auto;background:var(--bg);padding:20px 16px}
 .a4-page{width:794px;min-height:1123px;background:#fff;margin:0 auto;border-radius:3px;box-shadow:0 4px 40px rgba(0,0,0,.6);position:relative;overflow:hidden;padding:40px 48px}
+.canvas-zoom-bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--bg3);border-bottom:1px solid var(--border);flex-shrink:0;font-size:11px;color:var(--ink3)}
+.canvas-zoom-bar button{padding:3px 8px;border-radius:5px;border:1px solid var(--border2);background:var(--bg4);color:var(--ink3);cursor:pointer;font-size:11px;font-family:var(--font);font-weight:700;transition:all .13s}
+.canvas-zoom-bar button:hover{background:var(--accent-l);border-color:var(--accent-m);color:var(--accent2)}
 .a4-page.bg-lined{background-image:repeating-linear-gradient(transparent,transparent 27px,#b8c8de 27px,#b8c8de 28px);background-size:100% 28px}
 .a4-page.bg-grid{background-image:linear-gradient(#dde6f4 1px,transparent 1px),linear-gradient(90deg,#dde6f4 1px,transparent 1px);background-size:24px 24px}
 .a4-page.bg-dot{background-image:radial-gradient(circle,#b8c8de 1px,transparent 1px);background-size:20px 20px}
@@ -176,7 +179,7 @@ body{min-height:100vh;overflow:hidden}
 .el-table-wrap input{border:none;background:transparent;font-family:inherit;font-size:inherit;color:#1a1a2e;width:100%;outline:none}
 .el-pts-badge{position:absolute;right:28px;top:6px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:12px;padding:2px 8px;font-size:10px;font-weight:800;color:#f5a623;display:flex;align-items:center;gap:3px}
 .el-pts-inp{width:32px;background:transparent;border:none;font-family:var(--mono);font-size:10px;font-weight:800;color:#f5a623;text-align:center;outline:none}
-.builder-props{width:220px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;padding:14px 12px}
+.builder-props{width:200px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;padding:12px 10px}
 .props-title{font-size:10px;font-weight:800;color:var(--ink4);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .prop-row{margin-bottom:10px}
 .prop-label{font-size:10px;font-weight:700;color:var(--ink3);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.5px}
@@ -322,7 +325,7 @@ body{min-height:100vh;overflow:hidden}
         </div>
         <div class="tool-section">
           <div class="tool-section-label">Fragen</div>
-          <button class="tool-btn" id="tut-mc-btn" onclick="addEl('mc')"><span class="ti">☑</span>Einfachauswahl (MC)</button>
+          <button class="tool-btn" id="tut-mc-btn" onclick="addEl('mc')"><span class="ti">☑</span>Einfachauswahl</button>
           <button class="tool-btn" onclick="addEl('multi')"><span class="ti">☑☑</span>Mehrfachauswahl</button>
           <button class="tool-btn" onclick="addEl('free')"><span class="ti">✍</span>Freie Antwort</button>
         </div>
@@ -337,8 +340,21 @@ body{min-height:100vh;overflow:hidden}
         </div>
         <div id="create-err" class="alert alert-red" style="display:none;margin-top:8px"></div>
       </div>
-      <div class="canvas-scroll" id="canvas-scroll">
-        <div class="a4-page bg-blank" id="a4-canvas"></div>
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+        <div class="canvas-zoom-bar">
+          <span>🔍 Zoom:</span>
+          <button onclick="setZoom(0.6)">60%</button>
+          <button onclick="setZoom(0.75)">75%</button>
+          <button onclick="setZoom(1)" id="zoom-btn-100" style="background:var(--accent-l);border-color:var(--accent-m);color:var(--accent2)">100%</button>
+          <button onclick="setZoom(1.2)">120%</button>
+          <span id="zoom-label" style="margin-left:4px;font-weight:700;color:var(--ink2)">100%</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--ink4)">A4 · 794px</span>
+        </div>
+        <div class="canvas-scroll" id="canvas-scroll">
+          <div id="a4-wrap" style="transform-origin:top center;transition:transform .2s">
+            <div class="a4-page bg-blank" id="a4-canvas"></div>
+          </div>
+        </div>
       </div>
       <div class="builder-props" id="props-panel">
         <div class="props-title">⚙️ Eigenschaften</div>
@@ -571,6 +587,8 @@ function switchPage(i){_curPage=i;renderPageTabs();renderPage();}
 function addPage(){_pages.push({id:KT.gid(),label:`Seite ${_pages.length+1}`,blocks:[]});_curPage=_pages.length-1;renderPageTabs();renderPage();}
 function deletePage(i){if(_pages.length<=1)return KT.toast('⚠️ Mindestens eine Seite!');if(!confirm(`Seite löschen?`))return;_pages.splice(i,1);if(_curPage>=_pages.length)_curPage=_pages.length-1;renderPageTabs();renderPage();}
 function updatePageBg(){const v=document.getElementById('c-bg').value;const el=document.getElementById('a4-canvas');if(el)el.className=`a4-page bg-${v}`;}
+let _canvasZoom=1;
+function setZoom(z){_canvasZoom=z;const wrap=document.getElementById('a4-wrap');if(wrap)wrap.style.transform=`scale(${z})`;document.getElementById('zoom-label').textContent=Math.round(z*100)+'%';document.querySelectorAll('.canvas-zoom-bar button').forEach(b=>{b.style.background='';b.style.borderColor='';b.style.color='';});}
 
 function renderPage(){
   const canvas=document.getElementById('a4-canvas');if(!canvas)return;
@@ -767,10 +785,10 @@ function renderLive(mine,db){
     <div class="live-bar">
       <div class="live-stat"><span class="live-stat-label">Zeit</span><div class="timer-live" id="timer-live">${KT.fmt(_timerSecs)}</div></div>
       <div style="width:1px;height:44px;background:var(--border);flex-shrink:0"></div>
-      <div class="live-stat"><span class="live-stat-label">Verbunden</span><div class="live-stat-val">${joined.length}</div></div>
-      <div class="live-stat"><span class="live-stat-label">Abgaben</span><div class="live-stat-val">${subs.length}</div></div>
-      <div class="live-stat"><span class="live-stat-label">Offen</span><div class="live-stat-val">${Math.max(0,joined.length-subs.length)}</div></div>
-      <div class="live-stat" style="margin-left:auto;min-width:180px"><span class="live-stat-label">Fortschritt ${pct}%</span><div class="progress-bar" style="margin-top:8px;width:180px"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+      <div class="live-stat"><span class="live-stat-label">Verbunden</span><div class="live-stat-val" id="live-join-count">${joined.length}</div></div>
+      <div class="live-stat"><span class="live-stat-label">Abgaben</span><div class="live-stat-val" id="live-sub-count">${subs.length}</div></div>
+      <div class="live-stat"><span class="live-stat-label">Offen</span><div class="live-stat-val" id="live-open-count">${Math.max(0,joined.length-subs.length)}</div></div>
+      <div class="live-stat" style="margin-left:auto;min-width:180px"><span class="live-stat-label" id="live-pct-lbl">Fortschritt ${pct}%</span><div class="progress-bar" style="margin-top:8px;width:180px"><div class="progress-fill" id="live-pct-bar" style="width:${pct}%"></div></div></div>
     </div>
     <div class="page"><div class="g2">
       <div class="panel"><div class="panel-title">🎒 Schüler (${joined.length})</div>
@@ -794,12 +812,20 @@ function renderLive(mine,db){
 
 function startPoll(testId){
   clearInterval(_pollInt);
+  let _lastJoinCount=-1,_lastSubCount=-1;
   _pollInt=setInterval(()=>{
     if(!document.getElementById('live-students'))return clearInterval(_pollInt);
     const db=KT.get();const subs=db.submissions.filter(s=>s.testId===testId);const joined=db.students.filter(s=>s.currentTestId===testId);
+    // Only re-render if something changed (avoids flicker)
+    if(joined.length===_lastJoinCount&&subs.length===_lastSubCount)return;
+    _lastJoinCount=joined.length;_lastSubCount=subs.length;
     const el=document.getElementById('live-students');
     if(el)el.innerHTML=!joined.length?'<div style="color:var(--ink3);font-size:13px">Noch niemand beigetreten.</div>':joined.map(s=>{const sub=subs.find(x=>x.studentName===s.name);return`<div class="stu-row"><div class="stu-avatar">${s.name.charAt(0).toUpperCase()}</div><div class="stu-name">${KT.esc(s.name)}</div><span class="badge ${sub?'badge-green':'badge-cyan'}">${sub?'✓ Abgegeben':'⌛ Läuft'}</span></div>`;}).join('');
-  },3000);
+    // Update live stats too
+    const subCount=document.getElementById('live-sub-count');const joinCount=document.getElementById('live-join-count');const openCount=document.getElementById('live-open-count');const pctBar=document.getElementById('live-pct-bar');const pctLbl=document.getElementById('live-pct-lbl');
+    if(subCount)subCount.textContent=subs.length;if(joinCount)joinCount.textContent=joined.length;if(openCount)openCount.textContent=Math.max(0,joined.length-subs.length);
+    const pct=joined.length>0?Math.round(subs.length/joined.length*100):0;if(pctBar)pctBar.style.width=pct+'%';if(pctLbl)pctLbl.textContent='Fortschritt '+pct+'%';
+  },1000);
 }
 
 function addTimeLive(m){_timerSecs=Math.max(0,_timerSecs+m*60);const el=document.getElementById('timer-live');if(el)el.textContent=KT.fmt(_timerSecs);KT.toast((m>0?'➕':'➖')+Math.abs(m)+' Min');}
@@ -954,25 +980,41 @@ function closeModal(){document.getElementById('modal-bg').classList.remove('open
 /* TUTORIAL */
 const TUTS={
   welcome:{steps:[
-    {e:'👋',t:'Willkommen bei Fusion!',d:'Schön dass du da bist! Ich zeige dir kurz wie die App funktioniert.',noTarget:true},
-    {e:'📋',t:'Meine Tests',d:'Hier siehst du alle deine Tests — aktive, beendete und Entwürfe.',target:'#nb-tests'},
-    {e:'✦',t:'Test erstellen',d:'Hier baust du einen neuen Test auf — mit Text, Bildern und Fragen.',target:'#nb-create'},
-    {e:'🟢',t:'Live-Modus',d:'Sobald ein Test läuft, siehst du hier alle Schüler in Echtzeit.',target:'#nb-live'},
-    {e:'✏️',t:'Korrigieren',d:'Hier korrigierst du Abgaben, vergibst Noten und kannst deine Unterschrift hinzufügen.',target:'#nb-correct'},
+    {e:'🎉',t:'Willkommen bei Fusion!',d:'Fusion ist deine digitale Testplattform. Erstelle Tests, starte sie live im Unterricht, und korrigiere Abgaben — alles an einem Ort.',noTarget:true},
+    {e:'📋',t:'Meine Tests',d:'Hier siehst du alle deine Tests: aktive, beendete und Entwürfe. Du kannst Tests starten, bearbeiten oder löschen.',target:'#nb-tests'},
+    {e:'✦',t:'Test erstellen',d:'Baue Tests mit dem Seiteneditor: füge Überschriften, Textblöcke, MC-Fragen, Mehrfachauswahl, Freitext und Bilder ein.',target:'#nb-create'},
+    {e:'🟢',t:'Live-Modus',d:'Sobald ein Test läuft, siehst du hier in Echtzeit wer beigetreten ist und wer schon abgegeben hat — ohne Seite neu laden!',target:'#nb-live'},
+    {e:'📨',t:'Abgaben',d:'Alle eingereichten Tests erscheinen hier. Du siehst den Score und kannst direkt zur Korrektur wechseln.',target:'#nb-subs'},
+    {e:'✏️',t:'Korrigieren',d:'Offene Abgaben mit einem Klick korrigieren, Punkte vergeben, Note setzen, Unterschrift hinzufügen und ans Schüler schicken.',target:'#nb-correct'},
   ]},
-  tut_mc:{steps:[{e:'☑',t:'Einfachauswahl',d:'Der Schüler wählt EINE richtige Antwort. Klicke auf den Kreis (○) neben der richtigen Antwort — er wird grün.',target:'#a4-canvas'},{e:'⭐',t:'Punkte',d:'Das ⭐ Symbol zeigt die Punkte. Standard = 1.',target:'#a4-canvas'}]},
-  tut_multi:{steps:[{e:'☑☑',t:'Mehrfachauswahl',d:'Mehrere Antworten können richtig sein. Klicke auf die Quadrate (☐) um richtige zu markieren.',target:'#a4-canvas'}]},
-  tut_free:{steps:[{e:'✍',t:'Freie Antwort',d:'Schüler schreiben frei. Du korrigierst das manuell.',target:'#a4-canvas'}]},
-  tut_table:{steps:[{e:'📊',t:'Tabelle',d:'Alle Zellen und Überschriften sind direkt editierbar.',target:'#a4-canvas'}]},
-  tut_image:{steps:[{e:'🖼',t:'Bild einfügen',d:'Lade ein Foto oder Diagramm hoch. Breite im rechten Panel anpassbar.',target:'#a4-canvas'}]},
+  tut_mc:{steps:[
+    {e:'☑',t:'Einfachauswahl (MC)',d:'Schreibe die Frage ins obere Feld. Trage die Antwortoptionen ein. Klicke den Kreis (○) neben der richtigen Antwort — er wird grün ✅.',target:'#a4-canvas'},
+    {e:'⭐',t:'Punkte vergeben',d:'Oben rechts im Block siehst du das ⭐ Symbol. Klicke darauf und gib die Punktzahl ein. Standard ist 1 Punkt.',target:'#a4-canvas'},
+    {e:'➕',t:'Optionen hinzufügen',d:'Mit dem "+ Option" Button fügst du weitere Antwortmöglichkeiten hinzu. Mit dem ✕ neben einer Option löschst du sie wieder.',target:'#a4-canvas'},
+  ]},
+  tut_multi:{steps:[
+    {e:'☑☑',t:'Mehrfachauswahl',d:'Mehrere Antworten können gleichzeitig richtig sein. Klicke auf die Quadrate (☐) um alle richtigen Antworten zu markieren — sie werden orange.',target:'#a4-canvas'},
+    {e:'💡',t:'Hinweis für Schüler',d:'Schüler sehen automatisch den Hinweis "Mehrere Antworten möglich". Sie müssen alle richtigen Antworten auswählen für volle Punktzahl.',noTarget:true},
+  ]},
+  tut_free:{steps:[
+    {e:'✍',t:'Freie Antwort',d:'Schüler schreiben frei in dieses Feld. Die Anzahl der Zeilen kannst du im rechten Eigenschaftenbereich einstellen.',target:'#a4-canvas'},
+    {e:'✏️',t:'Manuelle Korrektur',d:'Freie Antworten werden nicht automatisch bewertet. Du korrigierst sie manuell unter "Korrigieren" und vergibst Punkte und Kommentare.',noTarget:true},
+  ]},
+  tut_table:{steps:[{e:'📊',t:'Tabelle',d:'Alle Zellen und Überschriften sind direkt klickbar und editierbar. Mit "+ Zeile" und "+ Spalte" erweiterst du die Tabelle.',target:'#a4-canvas'}]},
+  tut_image:{steps:[
+    {e:'🖼',t:'Bild einfügen',d:'Klicke auf den Platzhalter um ein Foto oder Diagramm von deinem Gerät hochzuladen.',target:'#a4-canvas'},
+    {e:'↔️',t:'Größe anpassen',d:'Im rechten Eigenschaftenbereich kannst du die Breite des Bildes in Prozent anpassen (10–100%).',target:'#a4-canvas'},
+  ]},
   tut_live:{steps:[
-    {e:'🟢',t:'Test läuft!',d:'Dein Test ist jetzt aktiv. Schüler können per Code oder QR-Code beitreten.',target:'#nb-live'},
-    {e:'⏱',t:'Timer',d:'Mit +5/−5 Min passt du die Zeit an. ⏸ Pause hält den Timer an.',noTarget:true},
+    {e:'🟢',t:'Test ist live!',d:'Dein Test läuft jetzt. Schüler können per Code oder QR-Code beitreten. Die Liste aktualisiert sich automatisch jede Sekunde — kein Reload nötig!',target:'#nb-live'},
+    {e:'⏱',t:'Timer steuern',d:'Mit +5/−5 Min passt du die Zeit an. ⏸ Pause hält den Timer an, ▶ Weiter setzt ihn fort.',noTarget:true},
+    {e:'📥',t:'Einsammeln',d:'Mit "Einsammeln" werden alle offenen Abgaben automatisch eingereicht — praktisch am Ende der Stunde.',noTarget:true},
   ]},
   tut_correct:{steps:[
-    {e:'✏️',t:'Korrigieren',d:'MC-Fragen sind automatisch bewertet. Freie Antworten korrigierst du manuell.',target:'#nb-correct'},
-    {e:'✍️',t:'Unterschrift',d:'Füge deine Unterschrift mit Apple Pencil, Finger oder Maus hinzu!',noTarget:true},
-    {e:'✉️',t:'Feedback senden',d:'Mit "An Schüler senden" bekommt der Schüler sofort sein Ergebnis.',noTarget:true},
+    {e:'✏️',t:'Korrigieren',d:'MC- und Mehrfachauswahl-Fragen sind automatisch bewertet. Freie Antworten korrigierst du manuell mit Punkten und Kommentar.',target:'#nb-correct'},
+    {e:'🎓',t:'Note & Feedback',d:'Wähle eine Note aus dem Dropdown und schreibe ein Gesamtfeedback. Beides erscheint beim Schüler in der Rückmeldung.',noTarget:true},
+    {e:'✍️',t:'Unterschrift',d:'Füge deine Unterschrift direkt auf dem Tablet, Smartphone oder mit der Maus hinzu. Mehrere Farben und Stärken verfügbar.',noTarget:true},
+    {e:'✉️',t:'An Schüler senden',d:'Mit "An Schüler senden" bekommt der Schüler sofort sein Ergebnis angezeigt — er kann es auch als PDF herunterladen.',noTarget:true},
   ]},
 };
 let _tutActive=false,_tutId=null,_tutStep=0,_tutSteps=[];

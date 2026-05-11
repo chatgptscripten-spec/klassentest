@@ -951,8 +951,18 @@ function filterATests(){
 function viewAAnswers(id){
   const db=KT.get();const t=db.tests.find(x=>x.id===id);if(!t)return;
   const subs=db.submissions.filter(s=>s.testId===id);const qb=[];(t.pages||[]).forEach(pg=>(pg.blocks||[]).forEach(b=>{if(['mc','multi','free'].includes(b.type))qb.push(b);}));
-  if(!subs.length){alert('Noch keine Abgaben.');return;}
-  let html=`<div class="modal-head">📊 ${KT.esc(t.title)}<button class="modal-close" onclick="closeModal()">✕</button></div>`;
+  // Build Musterlösung section
+  let musterHtml=`<div style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:var(--r2);padding:16px;margin-bottom:16px"><div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--accent2);margin-bottom:12px">✅ Musterlösung</div>`;
+  qb.forEach((b,i)=>{
+    musterHtml+=`<div style="margin-bottom:8px;padding:8px 10px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:4px">F${i+1}: ${KT.esc(b.question)}</div>`;
+    if(b.type==='mc'){musterHtml+=`<div style="font-size:13px;color:var(--green);font-weight:700">✓ ${KT.esc(b.options[b.correctIndex]||'–')}</div>`;}
+    else if(b.type==='multi'){const correct=(b.correctIndexes||[]).map(idx=>KT.esc(b.options[idx]||''));musterHtml+=`<div style="font-size:13px;color:var(--amber);font-weight:700">✓ ${correct.join(', ')||'–'}</div>`;}
+    else{musterHtml+=`<div style="font-size:12px;color:var(--ink3);font-style:italic">Freie Antwort – manuell korrigieren</div>`;}
+    musterHtml+=`</div>`;
+  });
+  musterHtml+=`</div>`;
+  if(!subs.length){openModal(`<div class="modal-head">📊 ${KT.esc(t.title)}<button class="modal-close" onclick="closeModal()">✕</button></div>${musterHtml}<div style="color:var(--ink3)">Noch keine Abgaben.</div><div style="margin-top:14px;text-align:right"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`);return;}
+  let html=`<div class="modal-head">📊 ${KT.esc(t.title)}<button class="modal-close" onclick="closeModal()">✕</button></div>${musterHtml}`;
   subs.forEach(sub=>{const sc=KT.calcScore(sub,t);const pct=sc.total>0?Math.round(sc.scored/sc.total*100):0;
   html+=`<div style="background:var(--bg3);border-radius:var(--r2);padding:14px;margin-bottom:10px;border:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><div class="stu-avatar">${sub.studentName.charAt(0).toUpperCase()}</div><div><div style="font-weight:700;font-size:13px">${KT.esc(sub.studentName)}</div><div style="font-size:11px;color:var(--ink3)">${new Date(sub.submittedAt).toLocaleString('de-DE')} · ${sc.scored}/${sc.total} Pt. (${pct}%)</div></div>${sub.grade?`<span class="badge badge-purple" style="margin-left:auto">Note ${KT.esc(sub.grade)}</span>`:''}<span class="badge ${sub.corrected?'badge-green':'badge-amber'}">${sub.corrected?'✓':'⏳'}</span></div>${qb.map((b,i)=>{const ans=sub.answers?.[b.id];let ad='',cor=false;if(b.type==='mc'){cor=ans===b.correctIndex;ad=ans!=null?KT.esc(b.options[ans]):'';}else if(b.type==='multi'){const ca=JSON.stringify([...(b.correctIndexes||[])].sort((a,c)=>a-c));const ga=JSON.stringify([...(ans||[])].sort((a,c)=>a-c));cor=ca===ga;ad=(ans||[]).map(idx=>KT.esc(b.options[idx])).join(', ')||'–';}else{ad=ans?KT.esc(ans):'–';}return`<div style="margin-bottom:6px"><div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:3px">F${i+1}: ${KT.esc(b.question)}${b.type!=='free'?` <span style="color:${cor?'var(--green)':'var(--red)'}">${cor?'✅':'❌'}</span>`:''}</div><div class="answer-peek">${ad||'–'}</div></div>`;}).join('')}</div>`;});
   html+=`<div style="text-align:right"><button class="btn btn-ghost" onclick="closeModal()">Schließen</button></div>`;

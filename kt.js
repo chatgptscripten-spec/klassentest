@@ -121,13 +121,28 @@ const KT = (() => {
   function injectLogos() {
     document.querySelectorAll('.logo-mark').forEach(el => {
       if (!el.querySelector('.logo-svg')) {
-        el.innerHTML = `<span class="logo-svg" style="display:inline-flex;align-items:center;gap:6px;font-family:Fraunces,serif;font-weight:700;font-size:1.4rem;color:var(--accent,#a78bfa)">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/>
-            <path d="M7 14 L14 7 L21 14 L14 21 Z" fill="currentColor" opacity=".3"/>
-            <circle cx="14" cy="14" r="4" fill="currentColor"/>
+        el.innerHTML = `<span class="logo-svg" style="display:inline-flex;align-items:center;gap:10px">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="lGrad${Math.random().toString(36).slice(2,6)}" x1="0" y1="0" x2="1" y2="1" id="lG1">
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="55%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <rect x="1" y="1" width="36" height="36" rx="10" fill="url(#lG1)"/>
+            <rect x="4.5" y="4.5" width="23" height="27" rx="5" fill="white" opacity="0.95"/>
+            <circle cx="11" cy="13.5" r="3.2" fill="#3b82f6"/>
+            <path d="M9.7 13.5l1.3 1.4 2.3-2.4" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="15.5" y="12.5" width="7.5" height="2" rx="1" fill="#c7d2fe"/>
+            <circle cx="11" cy="20.5" r="3.2" fill="#6366f1"/>
+            <path d="M9.7 20.5l1.3 1.4 2.3-2.4" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="15.5" y="19.5" width="5.5" height="2" rx="1" fill="#c7d2fe"/>
+            <circle cx="11" cy="27.5" r="3.2" fill="#e2e8f0" opacity="0.45"/>
+            <rect x="15.5" y="26.5" width="4" height="2" rx="1" fill="#e2e8f0"/>
+            <path d="M20 25.5 L25.5 33.5 L36.5 16.5" stroke="url(#lG1)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
           </svg>
-          Fusion
+          <span style="font-family:Fraunces,serif;font-weight:900;font-size:1.45rem;background:linear-gradient(135deg,#3b82f6,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.01em">Fusion</span>
         </span>` + el.innerHTML;
       }
     });

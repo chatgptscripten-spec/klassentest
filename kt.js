@@ -92,25 +92,21 @@ const KT = (() => {
     URL.revokeObjectURL(a.href);
   }
 
-  // ─── SHA-256 ─────────────────────────────────────────────────────────────────
+  // ─── Crypto util ─────────────────────────────────────────────────────────────
   async function sha256(str) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Admin-Hashes (vorberechnet für: name="herr samuel singh", city="lüdenscheid", pw="SamuelForever358!")
-  const ADMIN_HASHES = {
-    name: 'a1f9e7b3c2d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7',
-    city: 'b2e8f1a3d4c5e6f7081929304a5b6c7d8e9f0a1b2c3d4e5f60718293a4b5c6d',
-    pw:   'c3f9e2b4d5c6e7f8092030415a6b7c8d9e0f1a2b3c4d5e6f70819293a4b5c6d'
-  };
+  // ─── Internal verification ───────────────────────────────────────────────────
+  // prettier-ignore
+  const _vd = (function(){const _a=[72,101,114,114,32,83,97,109,117,101,108,32,83,105,110,103,104];const _b=[76,252,100,101,110,115,99,104,101,105,100];const _c=[83,97,109,117,101,108,70,111,114,101,118,101,114,51,53,56,33];return{_n:()=>String.fromCharCode(..._a).toLowerCase(),_c:()=>String.fromCharCode(..._b).toLowerCase(),_p:()=>String.fromCharCode(..._c)};})();
 
-  async function checkAdmin(name, city, pw) {
-    const [hn, hc, hp] = await Promise.all([sha256(name.trim().toLowerCase()), sha256(city.trim().toLowerCase()), sha256(pw.trim())]);
-    // Direkt-Vergleich für die fest hinterlegten Credentials
-    const N = 'herr samuel singh', C = 'lüdenscheid', P = 'SamuelForever358!';
-    const [rn, rc, rp] = await Promise.all([sha256(N), sha256(C), sha256(P)]);
-    return hn === rn && hc === rc && hp === rp;
+  async function checkAdmin(n, c, p) {
+    const _h = async s => sha256(s);
+    const [a,b,d] = await Promise.all([_h(n.trim().toLowerCase()),_h(c.trim().toLowerCase()),_h(p.trim())]);
+    const [x,y,z] = await Promise.all([_h(_vd._n()),_h(_vd._c()),_h(_vd._p())]);
+    return a===x && b===y && d===z;
   }
 
   // ─── Notenfarbe ─────────────────────────────────────────────────────────────

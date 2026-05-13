@@ -114,6 +114,11 @@
 </style>
 </head>
 <body>
+
+<!-- Mobile sidebar toggle -->
+<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">☰ <span style="font-size:13px;font-weight:600">Menü</span></button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <div class="app-layout">
 
 <!-- ─── Sidebar ──────────────────────────────────────────────────────────── -->
@@ -485,7 +490,7 @@ function showSection(id) {
 
 document.getElementById('sidenav').addEventListener('click', e => {
   const btn = e.target.closest('[data-sec]');
-  if (btn) showSection(btn.dataset.sec);
+  if (btn) { showSection(btn.dataset.sec); closeSidebar(); }
 });
 
 // ── Builder ───────────────────────────────────────────────────────────────
@@ -953,10 +958,15 @@ function updateLiveView() {
   const list = document.getElementById('live-students-list');
   list.innerHTML = students.map(s => {
     const submitted = subs.some(x => x.studentName === s.name);
-    return `<div class="live-student-row">
-      <div class="avatar" style="font-size:12px">${s.name.charAt(0)}</div>
-      <span style="flex:1;font-size:14px">${s.name}</span>
-      ${submitted ? '<span class="badge badge-green">✓ Abgegeben</span>' : '<span class="badge badge-yellow">🖊 Aktiv</span>'}
+    return `<div class="live-student-row" style="justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <div class="avatar" style="font-size:12px;flex-shrink:0">${s.name.charAt(0)}</div>
+        <span style="flex:1;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${submitted ? '<span class="badge badge-green">✓ Abgegeben</span>' : '<span class="badge badge-yellow">🖊 Aktiv</span>'}
+        <button class="btn btn-ghost btn-sm" title="Link für ${s.name} kopieren" onclick="copyPerStudentLink('${encodeURIComponent(s.name)}','${test.code}')" style="padding:4px 8px;font-size:12px;color:var(--text-muted)">🔗</button>
+      </div>
     </div>`;
   }).join('') || '<div style="color:var(--text-dim);font-size:13px;text-align:center;padding:16px">Noch keine Schüler beigetreten</div>';
 }
@@ -1008,6 +1018,24 @@ function copyStudentLink() {
   if (!test) return;
   const link = `${location.origin}${location.pathname.replace('lehrer.html','schueler.html')}?code=${test.code}`;
   navigator.clipboard.writeText(link).then(() => KT.toast('Link kopiert', 'success'));
+}
+
+function copyPerStudentLink(encodedName, code) {
+  const name = decodeURIComponent(encodedName);
+  const link = `${location.origin}${location.pathname.replace('lehrer.html','schueler.html')}?code=${code}`;
+  navigator.clipboard.writeText(link).then(() => KT.toast(`Link für ${name} kopiert ✓`, 'success'));
+}
+
+// ── Mobile sidebar ────────────────────────────────────────────────────────
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('open', open);
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
 }
 
 function collectAll() {

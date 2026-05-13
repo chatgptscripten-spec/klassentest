@@ -278,14 +278,20 @@ body { min-height: 100vh; background: var(--bg); overflow-x: hidden; }
 
       <div class="join-header">
         <div class="join-logo-area">
-          <div class="join-logo-icon">
+          <div class="join-logo-icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1,#8b5cf6)">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" opacity=".6"/>
-              <path d="M12 4L20 12L12 20L4 12Z" fill="white" opacity=".25"/>
-              <circle cx="12" cy="12" r="4" fill="white"/>
+              <rect x="1" y="1" width="14" height="18" rx="3" fill="white" opacity="0.9"/>
+              <circle cx="5.5" cy="8" r="2" fill="#3b82f6"/>
+              <path d="M4.5 8l1 1 1.8-1.8" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="8.5" y="7.2" width="5" height="1.5" rx=".75" fill="#c7d2fe"/>
+              <circle cx="5.5" cy="13" r="2" fill="#6366f1"/>
+              <path d="M4.5 13l1 1 1.8-1.8" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="8.5" y="12.2" width="3.5" height="1.5" rx=".75" fill="#c7d2fe"/>
+              <path d="M13 14.5L16.5 20L23 10" stroke="url(#sg1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs><linearGradient id="sg1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
             </svg>
           </div>
-          <span class="join-logo-text">Fusion</span>
+          <span class="join-logo-text" style="background:linear-gradient(135deg,#3b82f6,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Fusion</span>
         </div>
         <div class="join-headline">Jetzt einloggen</div>
         <div class="join-sub">Gib deinen Namen und den Testcode deines Lehrers ein</div>

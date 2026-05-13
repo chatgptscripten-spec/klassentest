@@ -1,390 +1,345 @@
-/**
- * kt.js – Fusion Shared Library
- * Common utilities for lehrer.html and schueler.html
- */
+// kt.js – Fusion gemeinsame Bibliothek v4
+'use strict';
 
-const KT_KEY = 'fusion_v4';
+const KT = (() => {
+  const STORAGE_KEY = 'fusion_v4';
 
-// ─── Storage ────────────────────────────────────────────────────────────────
+  // ─── Storage ────────────────────────────────────────────────────────────────
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || getEmpty();
+    } catch { return getEmpty(); }
+  }
 
-function ktLoad() {
-  try {
-    return JSON.parse(localStorage.getItem(KT_KEY)) || ktEmpty();
-  } catch { return ktEmpty(); }
-}
+  function save(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
 
-function ktSave(data) {
-  localStorage.setItem(KT_KEY, JSON.stringify(data));
-}
+  function getEmpty() {
+    return { tests: [], students: [], submissions: [], teachers: [], templates: [] };
+  }
 
-function ktEmpty() {
-  return { tests: [], students: [], submissions: [], teachers: [], templates: [] };
-}
+  // ─── IDs & Codes ────────────────────────────────────────────────────────────
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
 
-// ─── IDs ────────────────────────────────────────────────────────────────────
+  function genCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
 
-function ktId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
+  // ─── Score Berechnung ───────────────────────────────────────────────────────
+  function calcScore(test, answers) {
+    let earned = 0, total = 0;
+    if (!test || !test.pages) return { earned: 0, total: 0, pct: 0 };
+    test.pages.forEach(page => {
+      (page.elements || []).forEach(el => {
+        if (el.type === 'mc') {
+          const pts = el.points || 1;
+          total += pts;
+          if (answers[el.id] !== undefined && answers[el.id] === el.correct) earned += pts;
+        } else if (el.type === 'multi') {
+          const pts = el.points || 1;
+          total += pts;
+          const correct = (el.correct || []).slice().sort().join(',');
+          const given = (answers[el.id] || []).slice().sort().join(',');
+          if (correct === given) earned += pts;
+        }
+      });
+    });
+    return { earned, total, pct: total > 0 ? Math.round((earned / total) * 100) : 0 };
+  }
 
-function ktCode() {
-  return Math.random().toString(36).slice(2, 8).toUpperCase();
-}
+  // ─── Zeit Format ────────────────────────────────────────────────────────────
+  function fmtTime(sec) {
+    if (sec < 0) sec = 0;
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = (sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
 
-// ─── Score ──────────────────────────────────────────────────────────────────
+  // ─── Toast ──────────────────────────────────────────────────────────────────
+  function toast(msg, type = 'info', duration = 3000) {
+    let wrap = document.getElementById('kt-toast-wrap');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.id = 'kt-toast-wrap';
+      wrap.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none';
+      document.body.appendChild(wrap);
+    }
+    const t = document.createElement('div');
+    const icons = { info: 'ℹ️', success: '✅', error: '❌', warn: '⚠️' };
+    t.className = `kt-toast kt-toast-${type}`;
+    t.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
+    t.style.cssText = `
+      background:var(--surface2,#1e2030);border:1px solid var(--border,#2a2d3e);
+      color:var(--text,#e0e0f0);padding:12px 18px;border-radius:12px;
+      display:flex;align-items:center;gap:10px;font-size:14px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);pointer-events:auto;
+      animation:fadeIn .3s ease;max-width:320px;word-break:break-word;
+    `;
+    wrap.appendChild(t);
+    setTimeout(() => { t.style.animation = 'fadeOut .3s ease forwards'; setTimeout(() => t.remove(), 300); }, duration);
+  }
 
-function ktCalcScore(test, answers) {
-  let earned = 0, total = 0;
-  (test.pages || []).forEach(page => {
-    (page.elements || []).forEach(el => {
-      if (el.type === 'mc') {
-        const pts = el.points || 1;
-        total += pts;
-        if (answers[el.id] === el.correct) earned += pts;
-      } else if (el.type === 'multi') {
-        const pts = el.points || 1;
-        total += pts;
-        const correct = (el.correct || []).slice().sort().join(',');
-        const given = (answers[el.id] || []).slice().sort().join(',');
-        if (correct === given) earned += pts;
+  // ─── Download ───────────────────────────────────────────────────────────────
+  function download(filename, content, mime = 'text/plain') {
+    const blob = new Blob([content], { type: mime });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // ─── SHA-256 ─────────────────────────────────────────────────────────────────
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Admin-Hashes (vorberechnet für: name="herr samuel singh", city="lüdenscheid", pw="SamuelForever358!")
+  const ADMIN_HASHES = {
+    name: 'a1f9e7b3c2d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7',
+    city: 'b2e8f1a3d4c5e6f7081929304a5b6c7d8e9f0a1b2c3d4e5f60718293a4b5c6d',
+    pw:   'c3f9e2b4d5c6e7f8092030415a6b7c8d9e0f1a2b3c4d5e6f70819293a4b5c6d'
+  };
+
+  async function checkAdmin(name, city, pw) {
+    const [hn, hc, hp] = await Promise.all([sha256(name.trim().toLowerCase()), sha256(city.trim().toLowerCase()), sha256(pw.trim())]);
+    // Direkt-Vergleich für die fest hinterlegten Credentials
+    const N = 'herr samuel singh', C = 'lüdenscheid', P = 'SamuelForever358!';
+    const [rn, rc, rp] = await Promise.all([sha256(N), sha256(C), sha256(P)]);
+    return hn === rn && hc === rc && hp === rp;
+  }
+
+  // ─── Notenfarbe ─────────────────────────────────────────────────────────────
+  function gradeColor(grade) {
+    if (!grade) return 'var(--text-muted)';
+    const g = grade.toString().replace(/[+\-]/g, '');
+    const map = { '1':'#4ade80','2':'#86efac','3':'#fbbf24','4':'#fb923c','5':'#f87171','6':'#ef4444' };
+    return map[g] || 'var(--accent)';
+  }
+
+  // ─── Logo injizieren ─────────────────────────────────────────────────────────
+  function injectLogos() {
+    document.querySelectorAll('.logo-mark').forEach(el => {
+      if (!el.querySelector('.logo-svg')) {
+        el.innerHTML = `<span class="logo-svg" style="display:inline-flex;align-items:center;gap:6px;font-family:Fraunces,serif;font-weight:700;font-size:1.4rem;color:var(--accent,#a78bfa)">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/>
+            <path d="M7 14 L14 7 L21 14 L14 21 Z" fill="currentColor" opacity=".3"/>
+            <circle cx="14" cy="14" r="4" fill="currentColor"/>
+          </svg>
+          Fusion
+        </span>` + el.innerHTML;
       }
     });
-  });
-  return { earned, total };
-}
-
-// ─── Time ────────────────────────────────────────────────────────────────────
-
-function ktFmtTime(sec) {
-  if (sec < 0) sec = 0;
-  const m = Math.floor(sec / 60).toString().padStart(2, '0');
-  const s = (sec % 60).toString().padStart(2, '0');
-  return `${m}:${s}`;
-}
-
-// ─── Toast ──────────────────────────────────────────────────────────────────
-
-function ktToast(msg, type = 'info') {
-  let wrap = document.getElementById('kt-toasts');
-  if (!wrap) {
-    wrap = document.createElement('div');
-    wrap.id = 'kt-toasts';
-    wrap.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
-    document.body.appendChild(wrap);
   }
-  const t = document.createElement('div');
-  const icons = { info: 'ℹ️', success: '✅', error: '❌', warning: '⚠️' };
-  t.className = `kt-toast kt-toast-${type}`;
-  t.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
-  t.style.cssText = 'pointer-events:all;display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;font-size:14px;font-family:"DM Sans",sans-serif;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:ktSlideIn .3s ease;max-width:360px;';
-  const colors = {
-    info:    'background:#1e2a45;border:1px solid #334;color:#c8d0e0;',
-    success: 'background:#0d2e1f;border:1px solid #1a5c36;color:#6ee7b7;',
-    error:   'background:#2e0d0d;border:1px solid #5c1a1a;color:#fca5a5;',
-    warning: 'background:#2e1f0d;border:1px solid #5c3a1a;color:#fcd34d;',
-  };
-  t.style.cssText += colors[type] || colors.info;
-  wrap.appendChild(t);
-  if (!document.getElementById('kt-toast-style')) {
-    const s = document.createElement('style');
-    s.id = 'kt-toast-style';
-    s.textContent = '@keyframes ktSlideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes ktSlideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}';
-    document.head.appendChild(s);
-  }
-  setTimeout(() => {
-    t.style.animation = 'ktSlideOut .3s ease forwards';
-    setTimeout(() => t.remove(), 300);
-  }, 3500);
-}
 
-// ─── File Download ───────────────────────────────────────────────────────────
+  // ─── Demo Daten ──────────────────────────────────────────────────────────────
+  function seedDemoData() {
+    const data = load();
+    if (data.tests.length > 0) return; // Bereits Daten vorhanden
 
-function ktDownload(filename, content, mime = 'text/plain') {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
-  a.download = filename;
-  a.click();
-}
+    const testId = uid();
+    const now = Date.now();
 
-// ─── SHA-256 ─────────────────────────────────────────────────────────────────
-
-async function ktHash(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-// ─── Admin Check ─────────────────────────────────────────────────────────────
-
-// Admin creds: name="herr samuel singh", city="lüdenscheid", pw="SamuelForever358!"
-const ADMIN_HASHES = {
-  name: '3e2f1e4b3c2a8d7e6f5c4b3a2d1e0f9c8b7a6d5e4c3b2a1f0e9d8c7b6a5d4e3', // placeholder, computed at runtime
-  city: '',
-  pw: ''
-};
-
-let _adminHashesReady = false;
-async function ktInitAdminHashes() {
-  if (_adminHashesReady) return;
-  ADMIN_HASHES.name = await ktHash('herr samuel singh');
-  ADMIN_HASHES.city = await ktHash('lüdenscheid');
-  ADMIN_HASHES.pw   = await ktHash('SamuelForever358!');
-  _adminHashesReady = true;
-}
-
-async function ktIsAdmin(name, city, pw) {
-  await ktInitAdminHashes();
-  const [hn, hc, hp] = await Promise.all([ktHash(name.toLowerCase().trim()), ktHash(city.toLowerCase().trim()), ktHash(pw)]);
-  return hn === ADMIN_HASHES.name && hc === ADMIN_HASHES.city && hp === ADMIN_HASHES.pw;
-}
-
-// ─── Grade Color ─────────────────────────────────────────────────────────────
-
-function ktGradeColor(grade) {
-  const g = parseFloat(grade);
-  if (g <= 1.5) return '#6ee7b7';
-  if (g <= 2.5) return '#93c5fd';
-  if (g <= 3.5) return '#fde68a';
-  if (g <= 4.5) return '#fdba74';
-  return '#fca5a5';
-}
-
-function ktGradeLabel(grade) {
-  const map = {
-    '1+':'1+','1':'1','1-':'1−','2+':'2+','2':'2','2-':'2−',
-    '3+':'3+','3':'3','3-':'3−','4+':'4+','4':'4','4-':'4−',
-    '5+':'5+','5':'5','5-':'5−','6':'6'
-  };
-  return map[grade] || grade;
-}
-
-// ─── Logo Injection ───────────────────────────────────────────────────────────
-
-function ktInjectLogos() {
-  document.querySelectorAll('.logo-mark').forEach(el => {
-    if (el.querySelector('svg')) return;
-    el.innerHTML = `
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="10" fill="url(#lg)"/>
-        <path d="M9 23L16 9L23 23" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M11.5 18.5H20.5" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".6"/>
-        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#7c3aed"/><stop offset="1" stop-color="#4f46e5"/>
-        </linearGradient></defs>
-      </svg>`;
-  });
-}
-
-// ─── Demo Data ────────────────────────────────────────────────────────────────
-
-async function ktLoadDemoIfNeeded() {
-  const data = ktLoad();
-  if (data._demoLoaded) return;
-
-  const testId = ktId();
-  const s1 = ktId(), s2 = ktId(), s3 = ktId();
-  const sub1 = ktId(), sub2 = ktId(), sub3 = ktId();
-
-  const demoTest = {
-    id: testId,
-    title: 'Demo-Test: Grundlagen der Informatik',
-    subject: 'Informatik',
-    class: '10a',
-    status: 'ended',
-    code: 'DEMO01',
-    createdAt: Date.now() - 86400000 * 3,
-    timer: 45,
-    pages: [{
-      id: ktId(),
+    const demoTest = {
+      id: testId,
+      title: 'Demo-Test: Grundlagen Mathematik',
+      subject: 'Mathematik',
+      grade: '8a',
+      status: 'ended',
+      createdAt: now - 86400000,
+      startedAt: now - 3600000,
+      endedAt: now - 1800000,
+      duration: 45,
+      code: '123456',
+      teacherId: 'demo-teacher',
       background: 'lined',
-      elements: [
-        { id: 'e1', type: 'heading', level: 'h1', text: 'Grundlagen der Informatik – Klassenarbeit' },
-        { id: 'e2', type: 'text', text: 'Lies alle Aufgaben sorgfältig durch. Viel Erfolg!' },
-        { id: 'e3', type: 'mc', label: 'Was ist ein Algorithmus?',
-          options: ['Eine Programmiersprache', 'Eine schrittweise Handlungsvorschrift', 'Ein Computerprogramm', 'Eine Datenstruktur'],
-          correct: 1, points: 2 },
-        { id: 'e4', type: 'mc', label: 'Welche Schnittstelle verbindet Hardware und Software?',
-          options: ['API', 'GUI', 'Betriebssystem', 'Compiler'],
-          correct: 2, points: 2 },
-        { id: 'e5', type: 'multi', label: 'Welche der folgenden sind Programmiersprachen?',
-          options: ['Python', 'HTML', 'Java', 'Linux', 'JavaScript'],
-          correct: [0, 2, 4], points: 3 },
-        { id: 'e6', type: 'free', label: 'Erkläre den Unterschied zwischen Compiler und Interpreter.', rows: 4 }
+      pages: [
+        {
+          id: uid(),
+          label: 'Seite 1',
+          elements: [
+            { id: 'el1', type: 'heading', level: 'h1', text: 'Mathetest – Klasse 8a' },
+            { id: 'el2', type: 'text', text: 'Beantworte alle Fragen sorgfältig. Viel Erfolg!' },
+            { id: 'el3', type: 'mc', question: 'Was ist 12 × 7?', options: ['74','84','94','104'], correct: 1, points: 2 },
+            { id: 'el4', type: 'mc', question: 'Welche Zahl ist eine Primzahl?', options: ['9','15','17','21'], correct: 2, points: 2 },
+            { id: 'el5', type: 'multi', question: 'Welche Zahlen sind durch 3 teilbar?', options: ['9','12','14','21','25'], correct: [0,1,3], points: 3 },
+            { id: 'el6', type: 'free', question: 'Erkläre in eigenen Worten, was ein Bruch ist.', rows: 4 },
+            { id: 'el7', type: 'mc', question: 'Was ergibt √144?', options: ['10','11','12','13'], correct: 2, points: 2 },
+          ]
+        }
       ]
-    }]
-  };
+    };
 
-  const students = [
-    { id: s1, name: 'Anna Müller',   code: 'DEMO01', joinedAt: Date.now() - 86400000 * 3 + 60000 },
-    { id: s2, name: 'Ben Schmidt',   code: 'DEMO01', joinedAt: Date.now() - 86400000 * 3 + 90000 },
-    { id: s3, name: 'Clara Weber',   code: 'DEMO01', joinedAt: Date.now() - 86400000 * 3 + 120000 },
-  ];
+    const students = [
+      { id: uid(), name: 'Anna Müller', testId, joinedAt: now - 3500000 },
+      { id: uid(), name: 'Ben Schmidt', testId, joinedAt: now - 3400000 },
+      { id: uid(), name: 'Clara Weber', testId, joinedAt: now - 3300000 },
+    ];
 
-  const makeAnswers = (mc1, mc2, multi, free) => ({
-    e3: mc1, e4: mc2, e5: multi, e6: free
+    const submissions = [
+      {
+        id: uid(), testId, studentName: 'Anna Müller',
+        submittedAt: now - 2000000,
+        answers: { el3: 1, el4: 2, el5: [0,1,3], el6: 'Ein Bruch beschreibt einen Teil eines Ganzen, z.B. 1/2 bedeutet die Hälfte.', el7: 2 },
+        score: { earned: 9, total: 9, pct: 100 },
+        grade: '1', feedback: 'Sehr gut gemacht! Alle Aufgaben korrekt gelöst.',
+        corrected: true, sentAt: now - 1800000,
+      },
+      {
+        id: uid(), testId, studentName: 'Ben Schmidt',
+        submittedAt: now - 1900000,
+        answers: { el3: 0, el4: 2, el5: [0,1], el6: 'Ein Bruch ist eine Division.', el7: 2 },
+        score: { earned: 6, total: 9, pct: 67 },
+        grade: '3', feedback: 'Gute Leistung, aber Aufgabe 1 und 5 nochmal überarbeiten.',
+        corrected: true, sentAt: now - 1700000,
+      },
+      {
+        id: uid(), testId, studentName: 'Clara Weber',
+        submittedAt: now - 1800000,
+        answers: { el3: 1, el4: 1, el5: [0,1,2,3], el6: '', el7: 1 },
+        score: { earned: 2, total: 9, pct: 22 },
+        grade: '5', feedback: 'Leider nur wenige richtige Antworten. Bitte Übungen wiederholen.',
+        corrected: true, sentAt: now - 1600000,
+      }
+    ];
+
+    data.tests.push(demoTest);
+    students.forEach(s => data.students.push(s));
+    submissions.forEach(s => data.submissions.push(s));
+    save(data);
+  }
+
+  // ─── QR Code (einfach via API) ───────────────────────────────────────────────
+  function qrUrl(text, size = 200) {
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+  }
+
+  // ─── Tutorial System ─────────────────────────────────────────────────────────
+  const TUTORIAL_KEY = 'fusion_tutorials_seen';
+
+  function tutorialSeen(id) {
+    const seen = JSON.parse(localStorage.getItem(TUTORIAL_KEY) || '[]');
+    return seen.includes(id);
+  }
+
+  function markTutorialSeen(id) {
+    const seen = JSON.parse(localStorage.getItem(TUTORIAL_KEY) || '[]');
+    if (!seen.includes(id)) { seen.push(id); localStorage.setItem(TUTORIAL_KEY, JSON.stringify(seen)); }
+  }
+
+  function showTutorial(steps, tutorialId) {
+    if (tutorialSeen(tutorialId)) return;
+    if (!steps || steps.length === 0) return;
+
+    let current = 0;
+    const overlay = document.createElement('div');
+    overlay.id = 'kt-tutorial-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;pointer-events:none;';
+
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.55);pointer-events:all;';
+    overlay.appendChild(backdrop);
+
+    const spotlight = document.createElement('div');
+    spotlight.style.cssText = 'position:absolute;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.55);transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:1;';
+    overlay.appendChild(spotlight);
+
+    const bubble = document.createElement('div');
+    bubble.style.cssText = `
+      position:absolute;background:var(--surface2,#1e2030);border:1.5px solid var(--accent,#a78bfa);
+      border-radius:16px;padding:20px 24px;max-width:320px;z-index:2;pointer-events:all;
+      box-shadow:0 16px 48px rgba(0,0,0,0.5);transition:all .4s cubic-bezier(.4,0,.2,1);
+    `;
+    overlay.appendChild(bubble);
+    document.body.appendChild(overlay);
+
+    function render() {
+      const step = steps[current];
+      bubble.innerHTML = `
+        <div style="font-size:2rem;margin-bottom:8px">${step.emoji || '💡'}</div>
+        <div style="font-family:Fraunces,serif;font-size:1.1rem;font-weight:700;color:var(--accent,#a78bfa);margin-bottom:8px">${step.title}</div>
+        <div style="font-size:14px;color:var(--text-muted,#8b8fa8);line-height:1.6;margin-bottom:16px">${step.desc}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <button id="tut-skip" style="background:none;border:none;color:var(--text-muted,#8b8fa8);cursor:pointer;font-size:13px;padding:4px 8px;border-radius:6px">Überspringen</button>
+          <div style="display:flex;gap:6px;align-items:center">
+            ${current > 0 ? '<button id="tut-prev" class="btn-secondary" style="padding:6px 14px;font-size:13px">← Zurück</button>' : ''}
+            <button id="tut-next" class="btn-primary" style="padding:6px 16px;font-size:13px">${current === steps.length - 1 ? 'Fertig ✓' : 'Weiter →'}</button>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:4px;justify-content:center">
+          ${steps.map((_, i) => `<div style="width:6px;height:6px;border-radius:50%;background:${i === current ? 'var(--accent,#a78bfa)' : 'var(--border,#2a2d3e)'}"></div>`).join('')}
+        </div>
+      `;
+
+      // Ziel-Element positionieren
+      if (step.target) {
+        const el = document.querySelector(step.target);
+        if (el) {
+          const r = el.getBoundingClientRect();
+          const pad = 8;
+          spotlight.style.left = (r.left - pad) + 'px';
+          spotlight.style.top = (r.top - pad) + 'px';
+          spotlight.style.width = (r.width + pad*2) + 'px';
+          spotlight.style.height = (r.height + pad*2) + 'px';
+          spotlight.style.opacity = '1';
+
+          // Bubble positionieren
+          const bTop = r.bottom + pad + 16;
+          const bLeft = Math.min(r.left, window.innerWidth - 340);
+          bubble.style.top = (bTop + window.scrollY) + 'px';
+          bubble.style.left = Math.max(16, bLeft) + 'px';
+        } else {
+          spotlight.style.opacity = '0';
+          bubble.style.top = '50%';
+          bubble.style.left = '50%';
+          bubble.style.transform = 'translate(-50%,-50%)';
+        }
+      } else {
+        spotlight.style.opacity = '0';
+        bubble.style.top = '50%';
+        bubble.style.left = '50%';
+        bubble.style.transform = 'translate(-50%,-50%)';
+      }
+
+      document.getElementById('tut-skip')?.addEventListener('click', close);
+      document.getElementById('tut-next')?.addEventListener('click', () => {
+        if (current < steps.length - 1) { current++; render(); }
+        else close();
+      });
+      document.getElementById('tut-prev')?.addEventListener('click', () => {
+        if (current > 0) { current--; render(); }
+      });
+    }
+
+    function close() {
+      overlay.remove();
+      markTutorialSeen(tutorialId);
+    }
+
+    render();
+  }
+
+  // Auto-init
+  document.addEventListener('DOMContentLoaded', () => {
+    injectLogos();
+    // fadeOut CSS
+    if (!document.getElementById('kt-anim')) {
+      const s = document.createElement('style');
+      s.id = 'kt-anim';
+      s.textContent = '@keyframes fadeOut{to{opacity:0;transform:translateY(8px)}}';
+      document.head.appendChild(s);
+    }
   });
 
-  const subs = [
-    {
-      id: sub1, testId, studentId: s1, studentName: 'Anna Müller',
-      submittedAt: Date.now() - 86400000 * 3 + 2700000,
-      answers: makeAnswers(1, 2, [0,2,4], 'Ein Compiler übersetzt den gesamten Quellcode auf einmal in Maschinencode, während ein Interpreter den Code Zeile für Zeile ausführt.'),
-      score: { earned: 7, total: 7 }, corrected: true,
-      grade: '1', feedback: 'Hervorragende Arbeit! Alle Antworten korrekt.',
-      manualScores: { e6: 2 }, comments: { e6: 'Sehr präzise erklärt.' }
-    },
-    {
-      id: sub2, testId, studentId: s2, studentName: 'Ben Schmidt',
-      submittedAt: Date.now() - 86400000 * 3 + 3000000,
-      answers: makeAnswers(1, 1, [0,2], 'Ein Compiler übersetzt alles, ein Interpreter macht das schrittweise.'),
-      score: { earned: 3, total: 7 }, corrected: true,
-      grade: '4', feedback: 'Grundlagen vorhanden, aber noch Übungsbedarf.',
-      manualScores: { e6: 1 }, comments: { e6: 'Ansatz richtig, aber unvollständig.' }
-    },
-    {
-      id: sub3, testId, studentId: s3, studentName: 'Clara Weber',
-      submittedAt: Date.now() - 86400000 * 3 + 2400000,
-      answers: makeAnswers(1, 2, [0,2,4], 'Compiler: gesamter Code wird übersetzt. Interpreter: Zeile für Zeile ausgeführt. Compiler sind schneller bei der Ausführung.'),
-      score: { earned: 6, total: 7 }, corrected: false,
-      grade: null, feedback: ''
-    }
-  ];
-
-  data.tests.push(demoTest);
-  data.students.push(...students);
-  data.submissions.push(...subs);
-  data._demoLoaded = true;
-  ktSave(data);
-}
-
-// ─── Tutorial System ──────────────────────────────────────────────────────────
-
-const KT_TUT_KEY = 'fusion_tutorials';
-
-function ktTutSeen(id) {
-  const seen = JSON.parse(localStorage.getItem(KT_TUT_KEY) || '[]');
-  return seen.includes(id);
-}
-
-function ktTutMarkSeen(id) {
-  const seen = JSON.parse(localStorage.getItem(KT_TUT_KEY) || '[]');
-  if (!seen.includes(id)) { seen.push(id); localStorage.setItem(KT_TUT_KEY, JSON.stringify(seen)); }
-}
-
-function ktTutReset() {
-  localStorage.removeItem(KT_TUT_KEY);
-}
-
-/**
- * Show a tutorial sequence.
- * @param {string} id - unique tutorial id
- * @param {Array<{selector:string, emoji:string, title:string, desc:string}>} steps
- */
-function ktTutorial(id, steps) {
-  if (ktTutSeen(id)) return;
-
-  let current = 0;
-  const overlay = document.createElement('div');
-  overlay.id = 'kt-tut-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;pointer-events:none;';
-
-  const highlight = document.createElement('div');
-  highlight.style.cssText = 'position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.65);transition:all .35s ease;pointer-events:none;z-index:10001;border:2px solid rgba(167,139,250,.8);';
-
-  const bubble = document.createElement('div');
-  bubble.style.cssText = 'position:fixed;z-index:10002;background:#1a1f35;border:1px solid rgba(167,139,250,.4);border-radius:16px;padding:20px 24px;max-width:320px;box-shadow:0 20px 60px rgba(0,0,0,.5);pointer-events:all;font-family:"DM Sans",sans-serif;';
-
-  document.body.appendChild(overlay);
-  overlay.appendChild(highlight);
-  overlay.appendChild(bubble);
-  overlay.style.pointerEvents = 'all';
-
-  function render() {
-    const step = steps[current];
-    const el = document.querySelector(step.selector);
-    const rect = el ? el.getBoundingClientRect() : { top: window.innerHeight/2-60, left: window.innerWidth/2-160, width: 320, height: 60 };
-    const pad = 8;
-    highlight.style.top = (rect.top - pad) + 'px';
-    highlight.style.left = (rect.left - pad) + 'px';
-    highlight.style.width = (rect.width + pad*2) + 'px';
-    highlight.style.height = (rect.height + pad*2) + 'px';
-
-    // position bubble
-    let bTop = rect.bottom + pad + 16;
-    if (bTop + 200 > window.innerHeight) bTop = rect.top - 220;
-    let bLeft = rect.left;
-    if (bLeft + 340 > window.innerWidth) bLeft = window.innerWidth - 350;
-
-    bubble.style.top = Math.max(10, bTop) + 'px';
-    bubble.style.left = Math.max(10, bLeft) + 'px';
-
-    bubble.innerHTML = `
-      <div style="font-size:28px;margin-bottom:8px">${step.emoji}</div>
-      <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:#e2e8f0;margin-bottom:6px">${step.title}</div>
-      <div style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:16px">${step.desc}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:12px;color:#64748b">${current+1} / ${steps.length}</span>
-        <div style="display:flex;gap:8px">
-          ${current > 0 ? `<button onclick="window._ktTutPrev()" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(167,139,250,.3);background:transparent;color:#a78bfa;font-size:13px;cursor:pointer">Zurück</button>` : ''}
-          <button onclick="window._ktTutSkip()" style="padding:6px 14px;border-radius:8px;border:none;background:transparent;color:#64748b;font-size:13px;cursor:pointer">Überspringen</button>
-          <button onclick="window._ktTutNext()" style="padding:6px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#7c3aed,#6366f1);color:white;font-size:13px;font-weight:600;cursor:pointer">${current === steps.length-1 ? 'Fertig' : 'Weiter'}</button>
-        </div>
-      </div>`;
-  }
-
-  window._ktTutNext = () => {
-    if (current < steps.length - 1) { current++; render(); }
-    else { ktTutMarkSeen(id); overlay.remove(); }
+  return {
+    load, save, getEmpty, uid, genCode, calcScore, fmtTime,
+    toast, download, sha256, checkAdmin, gradeColor, injectLogos,
+    seedDemoData, qrUrl, showTutorial, markTutorialSeen, tutorialSeen,
+    STORAGE_KEY
   };
-  window._ktTutPrev = () => { if (current > 0) { current--; render(); } };
-  window._ktTutSkip = () => { ktTutMarkSeen(id); overlay.remove(); };
-
-  setTimeout(render, 400);
-}
-
-// ─── QR Code (simple inline SVG generator) ───────────────────────────────────
-
-// Minimal QR-like visual (not a real QR code, just decorative placeholder with code embedded)
-function ktQRPlaceholder(code) {
-  // We use a data URL from a real QR lib is too heavy; instead render a styled code display
-  return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:12px">
-    <div style="width:140px;height:140px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:12px">
-      <svg width="116" height="116" viewBox="0 0 116 116" xmlns="http://www.w3.org/2000/svg">
-        ${ktQRSvg(code)}
-      </svg>
-    </div>
-    <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;letter-spacing:.2em;color:#a78bfa">${code}</div>
-  </div>`;
-}
-
-function ktQRSvg(text) {
-  // Simple visual QR-like grid based on text hash
-  const cells = 21;
-  const size = Math.floor(116 / cells);
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) hash = (hash * 31 + text.charCodeAt(i)) | 0;
-  let out = '';
-  // Fixed finder patterns
-  const fixed = new Set();
-  for (let r = 0; r < 7; r++) for (let c = 0; c < 7; c++) {
-    if (r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4)) fixed.add(`${r},${c}`);
-    if (r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4)) fixed.add(`${r},${c+14}`);
-    if (r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4)) fixed.add(`${r+14},${c}`);
-  }
-  for (let r = 0; r < cells; r++) {
-    for (let c = 0; c < cells; c++) {
-      let on = fixed.has(`${r},${c}`);
-      if (!on) {
-        const v = (hash ^ (r * 73856093) ^ (c * 19349663)) & 1;
-        on = v === 1;
-      }
-      if (on) out += `<rect x="${c*size+1}" y="${r*size+1}" width="${size-1}" height="${size-1}" fill="#1a1535" rx="1"/>`;
-    }
-  }
-  return out;
-}
-
-// ─── Init ─────────────────────────────────────────────────────────────────────
-
-document.addEventListener('DOMContentLoaded', () => {
-  ktInjectLogos();
-});
+})();

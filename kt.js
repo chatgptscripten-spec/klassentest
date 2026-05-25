@@ -1,356 +1,274 @@
-// kt.js – Fusion gemeinsame Bibliothek v4
+// kt.js – Fusion v5 Shared Library
+// Made by Samuel Singh and Giox
 'use strict';
 
 const KT = (() => {
-  const STORAGE_KEY = 'fusion_v4';
+  const STORAGE_KEY = 'fusion_v5';
+  const SESSION_TEACHER = 'fusion_teacher_session';
+  const SESSION_ADMIN   = 'fusion_admin_session';
+  const SESSION_STUDENT = 'fusion_student_session';
 
   // ─── Storage ────────────────────────────────────────────────────────────────
   function load() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || getEmpty();
-    } catch { return getEmpty(); }
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || getEmpty(); }
+    catch { return getEmpty(); }
   }
-
   function save(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
-
   function getEmpty() {
-    return { tests: [], students: [], submissions: [], teachers: [], templates: [] };
+    return {
+      tests: [],
+      students: [],
+      submissions: [],
+      teachers: [],
+      templates: [],
+      modelAnswers: {},   // testId → { elId → answer }
+      settings: {}
+    };
   }
 
   // ─── IDs & Codes ────────────────────────────────────────────────────────────
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   }
-
   function genCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  // ─── Score Berechnung ───────────────────────────────────────────────────────
+  // ─── Crypto ─────────────────────────────────────────────────────────────────
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ─── Admin credentials (obfuscated) ─────────────────────────────────────────
+  const _vd = (function(){
+    const _a=[72,101,114,114,32,83,97,109,117,101,108,32,83,105,110,103,104];
+    const _b=[76,252,100,101,110,115,99,104,101,105,100];
+    const _c=[83,97,109,117,101,108,70,111,114,101,118,101,114,51,53,56,33];
+    return {
+      _n:()=>String.fromCharCode(..._a).toLowerCase(),
+      _c:()=>String.fromCharCode(..._b).toLowerCase(),
+      _p:()=>String.fromCharCode(..._c)
+    };
+  })();
+
+  async function checkAdmin(n, c, p) {
+    const [a,b,d] = await Promise.all([sha256(n.trim().toLowerCase()),sha256(c.trim().toLowerCase()),sha256(p.trim())]);
+    const [x,y,z] = await Promise.all([sha256(_vd._n()),sha256(_vd._c()),sha256(_vd._p())]);
+    return a===x && b===y && d===z;
+  }
+
+  // ─── Session helpers ─────────────────────────────────────────────────────────
+  function setAdminSession()   { sessionStorage.setItem(SESSION_ADMIN, '1'); }
+  function clearAdminSession() { sessionStorage.removeItem(SESSION_ADMIN); }
+  function isAdminSession()    { return sessionStorage.getItem(SESSION_ADMIN) === '1'; }
+
+  function setTeacherSession(tid)  { sessionStorage.setItem(SESSION_TEACHER, tid); }
+  function clearTeacherSession()   { sessionStorage.removeItem(SESSION_TEACHER); }
+  function getTeacherSession()     { return sessionStorage.getItem(SESSION_TEACHER); }
+
+  function setStudentSession(obj)  { sessionStorage.setItem(SESSION_STUDENT, JSON.stringify(obj)); }
+  function clearStudentSession()   { sessionStorage.removeItem(SESSION_STUDENT); }
+  function getStudentSession()     {
+    try { return JSON.parse(sessionStorage.getItem(SESSION_STUDENT)); }
+    catch { return null; }
+  }
+
+  // ─── Score ──────────────────────────────────────────────────────────────────
   function calcScore(test, answers) {
     let earned = 0, total = 0;
-    if (!test || !test.pages) return { earned: 0, total: 0, pct: 0 };
+    if (!test || !test.pages) return { earned:0, total:0, pct:0 };
     test.pages.forEach(page => {
-      (page.elements || []).forEach(el => {
+      (page.elements||[]).forEach(el => {
         if (el.type === 'mc') {
-          const pts = el.points || 1;
-          total += pts;
+          const pts = el.points||1; total += pts;
           if (answers[el.id] !== undefined && answers[el.id] === el.correct) earned += pts;
         } else if (el.type === 'multi') {
-          const pts = el.points || 1;
-          total += pts;
-          const correct = (el.correct || []).slice().sort().join(',');
-          const given = (answers[el.id] || []).slice().sort().join(',');
+          const pts = el.points||1; total += pts;
+          const correct = (el.correct||[]).slice().sort().join(',');
+          const given   = (answers[el.id]||[]).slice().sort().join(',');
           if (correct === given) earned += pts;
         }
       });
     });
-    return { earned, total, pct: total > 0 ? Math.round((earned / total) * 100) : 0 };
+    return { earned, total, pct: total>0 ? Math.round((earned/total)*100) : 0 };
   }
 
-  // ─── Zeit Format ────────────────────────────────────────────────────────────
+  // ─── Model-answer based scoring ──────────────────────────────────────────────
+  function scoreWithModelAnswers(test, answers, modelAnswers) {
+    let earned = 0, total = 0;
+    if (!test || !test.pages) return { earned:0, total:0, pct:0 };
+    test.pages.forEach(page => {
+      (page.elements||[]).forEach(el => {
+        const ma = modelAnswers && modelAnswers[el.id];
+        if (el.type === 'mc') {
+          const pts = el.points||1; total += pts;
+          const correct = ma !== undefined ? ma : el.correct;
+          if (answers[el.id] !== undefined && answers[el.id] === correct) earned += pts;
+        } else if (el.type === 'multi') {
+          const pts = el.points||1; total += pts;
+          const correctArr = ma !== undefined ? ma : (el.correct||[]);
+          const correct = correctArr.slice().sort().join(',');
+          const given = (answers[el.id]||[]).slice().sort().join(',');
+          if (correct === given) earned += pts;
+        }
+        // free text: manual scoring only
+      });
+    });
+    return { earned, total, pct: total>0 ? Math.round((earned/total)*100) : 0 };
+  }
+
+  // ─── Time ────────────────────────────────────────────────────────────────────
   function fmtTime(sec) {
     if (sec < 0) sec = 0;
-    const m = Math.floor(sec / 60).toString().padStart(2, '0');
-    const s = (sec % 60).toString().padStart(2, '0');
+    const m = Math.floor(sec/60).toString().padStart(2,'0');
+    const s = (sec%60).toString().padStart(2,'0');
     return `${m}:${s}`;
   }
 
-  // ─── Toast ──────────────────────────────────────────────────────────────────
-  function toast(msg, type = 'info', duration = 3000) {
+  // ─── Grade color ─────────────────────────────────────────────────────────────
+  function gradeColor(grade) {
+    if (!grade) return 'var(--text-muted)';
+    const g = grade.toString().replace(/[+\-]/g,'');
+    const map = {'1':'#4ade80','2':'#86efac','3':'#fbbf24','4':'#fb923c','5':'#f87171','6':'#ef4444'};
+    return map[g]||'var(--accent)';
+  }
+
+  // ─── Toast ───────────────────────────────────────────────────────────────────
+  function toast(msg, type='info', duration=3500) {
     let wrap = document.getElementById('kt-toast-wrap');
     if (!wrap) {
       wrap = document.createElement('div');
       wrap.id = 'kt-toast-wrap';
-      wrap.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none';
+      wrap.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none';
       document.body.appendChild(wrap);
     }
+    const icons = {info:'ℹ️',success:'✅',error:'❌',warn:'⚠️'};
+    const colors = {info:'var(--accent2)',success:'var(--green)',error:'var(--red)',warn:'var(--yellow)'};
     const t = document.createElement('div');
-    const icons = { info: 'ℹ️', success: '✅', error: '❌', warn: '⚠️' };
-    t.className = `kt-toast kt-toast-${type}`;
-    t.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
     t.style.cssText = `
-      background:var(--surface2,#1e2030);border:1px solid var(--border,#2a2d3e);
-      color:var(--text,#e0e0f0);padding:12px 18px;border-radius:12px;
+      background:var(--surface2);border:1.5px solid ${colors[type]||'var(--border)'};
+      color:var(--text);padding:12px 18px;border-radius:12px;
       display:flex;align-items:center;gap:10px;font-size:14px;
-      box-shadow:0 8px 32px rgba(0,0,0,0.4);pointer-events:auto;
-      animation:fadeIn .3s ease;max-width:320px;word-break:break-word;
+      box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:auto;
+      animation:ktFadeIn .3s ease;max-width:340px;word-break:break-word;
     `;
+    t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
     wrap.appendChild(t);
-    setTimeout(() => { t.style.animation = 'fadeOut .3s ease forwards'; setTimeout(() => t.remove(), 300); }, duration);
+    setTimeout(()=>{ t.style.animation='ktFadeOut .3s ease forwards'; setTimeout(()=>t.remove(),300); }, duration);
   }
 
-  // ─── Download ───────────────────────────────────────────────────────────────
-  function download(filename, content, mime = 'text/plain') {
-    const blob = new Blob([content], { type: mime });
+  // ─── Download ────────────────────────────────────────────────────────────────
+  function download(filename, content, mime='text/plain') {
+    const blob = new Blob([content],{type:mime});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
+    a.download = filename; a.click();
     URL.revokeObjectURL(a.href);
   }
 
-  // ─── Crypto util ─────────────────────────────────────────────────────────────
-  async function sha256(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  // ─── Internal verification ───────────────────────────────────────────────────
-  // prettier-ignore
-  const _vd = (function(){const _a=[72,101,114,114,32,83,97,109,117,101,108,32,83,105,110,103,104];const _b=[76,252,100,101,110,115,99,104,101,105,100];const _c=[83,97,109,117,101,108,70,111,114,101,118,101,114,51,53,56,33];return{_n:()=>String.fromCharCode(..._a).toLowerCase(),_c:()=>String.fromCharCode(..._b).toLowerCase(),_p:()=>String.fromCharCode(..._c)};})();
-
-  async function checkAdmin(n, c, p) {
-    const _h = async s => sha256(s);
-    const [a,b,d] = await Promise.all([_h(n.trim().toLowerCase()),_h(c.trim().toLowerCase()),_h(p.trim())]);
-    const [x,y,z] = await Promise.all([_h(_vd._n()),_h(_vd._c()),_h(_vd._p())]);
-    return a===x && b===y && d===z;
-  }
-
-  // ─── Notenfarbe ─────────────────────────────────────────────────────────────
-  function gradeColor(grade) {
-    if (!grade) return 'var(--text-muted)';
-    const g = grade.toString().replace(/[+\-]/g, '');
-    const map = { '1':'#4ade80','2':'#86efac','3':'#fbbf24','4':'#fb923c','5':'#f87171','6':'#ef4444' };
-    return map[g] || 'var(--accent)';
-  }
-
-  // ─── Logo injizieren ─────────────────────────────────────────────────────────
-  function injectLogos() {
-    document.querySelectorAll('.logo-mark').forEach(el => {
-      if (!el.querySelector('.logo-svg')) {
-        el.innerHTML = `<span class="logo-svg" style="display:inline-flex;align-items:center;gap:10px">
-          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="lGrad${Math.random().toString(36).slice(2,6)}" x1="0" y1="0" x2="1" y2="1" id="lG1">
-                <stop offset="0%" stop-color="#3b82f6"/>
-                <stop offset="55%" stop-color="#6366f1"/>
-                <stop offset="100%" stop-color="#8b5cf6"/>
-              </linearGradient>
-            </defs>
-            <rect x="1" y="1" width="36" height="36" rx="10" fill="url(#lG1)"/>
-            <rect x="4.5" y="4.5" width="23" height="27" rx="5" fill="white" opacity="0.95"/>
-            <circle cx="11" cy="13.5" r="3.2" fill="#3b82f6"/>
-            <path d="M9.7 13.5l1.3 1.4 2.3-2.4" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="15.5" y="12.5" width="7.5" height="2" rx="1" fill="#c7d2fe"/>
-            <circle cx="11" cy="20.5" r="3.2" fill="#6366f1"/>
-            <path d="M9.7 20.5l1.3 1.4 2.3-2.4" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="15.5" y="19.5" width="5.5" height="2" rx="1" fill="#c7d2fe"/>
-            <circle cx="11" cy="27.5" r="3.2" fill="#e2e8f0" opacity="0.45"/>
-            <rect x="15.5" y="26.5" width="4" height="2" rx="1" fill="#e2e8f0"/>
-            <path d="M20 25.5 L25.5 33.5 L36.5 16.5" stroke="url(#lG1)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          </svg>
-          <span style="font-family:Fraunces,serif;font-weight:900;font-size:1.45rem;background:linear-gradient(135deg,#3b82f6,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.01em">Fusion</span>
-        </span>` + el.innerHTML;
-      }
-    });
-  }
-
-  // ─── Demo Daten ──────────────────────────────────────────────────────────────
-  function seedDemoData() {
-    const data = load();
-    if (data.tests.length > 0) return; // Bereits Daten vorhanden
-
-    const testId = uid();
-    const now = Date.now();
-
-    const demoTest = {
-      id: testId,
-      title: 'Demo-Test: Grundlagen Mathematik',
-      subject: 'Mathematik',
-      grade: '8a',
-      status: 'ended',
-      createdAt: now - 86400000,
-      startedAt: now - 3600000,
-      endedAt: now - 1800000,
-      duration: 45,
-      code: '123456',
-      teacherId: 'demo-teacher',
-      background: 'lined',
-      pages: [
-        {
-          id: uid(),
-          label: 'Seite 1',
-          elements: [
-            { id: 'el1', type: 'heading', level: 'h1', text: 'Mathetest – Klasse 8a' },
-            { id: 'el2', type: 'text', text: 'Beantworte alle Fragen sorgfältig. Viel Erfolg!' },
-            { id: 'el3', type: 'mc', question: 'Was ist 12 × 7?', options: ['74','84','94','104'], correct: 1, points: 2 },
-            { id: 'el4', type: 'mc', question: 'Welche Zahl ist eine Primzahl?', options: ['9','15','17','21'], correct: 2, points: 2 },
-            { id: 'el5', type: 'multi', question: 'Welche Zahlen sind durch 3 teilbar?', options: ['9','12','14','21','25'], correct: [0,1,3], points: 3 },
-            { id: 'el6', type: 'free', question: 'Erkläre in eigenen Worten, was ein Bruch ist.', rows: 4 },
-            { id: 'el7', type: 'mc', question: 'Was ergibt √144?', options: ['10','11','12','13'], correct: 2, points: 2 },
-          ]
-        }
-      ]
-    };
-
-    const students = [
-      { id: uid(), name: 'Anna Müller', testId, joinedAt: now - 3500000 },
-      { id: uid(), name: 'Ben Schmidt', testId, joinedAt: now - 3400000 },
-      { id: uid(), name: 'Clara Weber', testId, joinedAt: now - 3300000 },
-    ];
-
-    const submissions = [
-      {
-        id: uid(), testId, studentName: 'Anna Müller',
-        submittedAt: now - 2000000,
-        answers: { el3: 1, el4: 2, el5: [0,1,3], el6: 'Ein Bruch beschreibt einen Teil eines Ganzen, z.B. 1/2 bedeutet die Hälfte.', el7: 2 },
-        score: { earned: 9, total: 9, pct: 100 },
-        grade: '1', feedback: 'Sehr gut gemacht! Alle Aufgaben korrekt gelöst.',
-        corrected: true, sentAt: now - 1800000,
-      },
-      {
-        id: uid(), testId, studentName: 'Ben Schmidt',
-        submittedAt: now - 1900000,
-        answers: { el3: 0, el4: 2, el5: [0,1], el6: 'Ein Bruch ist eine Division.', el7: 2 },
-        score: { earned: 6, total: 9, pct: 67 },
-        grade: '3', feedback: 'Gute Leistung, aber Aufgabe 1 und 5 nochmal überarbeiten.',
-        corrected: true, sentAt: now - 1700000,
-      },
-      {
-        id: uid(), testId, studentName: 'Clara Weber',
-        submittedAt: now - 1800000,
-        answers: { el3: 1, el4: 1, el5: [0,1,2,3], el6: '', el7: 1 },
-        score: { earned: 2, total: 9, pct: 22 },
-        grade: '5', feedback: 'Leider nur wenige richtige Antworten. Bitte Übungen wiederholen.',
-        corrected: true, sentAt: now - 1600000,
-      }
-    ];
-
-    data.tests.push(demoTest);
-    students.forEach(s => data.students.push(s));
-    submissions.forEach(s => data.submissions.push(s));
-    save(data);
-  }
-
-  // ─── QR Code (einfach via API) ───────────────────────────────────────────────
-  function qrUrl(text, size = 200) {
+  // ─── QR code ─────────────────────────────────────────────────────────────────
+  function qrUrl(text, size=200) {
     return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
   }
 
-  // ─── Tutorial System ─────────────────────────────────────────────────────────
-  const TUTORIAL_KEY = 'fusion_tutorials_seen';
-
-  function tutorialSeen(id) {
-    const seen = JSON.parse(localStorage.getItem(TUTORIAL_KEY) || '[]');
-    return seen.includes(id);
+  // ─── Logo injector ───────────────────────────────────────────────────────────
+  function injectLogos() {
+    document.querySelectorAll('.logo-mark').forEach(el => {
+      if (el.querySelector('svg')) return;
+      el.insertAdjacentHTML('afterbegin', `
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lg_${Math.random().toString(36).slice(2,6)}" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="55%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="34" height="34" rx="9" fill="url(#lg_a)"/>
+          <rect x="4" y="4" width="21" height="27" rx="5" fill="white" opacity=".95"/>
+          <circle cx="10" cy="13" r="3" fill="#3b82f6"/>
+          <path d="M8.8 13l1.2 1.3 2.2-2.2" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="15" y="12" width="7" height="1.8" rx="0.9" fill="#c7d2fe"/>
+          <circle cx="10" cy="20" r="3" fill="#6366f1"/>
+          <path d="M8.8 20l1.2 1.3 2.2-2.2" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="15" y="19" width="5" height="1.8" rx="0.9" fill="#c7d2fe"/>
+          <circle cx="10" cy="27" r="3" fill="#e2e8f0" opacity=".45"/>
+          <rect x="15" y="26" width="3.5" height="1.8" rx="0.9" fill="#e2e8f0"/>
+          <path d="M20 25 L25 33 L35 17" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <span class="logo-wordmark">Fusion</span>
+      `);
+    });
   }
 
-  function markTutorialSeen(id) {
-    const seen = JSON.parse(localStorage.getItem(TUTORIAL_KEY) || '[]');
-    if (!seen.includes(id)) { seen.push(id); localStorage.setItem(TUTORIAL_KEY, JSON.stringify(seen)); }
-  }
-
-  function showTutorial(steps, tutorialId) {
-    if (tutorialSeen(tutorialId)) return;
-    if (!steps || steps.length === 0) return;
-
-    let current = 0;
-    const overlay = document.createElement('div');
-    overlay.id = 'kt-tutorial-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;pointer-events:none;';
-
-    const backdrop = document.createElement('div');
-    backdrop.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.55);pointer-events:all;';
-    overlay.appendChild(backdrop);
-
-    const spotlight = document.createElement('div');
-    spotlight.style.cssText = 'position:absolute;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.55);transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:1;';
-    overlay.appendChild(spotlight);
-
-    const bubble = document.createElement('div');
-    bubble.style.cssText = `
-      position:absolute;background:var(--surface2,#1e2030);border:1.5px solid var(--accent,#a78bfa);
-      border-radius:16px;padding:20px 24px;max-width:320px;z-index:2;pointer-events:all;
-      box-shadow:0 16px 48px rgba(0,0,0,0.5);transition:all .4s cubic-bezier(.4,0,.2,1);
-    `;
-    overlay.appendChild(bubble);
-    document.body.appendChild(overlay);
-
-    function render() {
-      const step = steps[current];
-      bubble.innerHTML = `
-        <div style="font-size:2rem;margin-bottom:8px">${step.emoji || '💡'}</div>
-        <div style="font-family:Fraunces,serif;font-size:1.1rem;font-weight:700;color:var(--accent,#a78bfa);margin-bottom:8px">${step.title}</div>
-        <div style="font-size:14px;color:var(--text-muted,#8b8fa8);line-height:1.6;margin-bottom:16px">${step.desc}</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <button id="tut-skip" style="background:none;border:none;color:var(--text-muted,#8b8fa8);cursor:pointer;font-size:13px;padding:4px 8px;border-radius:6px">Überspringen</button>
-          <div style="display:flex;gap:6px;align-items:center">
-            ${current > 0 ? '<button id="tut-prev" class="btn-secondary" style="padding:6px 14px;font-size:13px">← Zurück</button>' : ''}
-            <button id="tut-next" class="btn-primary" style="padding:6px 16px;font-size:13px">${current === steps.length - 1 ? 'Fertig ✓' : 'Weiter →'}</button>
-          </div>
-        </div>
-        <div style="margin-top:12px;display:flex;gap:4px;justify-content:center">
-          ${steps.map((_, i) => `<div style="width:6px;height:6px;border-radius:50%;background:${i === current ? 'var(--accent,#a78bfa)' : 'var(--border,#2a2d3e)'}"></div>`).join('')}
-        </div>
-      `;
-
-      // Ziel-Element positionieren
-      if (step.target) {
-        const el = document.querySelector(step.target);
-        if (el) {
-          const r = el.getBoundingClientRect();
-          const pad = 8;
-          spotlight.style.left = (r.left - pad) + 'px';
-          spotlight.style.top = (r.top - pad) + 'px';
-          spotlight.style.width = (r.width + pad*2) + 'px';
-          spotlight.style.height = (r.height + pad*2) + 'px';
-          spotlight.style.opacity = '1';
-
-          // Bubble positionieren
-          const bTop = r.bottom + pad + 16;
-          const bLeft = Math.min(r.left, window.innerWidth - 340);
-          bubble.style.top = (bTop + window.scrollY) + 'px';
-          bubble.style.left = Math.max(16, bLeft) + 'px';
-        } else {
-          spotlight.style.opacity = '0';
-          bubble.style.top = '50%';
-          bubble.style.left = '50%';
-          bubble.style.transform = 'translate(-50%,-50%)';
-        }
-      } else {
-        spotlight.style.opacity = '0';
-        bubble.style.top = '50%';
-        bubble.style.left = '50%';
-        bubble.style.transform = 'translate(-50%,-50%)';
-      }
-
-      document.getElementById('tut-skip')?.addEventListener('click', close);
-      document.getElementById('tut-next')?.addEventListener('click', () => {
-        if (current < steps.length - 1) { current++; render(); }
-        else close();
-      });
-      document.getElementById('tut-prev')?.addEventListener('click', () => {
-        if (current > 0) { current--; render(); }
-      });
-    }
-
-    function close() {
-      overlay.remove();
-      markTutorialSeen(tutorialId);
-    }
-
-    render();
+  // ─── Demo seed ───────────────────────────────────────────────────────────────
+  function seedDemoData() {
+    const data = load();
+    if (data.tests.length > 0) return;
+    const testId = uid(), now = Date.now();
+    const demoTest = {
+      id: testId, title: 'Demo-Test: Grundlagen Mathematik',
+      subject: 'Mathematik', grade: '8a', status: 'ended',
+      createdAt: now-86400000, startedAt: now-3600000, endedAt: now-1800000,
+      duration: 45, code: '123456', teacherId: 'demo-teacher',
+      background: 'lined',
+      pages:[{id:uid(),label:'Seite 1',elements:[
+        {id:'el1',type:'heading',level:'h1',text:'Mathetest – Klasse 8a'},
+        {id:'el2',type:'text',text:'Beantworte alle Fragen sorgfältig.'},
+        {id:'el3',type:'mc',question:'Was ist 7 × 8?',options:['52','54','56','58'],correct:2,points:2},
+        {id:'el4',type:'mc',question:'Welche Zahl ist eine Primzahl?',options:['9','15','17','21'],correct:2,points:2},
+        {id:'el5',type:'multi',question:'Welche Zahlen sind durch 3 teilbar?',options:['9','12','14','21','25'],correct:[0,1,3],points:3},
+        {id:'el6',type:'free',question:'Erkläre in eigenen Worten, was ein Bruch ist.',rows:4},
+        {id:'el7',type:'mc',question:'Was ergibt √144?',options:['10','11','12','13'],correct:2,points:2},
+      ]}]
+    };
+    const students = [
+      {id:uid(),name:'Anna Müller',testId,joinedAt:now-3500000},
+      {id:uid(),name:'Ben Schmidt',testId,joinedAt:now-3400000},
+      {id:uid(),name:'Clara Weber',testId,joinedAt:now-3300000},
+    ];
+    const submissions = [
+      {id:uid(),testId,studentName:'Anna Müller',submittedAt:now-2000000,
+       answers:{el3:2,el4:2,el5:[0,1,3],el6:'Ein Bruch beschreibt einen Teil eines Ganzen.',el7:2},
+       score:{earned:9,total:9,pct:100},grade:'1',feedback:'Sehr gut!',corrected:true,sentAt:now-1800000},
+      {id:uid(),testId,studentName:'Ben Schmidt',submittedAt:now-1900000,
+       answers:{el3:0,el4:2,el5:[0,1],el6:'Ein Bruch ist eine Division.',el7:2},
+       score:{earned:6,total:9,pct:67},grade:'3',feedback:'Gute Leistung.',corrected:true,sentAt:now-1700000},
+      {id:uid(),testId,studentName:'Clara Weber',submittedAt:now-1800000,
+       answers:{el3:1,el4:1,el5:[0,1,2,3],el6:'',el7:1},
+       score:{earned:2,total:9,pct:22},grade:'5',feedback:'Bitte wiederholen.',corrected:true,sentAt:now-1600000},
+    ];
+    data.tests.push(demoTest);
+    students.forEach(s=>data.students.push(s));
+    submissions.forEach(s=>data.submissions.push(s));
+    save(data);
   }
 
   // Auto-init
   document.addEventListener('DOMContentLoaded', () => {
     injectLogos();
-    // fadeOut CSS
-    if (!document.getElementById('kt-anim')) {
+    if (!document.getElementById('kt-style')) {
       const s = document.createElement('style');
-      s.id = 'kt-anim';
-      s.textContent = '@keyframes fadeOut{to{opacity:0;transform:translateY(8px)}}';
+      s.id = 'kt-style';
+      s.textContent = `
+        @keyframes ktFadeIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+        @keyframes ktFadeOut { to{opacity:0;transform:translateY(8px)} }
+      `;
       document.head.appendChild(s);
     }
   });
 
   return {
-    load, save, getEmpty, uid, genCode, calcScore, fmtTime,
-    toast, download, sha256, checkAdmin, gradeColor, injectLogos,
-    seedDemoData, qrUrl, showTutorial, markTutorialSeen, tutorialSeen,
+    load, save, getEmpty, uid, genCode,
+    sha256, checkAdmin,
+    setAdminSession, clearAdminSession, isAdminSession,
+    setTeacherSession, clearTeacherSession, getTeacherSession,
+    setStudentSession, clearStudentSession, getStudentSession,
+    calcScore, scoreWithModelAnswers, fmtTime, gradeColor,
+    toast, download, qrUrl, injectLogos, seedDemoData,
     STORAGE_KEY
   };
 })();
